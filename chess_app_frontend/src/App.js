@@ -1,23 +1,23 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from "react"
+import Chess from './chess'
+import Board from './Board'
+import gameService from './services/game'
+import axios from 'axios'
 import './App.css';
 
+// TODO
+// [ ] - Render a starting position board from a new game in MongoDB
+
+const chess = new Chess()
+const emptyBoard = chess.createEmptyBoard()
+
 function App() {
+
+  const [ board, setBoard ] = useState(emptyBoard)
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Board board={board} setBoard={setBoard} />
     </div>
   );
 }

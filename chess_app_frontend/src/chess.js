@@ -1,8 +1,10 @@
-import { whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing, blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing } from './pieces.js'
+import pieces from './pieces.js'
+
+const { whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing, blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing } = pieces
 
 class Chess {
     constructor(){
-        this.xAxis = ["a", "b", "c", "d", "e", "f", "g", "h"],
+        this.xAxis = ["a", "b", "c", "d", "e", "f", "g", "h"]
         this.moveHistory = []
     }
     createEmptyBoard(){
@@ -836,7 +838,6 @@ class Chess {
     }
 
     isGameOver(board){
-        // add stalemate conditions as well
         const checkmate = this.isKingInCheckMate(board, "white") || this.isKingInCheckMate(board, "black")
         if (checkmate){
             return {
@@ -865,8 +866,5 @@ class Chess {
         return "black"
     }
 }
-
-const chess = new Chess()
-const board = chess.createStartPosition()
 
 export default Chess
