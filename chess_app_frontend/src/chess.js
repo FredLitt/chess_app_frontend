@@ -837,28 +837,29 @@ class Chess {
         return board
     }
 
+    // TODO: Fix stackoverflow issue with this and getWhoseTurn()
     isGameOver(board){
-        const checkmate = this.isKingInCheckMate(board, "white") || this.isKingInCheckMate(board, "black")
-        if (checkmate){
-            return {
-                gameOver: true,
-                result: this.isKingInCheckMate(board, "white") ? "black wins" : "white wins"
-            }
-        }
-        const currentPlayersTurn = this.getWhoseTurn(board)
-        if (this.findAllPossibleMoves(board, currentPlayersTurn).length === 0){
-            return {
-                gameOver: true,
-                result: `stalemate`
-            }
-        }
+        // const checkmate = this.isKingInCheckMate(board, "white") || this.isKingInCheckMate(board, "black")
+        // if (checkmate){
+        //     return {
+        //         gameOver: true,
+        //         result: this.isKingInCheckMate(board, "white") ? "black wins" : "white wins"
+        //     }
+        // }
+        // const currentPlayersTurn = this.getWhoseTurn(board)
+        // if (this.findAllPossibleMoves(board, currentPlayersTurn).length === 0){
+        //     return {
+        //         gameOver: true,
+        //         result: `stalemate`
+        //     }
+        // }
         return false
     }
 
     getWhoseTurn(board){
-        if (this.isGameOver(board).result){
-            return "game over"
-        }
+        // if (this.isGameOver(board).result){
+        //     return "game over"
+        // }
         const numberOfMovesPlayed = this.moveHistory.length
         if (numberOfMovesPlayed % 2 === 0){
             return "white"
