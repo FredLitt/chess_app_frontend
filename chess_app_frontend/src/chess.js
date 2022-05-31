@@ -639,17 +639,17 @@ class Chess {
         }
         move.data = {}
         let movingPiece = this.getSquare(board, move.from).piece
-        if (this.isMoveCastling(board, move)){
-            const direction = this.isMoveCastling(board, move)
-            const color = this.getPiecesColor(board, move.from)
-            this.castle(board, direction, color)
-        }
         if (this.isMoveEnPassant(board, move)){
             console.log("en passant move played")
             move.data.enPassant = true
             move.data.capture = true
             const pawnToCapturesSquare = this.getEnPassantTarget()
             this.getSquare(board, pawnToCapturesSquare).piece = null
+        }
+        if (this.isMoveCastling(board, move)){
+            const direction = this.isMoveCastling(board, move)
+            const color = this.getPiecesColor(board, move.from)
+            this.castle(board, direction, color)
         }
         if (promotion){
             const promotingPawnColor = this.getPiecesColor(board, move.from)
