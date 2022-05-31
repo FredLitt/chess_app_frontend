@@ -1,61 +1,31 @@
 import React, { useState } from "react";
+import pieceSymbols from "./pieceSymbols"
 
-const pieceSymbols = {
-  "pawn": {
-    "white": "\u2659",
-    "black": "\u265F"
-  },
-  "knight": {
-    "white": "\u2658",
-    "black": "\u265E"
-  },
-  "bishop": {
-    "white": "\u2657",
-    "black": "\u265D"
-  },
-  "rook": {
-    "white": "\u2656",
-    "black": "\u265C"
-  },
-  "queen": {
-    "white": "\u2655",
-    "black": "\u265B"
-  },
-  "king": {
-    "white": "\u2654",
-    "black": "\u265A"
-  }
-}
+
 
 export default function BoardUI({board, setBoard, move}){
 
   const [ pieceToMove, setPieceToMove ] = useState(null)
 
   const movePiece = (square) => {
-    const targetSquare = square.target.coordinates
-    console.log("moving piece to:", targetSquare)
+    const targetSquare = square.target.getAttribute("coordinates")
     const moveToPlay = {
       piece: pieceToMove.piece,
       from: pieceToMove.square,
       to: targetSquare
     }
-    console.log("moving", moveToPlay)
     move(moveToPlay)
-    // (if move = valid){
-    // services.updateBoard
-    // } 
     setPieceToMove(null)
   }
 
   const selectPiece = (square) => {
     const selectedPiece = {
       piece: {
-        type: square.target.getAttribute("pieceType"),
-        color: square.target.getAttribute("pieceColor")
+        type: square.target.getAttribute("piecetype"),
+        color: square.target.getAttribute("piececolor")
       },
       square: square.target.getAttribute("coordinates")
     }
-    console.log(selectedPiece.piece)
     setPieceToMove(selectedPiece)
   }
 
@@ -73,8 +43,8 @@ export default function BoardUI({board, setBoard, move}){
               <td 
                 className="square"
                 coordinates={square.coordinates}
-                pieceType={square.piece ? square.piece.type.toString() : null}
-                pieceColor={square.piece ? square.piece.color.toString() : null}
+                piecetype={square.piece ? square.piece.type.toString() : null}
+                piececolor={square.piece ? square.piece.color.toString() : null}
                 key={square.coordinates} 
                 onClick={ pieceToMove ? (e) => movePiece(e) : (e) => selectPiece(e)}
                 style={{
