@@ -7,15 +7,17 @@ const getGame = () => {
   return request.then(response => response.data)
 }
 
-const updateGame = (move) => {
+const playMove = (move) => {
   console.log("updating game with:", move)
   const request = axios.post(`${baseUrl}/${id}/moves`, move)
-  
-  return request.then(response => 
-    console.log(response.data))
-    //response.data)
+  return request.then(response => response.data)
+}
+
+const undoMove = () => {
+  const request = axios.delete(`${baseUrl}/${id}`)
+  return request.then(response => response.data)
 }
 
 let gameService
 
-export default gameService = { getGame, updateGame }
+export default gameService = { getGame, playMove, undoMove }

@@ -428,12 +428,12 @@ class Chess {
         let squaresToCheck
         const castlingSquares = {
             "white": {
-                "Kingside": ["f1", "g1"],
-                "Queenside": ["d1", "c1", "b1"],
+                "Castle Kingside": ["f1", "g1"],
+                "Castle Queenside": ["d1", "c1", "b1"],
             },
             "black": {
-                "Kingside": ["f8", "g8"],
-                "Queenside":  ["d8", "c8", "b8"],
+                "Castle Kingside": ["f8", "g8"],
+                "Castle Queenside":  ["d8", "c8", "b8"],
             }
         }
         squaresToCheck = castlingSquares[kingColor][castlingDirection]
@@ -530,12 +530,13 @@ class Chess {
     }
 
     isMoveEnPassant(board, move){
-        const pawnMove = this.getSquare(board, move.from).piece.type === "pawn"
-        const wasCapture = move.from[0] !== move.to[0]
-        const noPieceOnCaptureSquare = this.getSquare(board, move.to).piece === null
-        if (pawnMove && wasCapture && noPieceOnCaptureSquare){
-            return true
-        }
+
+        // const pawnMove = this.getSquare(board, move.from).piece.type === "pawn"
+        // const wasCapture = move.from[0] !== move.to[0]
+        // const noPieceOnCaptureSquare = this.getSquare(board, move.to).piece === null
+        // if (pawnMove && wasCapture && noPieceOnCaptureSquare){
+        //     return true
+        // }
         return false
     }
 

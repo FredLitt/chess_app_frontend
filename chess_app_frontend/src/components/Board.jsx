@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import pieceSymbols from "./pieceSymbols"
-
-
+import pieceSymbols from "../pieceSymbols"
 
 export default function BoardUI({board, setBoard, move}){
 
