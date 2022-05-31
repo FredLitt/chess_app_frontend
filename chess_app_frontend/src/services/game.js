@@ -13,11 +13,15 @@ const playMove = (move) => {
   return request.then(response => response.data)
 }
 
-const undoMove = () => {
-  const request = axios.delete(`${baseUrl}/${id}`)
+const takebackMove = () => {
+  const request = axios.delete(`${baseUrl}/${id}/moves`)
   return request.then(response => response.data)
+}
+
+const startNewGame = () => {
+
 }
 
 let gameService
 
-export default gameService = { getGame, playMove, undoMove }
+export default gameService = { getGame, playMove, takebackMove, startNewGame }

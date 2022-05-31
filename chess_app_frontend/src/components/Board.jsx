@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import pieceSymbols from "../pieceSymbols"
 
-export default function BoardUI({board, setBoard, move}){
+export default function Board({board, setBoard, move}){
 
   const [ pieceToMove, setPieceToMove ] = useState(null)
 

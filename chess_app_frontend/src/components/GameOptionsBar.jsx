@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 
-export default function GameOptionsBar({takeback}){
+export default function GameOptionsBar({startNewGame, takeback}){
 
   const [ themesMenu, setThemesMenu ] = useState("closed")
 
@@ -23,6 +23,7 @@ export default function GameOptionsBar({takeback}){
 
   return (
     <div id="game-options-bar">
+      <button onClick={() => {startNewGame()}}>Start New Game</button>
       <button onClick={() => {takeback()}}>Takeback</button>
     </div>
   )

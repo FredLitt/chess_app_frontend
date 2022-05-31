@@ -530,19 +530,19 @@ class Chess {
     }
 
     isMoveEnPassant(board, move){
-
-        // const pawnMove = this.getSquare(board, move.from).piece.type === "pawn"
-        // const wasCapture = move.from[0] !== move.to[0]
-        // const noPieceOnCaptureSquare = this.getSquare(board, move.to).piece === null
-        // if (pawnMove && wasCapture && noPieceOnCaptureSquare){
-        //     return true
-        // }
+        const pawnMove = this.getSquare(board, move.from).piece.type === "pawn"
+        const wasCapture = move.from[0] !== move.to[0]
+        const noPieceOnCaptureSquare = this.getSquare(board, move.to).piece === null
+        if (pawnMove && wasCapture && noPieceOnCaptureSquare){
+            return true
+        }
         return false
     }
 
     getEnPassantTarget(){
         const lastMove = this.moveHistory[this.moveHistory.length - 1]
         const pawnToCapturesSquare = lastMove?.to
+        console.log("en passant target square:", pawnToCapturesSquare)
         return pawnToCapturesSquare
     }
 
@@ -612,13 +612,11 @@ class Chess {
     }
 
     isMoveValid(board, move){
-        console.log("move:", move)
         const noPieceToMove = !this.isSquareOccupied(board, move.from)
         const moveSquaresAreOnBoard = this.isSquareOnBoard(move.to) && this.isSquareOnBoard(move.from)
         const movingPlayerColor = move.piece.color
         const whoseTurn = this.getWhoseTurn(board)
         const wrongPlayerMoving = whoseTurn !== movingPlayerColor
-        console.log("whose turn?", whoseTurn, "moving player?", movingPlayerColor)
         const gameOver = whoseTurn === "game over"
         if (noPieceToMove || !moveSquaresAreOnBoard || wrongPlayerMoving || gameOver){
             console.log("no piece:", noPieceToMove, "squares on board?", moveSquaresAreOnBoard, "wrong player?", wrongPlayerMoving, "game over?", gameOver)
@@ -629,8 +627,6 @@ class Chess {
 
     playMove(board, move, promotion){
         const isValidMove = this.isMoveValid(board, move)
-        console.log("playing move:", move, "current board:")
-        this.printBoard(board)
         if (!isValidMove){
             console.log("invalid move entry!")
             return false
@@ -641,7 +637,6 @@ class Chess {
             console.log("not a legal move!")
             return false
         }
-        
         move.data = {}
         let movingPiece = this.getSquare(board, move.from).piece
         if (this.isMoveCastling(board, move)){
@@ -650,6 +645,7 @@ class Chess {
             this.castle(board, direction, color)
         }
         if (this.isMoveEnPassant(board, move)){
+            console.log("en passant move played")
             move.data.enPassant = true
             move.data.capture = true
             const pawnToCapturesSquare = this.getEnPassantTarget()
@@ -832,6 +828,7 @@ class Chess {
 
     createBoardFromMoveHistory(moveHistory){
         let board = this.createStartPosition()
+        console.log("move history:", moveHistory)
         for (let i = 0; i < moveHistory.length; i++){
             board = this.playMove(board, moveHistory[i])
         }
