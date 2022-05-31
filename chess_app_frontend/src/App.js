@@ -19,18 +19,17 @@ function App() {
   const [ board, setBoard ] = useState([])
 
   useEffect(() => {
-    const chess = new Chess()
-    gameService
-    .getGame()
-    .then(gameData => {
-      console.log("game history:", gameData.moveHistory)
+    const getGame = async () => {
+      const chess = new Chess()
+      const gameData = await gameService.getGame()
       const board = chess.createBoardFromMoveHistory(gameData.moveHistory)
-      if (board){
+      if (board) {
         setBoard(board)
       } else {
         setBoard(chess.createStartPosition())
       }
-    })
+    }
+    getGame()
   }, [])
 
   const move = async (moveToPlay) => {
@@ -41,12 +40,6 @@ function App() {
     await updatedGame
     const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
     setBoard(updatedBoard)
-    // gameService
-    // .playMove(moveToPlay)
-    // .then(updatedGame => {
-    //   const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
-    //   setBoard(updatedBoard)
-    // })
   }
 
   const takebackMove = async () => {
