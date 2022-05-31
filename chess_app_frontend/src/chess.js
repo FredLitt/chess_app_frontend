@@ -828,6 +828,7 @@ class Chess {
 
     createBoardFromMoveHistory(moveHistory){
         let board = this.createStartPosition()
+        //await moveHistory
         console.log("move history:", moveHistory)
         for (let i = 0; i < moveHistory.length; i++){
             board = this.playMove(board, moveHistory[i])

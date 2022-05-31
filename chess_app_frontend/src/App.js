@@ -16,11 +16,10 @@ import './App.css';
 
 function App() {
 
-  const chess = new Chess()
-
   const [ board, setBoard ] = useState([])
 
   useEffect(() => {
+    const chess = new Chess()
     gameService
     .getGame()
     .then(gameData => {
@@ -34,23 +33,30 @@ function App() {
     })
   }, [])
 
-  const move = (moveToPlay) => {
-    gameService
-    .playMove(moveToPlay)
-    .then(updatedGame => {
-      const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
-      setBoard(updatedBoard)
-    })
+  const move = async (moveToPlay) => {
+    const playedMove = gameService.playMove(moveToPlay)
+    const chess = new Chess()
+    await playedMove
+    const updatedGame = await gameService.getGame()
+    await updatedGame
+    const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
+    setBoard(updatedBoard)
+    // gameService
+    // .playMove(moveToPlay)
+    // .then(updatedGame => {
+    //   const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
+    //   setBoard(updatedBoard)
+    // })
   }
 
   const takebackMove = async () => {
     const takeback = await gameService.takebackMove()
+    const chess = new Chess()
     await takeback
     const updatedGame = await gameService.getGame()
     await updatedGame
     console.log("updated game:", updatedGame)
     const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
-    await updatedBoard
     setBoard(updatedBoard)
   }
 

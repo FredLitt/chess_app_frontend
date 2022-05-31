@@ -1,7 +1,0 @@
-TODO LIST 
---------------
-
-- [ ] Render a starting position board from a new game in MongoDB
-- [ ] Add UI to enable clicking and selecting pieces to move
-- [ ] Send PUT request to add a move to existing game (Backend already can validate)
-- [ ] If valid, have React update board to reflect change
