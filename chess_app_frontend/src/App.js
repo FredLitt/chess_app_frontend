@@ -53,8 +53,15 @@ function App() {
     setBoard(updatedBoard)
   }
 
-  const startNewGame = () => {
-
+  const startNewGame = async () => {
+    const takeback = await gameService.startNewGame()
+    const chess = new Chess()
+    await takeback
+    const updatedGame = await gameService.getGame()
+    await updatedGame
+    console.log("updated game:", updatedGame)
+    const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
+    setBoard(updatedBoard)
   }
 
   return (
