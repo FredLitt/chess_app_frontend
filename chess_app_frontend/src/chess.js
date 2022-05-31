@@ -15,7 +15,7 @@ class Chess {
             for (let x = 0; x < 8; x++){
                 const square = {
                     piece: null,
-                    coordinate: `${this.xAxis[x]}${y}`,
+                    coordinates: `${this.xAxis[x]}${y}`,
                     color: this.getSquareColor(y, x)
                 }
                 boardRow.push(square)

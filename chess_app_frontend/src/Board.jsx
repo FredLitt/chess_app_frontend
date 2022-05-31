@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const pieceSymbols = {
   "pawn": {
@@ -27,7 +27,37 @@ const pieceSymbols = {
   }
 }
 
-export default function BoardUI({board, setBoard}){
+export default function BoardUI({board, setBoard, move}){
+
+  const [ pieceToMove, setPieceToMove ] = useState(null)
+
+  const movePiece = (square) => {
+    const targetSquare = square.target.coordinates
+    console.log("moving piece to:", targetSquare)
+    const moveToPlay = {
+      piece: pieceToMove.piece,
+      from: pieceToMove.square,
+      to: targetSquare
+    }
+    console.log("moving", moveToPlay)
+    move(moveToPlay)
+    // (if move = valid){
+    // services.updateBoard
+    // } 
+    setPieceToMove(null)
+  }
+
+  const selectPiece = (square) => {
+    const selectedPiece = {
+      piece: {
+        type: square.target.getAttribute("pieceType"),
+        color: square.target.getAttribute("pieceColor")
+      },
+      square: square.target.getAttribute("coordinates")
+    }
+    console.log(selectedPiece.piece)
+    setPieceToMove(selectedPiece)
+  }
 
   return (
     <>
@@ -42,12 +72,14 @@ export default function BoardUI({board, setBoard}){
             {row.map((square) => 
               <td 
                 className="square"
-                coordinate={square.coordinate}
-                piece={square.piece}
-                key={square.coordinate} 
+                coordinates={square.coordinates}
+                pieceType={square.piece ? square.piece.type.toString() : null}
+                pieceColor={square.piece ? square.piece.color.toString() : null}
+                key={square.coordinates} 
+                onClick={ pieceToMove ? (e) => movePiece(e) : (e) => selectPiece(e)}
                 style={{
                   backgroundColor: square.color === "light" ? "white" : "grey"}}>
-                    { square.piece !== null ? pieceSymbols[square.piece.type][square.piece.color] : " "}
+                    { square.piece ? pieceSymbols[square.piece.type][square.piece.color] : " "}
                   </td>)}
             </tr>)}
         </tbody>

@@ -1,7 +1,15 @@
+html {
+  background-color: lightgrey;
+}
+
+#board {
+  margin: 5% auto;
+}
+
 .square {
-  height: 50px;
-  width: 50px;
-  border: 1px solid black;
-  font-size: 35px;
+  height: 75px;
+  width: 75px;
+  font-size: 50px;
   text-align: center;
+  cursor: pointer;
 }
