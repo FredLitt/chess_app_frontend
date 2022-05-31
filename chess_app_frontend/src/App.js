@@ -25,7 +25,6 @@ function App() {
     gameService
     .updateGame(moveToPlay)
     .then(updatedGameData => {
-      console.log("LOL")
       const updatedBoard = chess.createBoardFromMoveHistory(updatedGameData.moveHistory)
       console.table(board)
       setBoard(updatedBoard)
