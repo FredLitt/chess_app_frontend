@@ -620,7 +620,7 @@ class Chess {
         const movingPlayerColor = move.piece.color
         const whoseTurn = this.getWhoseTurn(board)
         const wrongPlayerMoving = whoseTurn !== movingPlayerColor
-        const gameOver = whoseTurn === "game over"
+        const gameOver = this.isGameOver(board)
         if (noPieceToMove || !moveSquaresAreOnBoard || wrongPlayerMoving || gameOver){
             console.log("no piece:", noPieceToMove, "squares on board?", moveSquaresAreOnBoard, "wrong player?", wrongPlayerMoving, "game over?", gameOver)
             return false
@@ -723,13 +723,42 @@ class Chess {
     }
 
     getCapturedPieces(board){
-        let capturedPieces = {
-            white: [],
-            black: []
+        const fullSet = [
+            { pieceType: { type: "pawn", color: "white"}, count: 8 },
+            { pieceType: { type: "knight", color: "white"}, count: 2 },
+            { pieceType: { type: "bishop", color: "white"}, count: 2 },
+            { pieceType: { type: "rook", color: "white"}, count: 2 },
+            { pieceType: { type: "queen", color: "white"}, count: 1 },
+            { pieceType: { type: "pawn", color: "black"}, count: 8 },
+            { pieceType: { type: "knight", color: "black"}, count: 2 },
+            { pieceType: { type: "bishop", color: "black"}, count: 2 },
+            { pieceType: { type: "rook", color: "black"}, count: 2 },
+            { pieceType: { type: "queen", color: "black"}, count: 1 },
+        ]
+        for (let y = 0; y < 8; y++){
+            for (let x = 0; x < 8; x++){
+                const square = this.indicesToCoordinates([y, x])
+                if (this.getSquare(board, square).piece !== null){
+                    if (this.getSquare(board, square).piece.type === "king"){ continue }
+                    const pieceAtSquare = this.getSquare(board, square).piece
+                    for (const piece of fullSet){
+                        if (this.isSamePiece(piece.pieceType, pieceAtSquare)){
+                            piece.count--
+                        }
+                    }
+                }
+            }
         }
-        // Loop through all squares and add pieces to array as found
-        // Compare with full set and return the difference
-        return capturedPieces
+        return {
+            white: fullSet.filter(piece => piece.pieceType.color !== "white"),
+            black: fullSet.filter(piece => piece.pieceType.color !== "black")
+        }
+    }
+
+    isSamePiece(piece1, piece2){
+        console.log("checking pieces:", piece1, piece2)
+        if (piece1.type === piece2.type && piece1.color === piece2.color){ return true }
+        return false
     }
 
     getSan(move){
@@ -740,7 +769,6 @@ class Chess {
         const pieceLetter = this.getPieceLetter(move.piece)
         const isPawnMove = move.piece.type === "pawn"
         const isCastle = typeof move.data.castle === "string" 
-        console.log("getting san:", move)
         const isCapture = move.data.capture === true
         const isCheckmate = move.data.checkmate === true
         const isCheck = move.data.check === true
@@ -838,29 +866,25 @@ class Chess {
         return board
     }
 
-    // TODO: Fix stackoverflow issue with this and getWhoseTurn()
     isGameOver(board){
-        // const checkmate = this.isKingInCheckMate(board, "white") || this.isKingInCheckMate(board, "black")
-        // if (checkmate){
-        //     return {
-        //         gameOver: true,
-        //         result: this.isKingInCheckMate(board, "white") ? "black wins" : "white wins"
-        //     }
-        // }
-        // const currentPlayersTurn = this.getWhoseTurn(board)
-        // if (this.findAllPossibleMoves(board, currentPlayersTurn).length === 0){
-        //     return {
-        //         gameOver: true,
-        //         result: `stalemate`
-        //     }
-        // }
+        const checkmate = this.isKingInCheckMate(board, "white") || this.isKingInCheckMate(board, "black")
+        if (checkmate){
+            return {
+                gameOver: true,
+                result: this.isKingInCheckMate(board, "white") ? "black wins" : "white wins"
+            }
+        }
+        const currentPlayersTurn = this.getWhoseTurn(board)
+        if (this.findAllPossibleMoves(board, currentPlayersTurn).length === 0){
+            return {
+                gameOver: true,
+                result: `stalemate`
+            }
+        }
         return false
     }
 
     getWhoseTurn(board){
-        // if (this.isGameOver(board).result){
-        //     return "game over"
-        // }
         const numberOfMovesPlayed = this.moveHistory.length
         if (numberOfMovesPlayed % 2 === 0){
             return "white"

@@ -45,11 +45,27 @@
   cursor: pointer;
 }
 
+#notation-captured-piece-container {
+  display: flex;
+  flex-direction: column;
+  width: 15%;
+}
+
 #notation {
   color: black;
   list-style: none;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  align-content: start;
+  font-size: calc(.4*(var(--piece-size)));
   overflow-y: auto;
+}
+
+#notation::-webkit-scrollbar {
+  display: none;
+}
+
+.captured-pieces {
+  height: 25%;
+  background-color: darkgrey;
+  border: 1px solid black;
 }
