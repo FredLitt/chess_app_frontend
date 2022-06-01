@@ -1,15 +1,55 @@
-html {
+:root {
+  --piece-size: calc(16px + 2.5vw);
+  --square-length: calc(1.5 * var(--piece-size));
+}
+
+.App {
+  height: 100vh;
   background-color: lightgrey;
 }
 
+#game-options-bar {
+  background-color: lightgrey;
+
+  display: flex; 
+  justify-content: center;
+  width: 100%;
+  height: var(--piece-size);
+  top: 0px;
+}
+
+#game-options-bar > button {
+  font-size: calc(0.4 * var(--piece-size));
+  color: slategray;
+  cursor: pointer;
+  height: 100%;
+  width: calc(4 * var(--piece-size));
+}
+
+#game-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
 #board {
-  margin: 5% auto;
+  height: calc(8 * var(--square-length));
+  width: calc(8 * var(--square-length));
 }
 
 .square {
-  height: 75px;
-  width: 75px;
-  font-size: 50px;
+  height: var(--square-length);
+  width: var(--square-length);
+  font-size: var(--piece-size);
   text-align: center;
   cursor: pointer;
+}
+
+#notation {
+  color: black;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+  overflow-y: auto;
 }

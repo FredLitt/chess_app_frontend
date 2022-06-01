@@ -8,7 +8,6 @@ const getGame = async () => {
 }
 
 const playMove = async (move) => {
-  console.log("updating game with:", move)
   const request = await axios.post(`${baseUrl}/${id}/moves`, move)
   return request.data
 }

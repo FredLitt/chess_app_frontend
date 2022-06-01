@@ -547,6 +547,7 @@ class Chess {
     }
 
     isMoveCastling(board, move){
+        console.log("is castling?")
         const kingMove = this.getSquare(board, move.from).piece.type === "king"
         if (!kingMove) {
             return false
@@ -569,7 +570,9 @@ class Chess {
         const kingOnStartSquare = move.from === startSquare
         const kingWentKingside = move.to === kingsideEndSquare
         const kingWentQueenside = move.to === queensideEndSquare
-        if (kingOnStartSquare && kingWentKingside){ return "Kingside" }
+        if (kingOnStartSquare && kingWentKingside){ 
+            console.log("kingside")
+            return "Kingside" }
         if (kingOnStartSquare && kingWentQueenside){ return "Queenside" }
         return false
     }
@@ -639,6 +642,8 @@ class Chess {
         }
         move.data = {}
         let movingPiece = this.getSquare(board, move.from).piece
+        const capture = this.getSquare(board, move.to).piece !== null 
+        if (capture){ move.data.capture = true }
         if (this.isMoveEnPassant(board, move)){
             console.log("en passant move played")
             move.data.enPassant = true
@@ -649,6 +654,7 @@ class Chess {
         if (this.isMoveCastling(board, move)){
             const direction = this.isMoveCastling(board, move)
             const color = this.getPiecesColor(board, move.from)
+            move.data.castle = this.isMoveCastling(board, move)
             this.castle(board, direction, color)
         }
         if (promotion){
@@ -657,9 +663,6 @@ class Chess {
             move.data.promotion = movingPiece.type
         }
         this.getSquare(board, move.from).piece = null
-        if (this.getSquare(board, move.to).piece !== null){
-            move.data.capture = true
-        }
         this.getSquare(board, move.to).piece = movingPiece
         if (this.isKingInCheckMate(board, this.getOpposingColor(movingPiece.color))){
             move.data.checkmate = true
@@ -737,6 +740,7 @@ class Chess {
         const pieceLetter = this.getPieceLetter(move.piece)
         const isPawnMove = move.piece.type === "pawn"
         const isCastle = typeof move.data.castle === "string" 
+        console.log("getting san:", move)
         const isCapture = move.data.capture === true
         const isCheckmate = move.data.checkmate === true
         const isCheck = move.data.check === true
@@ -748,6 +752,7 @@ class Chess {
             } else if (isCheck){
                 return san += "+"
             }
+            return san
         }
         
         if (isPawnMove){
@@ -776,7 +781,6 @@ class Chess {
         //     const disambiguator = disambiguate_move(chess, full_move);
         //     san = san.slice(0, 1) + disambiguator + san.slice(1, san.length);
         // }
-        console.log("move:", move)
         if (isCheckmate){
             /// Clearer as `san + #` since += modifies the actual variable `san` but that modification
             /// is never used
@@ -788,9 +792,7 @@ class Chess {
     }
 
     getMoveNotation(){
-        let notation = this.moveHistory.map(move => this.getSan(move))
-        console.log("move notation:", notation)
-        return notation
+        return this.moveHistory.map(move => this.getSan(move))
     }
 
     printBoard(board){

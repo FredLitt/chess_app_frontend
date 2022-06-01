@@ -10,7 +10,7 @@ import './App.css';
 // [x] - Render a starting position board from a new game in MongoDB
 // [x] - Use interface to play a move, have backend validate and update
 // [x] - Add gameService to take back move (pop last move)
-// [x] - Create a new game (just use current game ID) and clear all moves
+// [x] - Create a new game (just use current game ID) and clear all notation
 // [x] - Fix en passant check issue
 // [ ] - Fix isGameOver function
 // [ ] - Enable Promotions
@@ -21,18 +21,18 @@ import './App.css';
 
 function App() {
 
-  const [ board, setBoard ] = useState([])
-  const [ notation, setNotation ] = useState([])
+  const [ game, setGame ] = useState({ board: [], notation: [] })
 
   useEffect(() => {
     const getGame = async () => {
       const chess = new Chess()
       const gameData = await gameService.getGame()
       const board = chess.createBoardFromMoveHistory(gameData.moveHistory)
+      const notation = chess.getMoveNotation(gameData.moveHistory)
       if (board) {
-        setBoard(board)
+        setGame( { board: board, notation: notation } )
       } else {
-        setBoard(chess.createStartPosition())
+        console.log("Could not get game")
       }
     }
     getGame()
@@ -43,9 +43,8 @@ function App() {
     const chess = new Chess()
     const updatedGame = await gameService.getGame()
     const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
-    setBoard(updatedBoard)
-    const moveNotation = chess.getMoveNotation(updatedGame.moveHistory)
-    setNotation(moveNotation)
+    const notation = chess.getMoveNotation(updatedGame.moveHistory)
+    setGame( { board: updatedBoard, notation: notation } )
   }
 
   const takebackMove = async () => {
@@ -53,7 +52,8 @@ function App() {
     const chess = new Chess()
     const updatedGame = await gameService.getGame()
     const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
-    setBoard(updatedBoard)
+    const notation = chess.getMoveNotation(updatedGame.moveHistory)
+    setGame( { board: updatedBoard, notation: notation } )
   }
 
   const startNewGame = async () => {
@@ -61,16 +61,21 @@ function App() {
     const chess = new Chess()
     const updatedGame = await gameService.getGame()
     const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
-    setBoard(updatedBoard)
+    const notation = chess.getMoveNotation(updatedGame.moveHistory)
+    setGame( { board: updatedBoard, notation: notation } )
   }
 
   return (
     <div className="App">
       <GameOptionsBar startNewGame={startNewGame} takeback={takebackMove}></GameOptionsBar>
-      <Board board={board} setBoard={setBoard} move={move}/>
-      <Notation notation={notation}></Notation>
+
+      <div id="game-container">
+        <Board board={game.board} move={move}/>
+        <Notation notation={game.notation}></Notation>
+      </div>
     </div>
   );
 }
 
 export default App;
+
