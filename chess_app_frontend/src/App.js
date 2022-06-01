@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import Chess from './chess'
 import Board from './components/Board'
 import GameOptionsBar from './components/GameOptionsBar'
+import Notation from './components/Notation'
 import gameService from './services/game'
 import './App.css';
 
@@ -9,14 +10,19 @@ import './App.css';
 // [x] - Render a starting position board from a new game in MongoDB
 // [x] - Use interface to play a move, have backend validate and update
 // [x] - Add gameService to take back move (pop last move)
-// [ ] - Create a new game (just use current game ID) and clear all moves
-// [ ] - Fix en passant check issue
+// [x] - Create a new game (just use current game ID) and clear all moves
+// [x] - Fix en passant check issue
 // [ ] - Fix isGameOver function
+// [ ] - Enable Promotions
+// [ ] - Render SAN move list
+// [ ] - Render Captured Pieces
+// [ ] - Add in custom themes
 // [ ] - Front end validation to speed up interface first??
 
 function App() {
 
   const [ board, setBoard ] = useState([])
+  const [ notation, setNotation ] = useState([])
 
   useEffect(() => {
     const getGame = async () => {
@@ -33,33 +39,27 @@ function App() {
   }, [])
 
   const move = async (moveToPlay) => {
-    const playedMove = gameService.playMove(moveToPlay)
+    await gameService.playMove(moveToPlay)
     const chess = new Chess()
-    await playedMove
     const updatedGame = await gameService.getGame()
-    await updatedGame
     const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
     setBoard(updatedBoard)
+    const moveNotation = chess.getMoveNotation(updatedGame.moveHistory)
+    setNotation(moveNotation)
   }
 
   const takebackMove = async () => {
-    const takeback = await gameService.takebackMove()
+    await gameService.takebackMove()
     const chess = new Chess()
-    await takeback
     const updatedGame = await gameService.getGame()
-    await updatedGame
-    console.log("updated game:", updatedGame)
     const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
     setBoard(updatedBoard)
   }
 
   const startNewGame = async () => {
-    const takeback = await gameService.startNewGame()
+    await gameService.startNewGame()
     const chess = new Chess()
-    await takeback
     const updatedGame = await gameService.getGame()
-    await updatedGame
-    console.log("updated game:", updatedGame)
     const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
     setBoard(updatedBoard)
   }
@@ -68,6 +68,7 @@ function App() {
     <div className="App">
       <GameOptionsBar startNewGame={startNewGame} takeback={takebackMove}></GameOptionsBar>
       <Board board={board} setBoard={setBoard} move={move}/>
+      <Notation notation={notation}></Notation>
     </div>
   );
 }
