@@ -25,6 +25,7 @@ class Chess {
     }
     
     createStartPosition(){
+        const board = this.createEmptyBoard()
         const startingPieces = [
             { piece: whiteRook, squares: ["a1", "h1"] },
             { piece: whiteKnight, squares: ["b1", "g1"] },
@@ -39,14 +40,13 @@ class Chess {
             { piece: blackKing, squares: "e8" },
             { piece: blackPawn, squares: [ "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"] }
         ]
-        return this.placePieces(startingPieces)
+        return this.placePieces(board, startingPieces)
     }
     
-    placePieces(piecesToPlace){
+    placePieces(board, piecesToPlace){
         // Input: Array of objects in { piece: pieceType, squares: square/squares } format
         // If just a single square, just the string coordinates i.e: "e4" can be used
         // If placing multiple of a given piece, put coordinates in array i.e: ["d3", "c7"]
-        const board = this.createEmptyBoard()
         for (let i = 0; i < piecesToPlace.length; i++){
             const piece = piecesToPlace[i].piece
             const squaresToPlace = piecesToPlace[i].squares
@@ -57,7 +57,6 @@ class Chess {
                 this.getSquare(board, squaresToPlace).piece = piece
             }
         }
-        this.printBoard(board)
         return board
     }
 
@@ -115,12 +114,11 @@ class Chess {
         if (!this.isSquareOnBoard(move.from)){
             return false
         }
-        const testBoard = this.clone(board)
-        const movingPieceStartSquare = this.getSquare(testBoard, move.from)
-        const movingPiece = movingPieceStartSquare.piece
-        const targetSquare = this.getSquare(testBoard, move.to)
-        movingPieceStartSquare.piece = null
-        targetSquare.piece = movingPiece
+        let testBoard = this.clone(board)
+        const startSquare = this.getSquare(testBoard, move.from).coordinate
+        const movingPiece = this.getSquare(testBoard, move.from).piece
+        const targetSquare = this.getSquare(testBoard, move.to).coordinate
+        testBoard = this.placePieces(testBoard, [ { piece: movingPiece, squares: targetSquare}, { piece: null, squares: startSquare }])
         const kingWouldBeInCheck = this.isKingInCheck(testBoard, kingColor)
         if (kingWouldBeInCheck){
             return true
@@ -547,7 +545,6 @@ class Chess {
     }
 
     isMoveCastling(board, move){
-        console.log("is castling?")
         const kingMove = this.getSquare(board, move.from).piece.type === "king"
         if (!kingMove) {
             return false
@@ -723,17 +720,11 @@ class Chess {
     }
 
     getCapturedPieces(board){
-        const fullSet = [
-            { pieceType: { type: "pawn", color: "white"}, count: 8 },
-            { pieceType: { type: "knight", color: "white"}, count: 2 },
-            { pieceType: { type: "bishop", color: "white"}, count: 2 },
-            { pieceType: { type: "rook", color: "white"}, count: 2 },
-            { pieceType: { type: "queen", color: "white"}, count: 1 },
-            { pieceType: { type: "pawn", color: "black"}, count: 8 },
-            { pieceType: { type: "knight", color: "black"}, count: 2 },
-            { pieceType: { type: "bishop", color: "black"}, count: 2 },
-            { pieceType: { type: "rook", color: "black"}, count: 2 },
-            { pieceType: { type: "queen", color: "black"}, count: 1 },
+        let pieces = [
+            whitePawn, whitePawn, whitePawn, whitePawn, whitePawn, whitePawn, whitePawn, whitePawn,
+            whiteKnight, whiteKnight, whiteBishop, whiteBishop, whiteRook, whiteRook, whiteQueen,
+            blackPawn, blackPawn, blackPawn, blackPawn, blackPawn, blackPawn, blackPawn, blackPawn,
+            blackKnight, blackKnight, blackBishop, blackBishop, blackRook, blackRook, blackQueen
         ]
         for (let y = 0; y < 8; y++){
             for (let x = 0; x < 8; x++){
@@ -741,18 +732,14 @@ class Chess {
                 if (this.getSquare(board, square).piece !== null){
                     if (this.getSquare(board, square).piece.type === "king"){ continue }
                     const pieceAtSquare = this.getSquare(board, square).piece
-                    for (const piece of fullSet){
-                        if (this.isSamePiece(piece.pieceType, pieceAtSquare)){
-                            piece.count--
-                        }
-                    }
+                    const indexToRemove = pieces.findIndex(piece => piece.type === pieceAtSquare.type && piece.color === pieceAtSquare.color)
+                    console.log(indexToRemove)
+                    pieces.splice(indexToRemove, 1)
                 }
             }
         }
-        return {
-            white: fullSet.filter(piece => piece.pieceType.color !== "white"),
-            black: fullSet.filter(piece => piece.pieceType.color !== "black")
-        }
+        console.log("captured pieces:", pieces)
+        return pieces
     }
 
     isSamePiece(piece1, piece2){
@@ -858,8 +845,6 @@ class Chess {
 
     createBoardFromMoveHistory(moveHistory){
         let board = this.createStartPosition()
-        //await moveHistory
-        console.log("move history:", moveHistory)
         for (let i = 0; i < moveHistory.length; i++){
             board = this.playMove(board, moveHistory[i])
         }

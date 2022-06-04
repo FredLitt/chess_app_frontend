@@ -1,9 +1,12 @@
 import React from "react";
 import pieceSymbols from "../pieceSymbols";
 
-export default function CapturedPieces({pieces}){
+export default function CapturedPieces({color, pieces}){
 
-  console.log(pieces)
+  // console.log(pieces)
+  // pieces.forEach(piece => console.log(pieceSymbols[piece.type][piece.color]))
+  // pieces.forEach(piece => console.log(piece))
+  
   // const pieceValues = {
   //   "queen": 9,
   //   "rook": 5,

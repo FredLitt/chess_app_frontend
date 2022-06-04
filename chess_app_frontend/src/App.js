@@ -29,7 +29,8 @@ function App() {
     const updatedGame = await gameService.getGame()
     const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
     const notation = chess.getMoveNotation(updatedGame.moveHistory)
-    setGame( { board: updatedBoard, notation: notation } )
+    const capturedPieces = chess.getCapturedPieces(updatedBoard)
+    setGame( { board: updatedBoard, notation: notation, capturedPieces: capturedPieces } )
   }
 
   useEffect(() => {
@@ -54,7 +55,6 @@ function App() {
   return (
     <div className="App">
       <GameOptionsBar startNewGame={startNewGame} takeback={takebackMove}></GameOptionsBar>
-
       <div id="game-container">
         <Board board={game.board} move={move}/>
         <div id="notation-captured-piece-container">
