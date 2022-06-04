@@ -738,7 +738,6 @@ class Chess {
                 }
             }
         }
-        console.log("captured pieces:", pieces)
         return pieces
     }
 

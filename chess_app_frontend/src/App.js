@@ -60,7 +60,7 @@ function App() {
         <div id="notation-captured-piece-container">
           <CapturedPieceContainer color="white" pieces={game.capturedPieces}/>
           <Notation notation={game.notation}></Notation>
-          <CapturedPieceContainer pieces={[]}/>
+          <CapturedPieceContainer color="black" pieces={game.capturedPieces}/>
         </div>
       </div>
     </div>
