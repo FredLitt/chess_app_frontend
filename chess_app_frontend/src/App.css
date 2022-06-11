@@ -8,9 +8,14 @@
   background-color: lightgrey;
 }
 
+.test {
+  height: 50px;
+  width: 100px;
+  border: 1px solid black;
+}
+
 #game-options-bar {
   background-color: lightgrey;
-
   display: flex; 
   justify-content: center;
   width: 100%;
@@ -38,15 +43,62 @@
 }
 
 .square {
+  box-sizing: border-box;
   height: var(--square-length);
   width: var(--square-length);
   font-size: var(--piece-size);
   text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.possible-move {
+  height: calc(0.33 * var(--square-length));
+  width: calc(0.33 * var(--square-length));
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: darkgrey;
+  position: absolute;
+  border-radius: 50%;
+  z-index: 0;
+}
+
+#promotion-modal {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 3;
+}
+
+.promotion-pieces {
+  display: flex;
+  position: fixed;
+  top: 50%;
+  flex-direction: column;
+  background-color: white;
+  transform: translate(-50%, -50%);
+  width: calc(2* var(--piece-size));
+  font-size: calc(2* var(--piece-size));
+  z-index: 3;
+}
+
+.promotion-pieces > div {
+  min-width: 25%;
+  background-color: white;
+  border-radius: 50%;
+  text-align: center;
+}
+
+#promotion-modal > div:hover {
   cursor: pointer;
 }
 
 #notation-captured-piece-container {
   display: flex;
+  height: calc(8 * var(--square-length));
   flex-direction: column;
   width: 15%;
 }
@@ -54,6 +106,8 @@
 #notation {
   color: black;
   list-style: none;
+  height: 50%;
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
   font-size: calc(.4*(var(--piece-size)));
@@ -65,7 +119,11 @@
 }
 
 .captured-pieces {
+  font-size: calc(.75 * var(--piece-size));
+  display: flex;
+  flex-wrap: wrap;
   height: 25%;
   background-color: darkgrey;
   border: 1px solid black;
 }
+

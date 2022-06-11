@@ -3,10 +3,10 @@ import pieceSymbols from "../pieceSymbols"
 import PromotionModal from "./PromotionModal";
 
 export default function Board({board, playerToMove, move, findPossibleMoves, highlightMovesForPiece}){
-  console.log("rendering board")
+
   const [ pieceToMove, setPieceToMove ] = useState(null)
 
-  const [ pawnIsPromoting, setPawnIsPromoting ] = useState(false)
+  const [ promotionMove, setPromotionMove ] = useState(false)
 
   const movePiece = (targetSquare) => {
     // highlightMovesForPiece([])
@@ -16,9 +16,16 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
       to: targetSquare
     }
     if (checkForPromotion(moveToPlay.piece, targetSquare)){
-      setPawnIsPromoting(true)
+      setPromotionMove(
+        {
+          piece: pieceToMove.piece,
+          from: pieceToMove.square,
+          to: targetSquare,
+          promotion: null
+        })
       return
     }
+    console.log("React playing move:", moveToPlay)
     move(moveToPlay)
     setPieceToMove(null)
   }
@@ -45,7 +52,7 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
 
   const handleClick = (clickedSquare) => {
     const square = clickedSquare.target.getAttribute("coordinates")
-    const squareHasPiece = clickedSquare.target.hasAttribute("pieceType")
+    const squareHasPiece = clickedSquare.target.hasAttribute("piecetype")
     if (!pieceToMove && squareHasPiece){
       selectPiece(clickedSquare)
     }
@@ -55,27 +62,25 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
   }
 
   const checkForPromotion = (piece, targetSquare) => {
-    if (piece.type !== "pawn"){
-      return false
-    }
+    if (piece.type !== "pawn"){ return false }
     const targetRow = parseInt(targetSquare[1])
     const pawnColor = piece.color
-    const pawnIsPromoting = pawnColor === "white" && targetRow === 8 || pawnColor === "black" && targetRow === 1
-    if (pawnIsPromoting){
-      console.log("pawn is promoting")
-      return true
-    }
-    return false
+    const moveIsPromotion = (pawnColor === "white" && targetRow === 8) || (pawnColor === "black" && targetRow === 1)
+    return moveIsPromotion
   }
 
-  const promote = () => {
-    console.log("yay for promotions!")
+  const promote = async (promotionChoice) => {
+    console.log("promotion choice:", promotionChoice)
+    setPromotionMove( {...promotionMove, promotion: promotionChoice } )
+    console.log("promotion move:", promotionMove)
+    await move(promotionMove)
+    setPromotionMove(false)
   }
 
   return (
     <>
-      {pawnIsPromoting && <PromotionModal promote={promote}/>}
-      
+      {promotionMove && <PromotionModal promotionMove={promotionMove} promote={promote}/>}
+
       <table 
         id="board"
         cellSpacing="0">

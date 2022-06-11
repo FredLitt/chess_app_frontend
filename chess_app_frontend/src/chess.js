@@ -179,6 +179,22 @@ class Chess {
         return allPossibleMoves
     }
 
+    markPossibleMoves(board, possibleMoves){
+        // First clear all previous highlights
+        for (let y = 0; y < 8; y++){
+            for (let x = 0; x < 8; x++){
+                const square = this.indicesToCoordinates([y, x])
+                const squareIsPossibleMove = this.getSquare(board, square).hasOwnProperty("isPossibleMove")
+                if (squareIsPossibleMove){
+                    delete this.getSquare(board, square).isPossibleMove
+                }
+            }
+        }
+        const highlightMove = (board, move) => { this.getSquare(board, move).isPossibleMove = true }
+        possibleMoves.forEach(move => highlightMove(board, move))
+        return board
+    }
+
     findSquaresForPiece(board, piecesSquare, squaresToFind){
         const movingPiece = this.getSquare(board, piecesSquare).piece.type
         const longRangePiece = movingPiece === "bishop" || movingPiece === "rook" || movingPiece === "queen"
@@ -567,9 +583,7 @@ class Chess {
         const kingOnStartSquare = move.from === startSquare
         const kingWentKingside = move.to === kingsideEndSquare
         const kingWentQueenside = move.to === queensideEndSquare
-        if (kingOnStartSquare && kingWentKingside){ 
-            console.log("kingside")
-            return "Kingside" }
+        if (kingOnStartSquare && kingWentKingside){ return "Kingside" }
         if (kingOnStartSquare && kingWentQueenside){ return "Queenside" }
         return false
     }
@@ -612,20 +626,19 @@ class Chess {
     }
 
     isMoveValid(board, move){
-        const noPieceToMove = !this.isSquareOccupied(board, move.from)
+        const squareHasPiece = this.isSquareOccupied(board, move.from)
         const moveSquaresAreOnBoard = this.isSquareOnBoard(move.to) && this.isSquareOnBoard(move.from)
         const movingPlayerColor = move.piece.color
-        const whoseTurn = this.getWhoseTurn(board)
-        const wrongPlayerMoving = whoseTurn !== movingPlayerColor
+        const whoseTurn = this.getWhoseTurn(this.moveHistory)
+        const correctPlayer = whoseTurn === movingPlayerColor
         const gameOver = this.isGameOver(board)
-        if (noPieceToMove || !moveSquaresAreOnBoard || wrongPlayerMoving || gameOver){
-            console.log("no piece:", noPieceToMove, "squares on board?", moveSquaresAreOnBoard, "wrong player?", wrongPlayerMoving, "game over?", gameOver)
-            return false
-        }
-        return true
+        const moveIsValid = (squareHasPiece || moveSquaresAreOnBoard || correctPlayer || !gameOver)
+        return moveIsValid
     }
 
-    playMove(board, move, promotion){
+    // INSTEAD OF SETTING TRUE VALUES FOR MOVEDATA, HAVE MOVEDATA BE A SET DATA STRUCTURE?
+    playMove(board, move){
+        //console.log("playing move on frontend:", move)
         const isValidMove = this.isMoveValid(board, move)
         if (!isValidMove){
             console.log("invalid move entry!")
@@ -654,7 +667,7 @@ class Chess {
             move.data.castle = this.isMoveCastling(board, move)
             this.castle(board, direction, color)
         }
-        if (promotion){
+        if (move.promotion){
             const promotingPawnColor = this.getPiecesColor(board, move.from)
             movingPiece = { type: move.promotion, color: promotingPawnColor, formerPawn: true }
             move.data.promotion = movingPiece.type
@@ -733,7 +746,6 @@ class Chess {
                     if (this.getSquare(board, square).piece.type === "king"){ continue }
                     const pieceAtSquare = this.getSquare(board, square).piece
                     const indexToRemove = pieces.findIndex(piece => piece.type === pieceAtSquare.type && piece.color === pieceAtSquare.color)
-                    console.log(indexToRemove)
                     pieces.splice(indexToRemove, 1)
                 }
             }
@@ -826,8 +838,8 @@ class Chess {
 
     getPieceLetter(piece, use){
         // Function is used for getting letters for notation and for printing a console board
-        // If use === "console", then black pieces are turned to lower case
-        if (piece === null){ return " " }
+        // If optional parameter use === "console", then black pieces are turned to lower case
+        if (!piece){ return " " }
         const { type, color } = piece
         const pieceLetters = {
             "pawn": "P",
@@ -837,9 +849,10 @@ class Chess {
             "queen": "Q",
             "king": "K"
         }
-        let letter = pieceLetters[type]
-        if (color === "black" && use === "console"){ letter = letter.toLowerCase() }
-        return letter
+        if (color === "black" && use === "console"){ 
+            return pieceLetters[type].toLowerCase() 
+        }
+        return pieceLetters[type]
     }
 
     createBoardFromMoveHistory(moveHistory){
@@ -858,18 +871,18 @@ class Chess {
                 result: this.isKingInCheckMate(board, "white") ? "black wins" : "white wins"
             }
         }
-        const currentPlayersTurn = this.getWhoseTurn(board)
+        const currentPlayersTurn = this.getWhoseTurn(this.moveHistory)
         if (this.findAllPossibleMoves(board, currentPlayersTurn).length === 0){
             return {
                 gameOver: true,
-                result: `stalemate`
+                result: "stalemate"
             }
         }
         return false
     }
 
-    getWhoseTurn(board){
-        const numberOfMovesPlayed = this.moveHistory.length
+    getWhoseTurn(moveHistory){
+        const numberOfMovesPlayed = moveHistory.length
         if (numberOfMovesPlayed % 2 === 0){
             return "white"
         }
