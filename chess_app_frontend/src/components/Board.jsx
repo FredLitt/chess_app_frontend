@@ -16,12 +16,10 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
       to: targetSquare
     }
     if (checkForPromotion(moveToPlay.piece, targetSquare)){
-      setPromotionMove(
-        {
+      setPromotionMove({
           piece: pieceToMove.piece,
           from: pieceToMove.square,
-          to: targetSquare,
-          promotion: null
+          to: targetSquare
         })
       return
     }
@@ -69,12 +67,16 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
     return moveIsPromotion
   }
 
-  const promote = async (promotionChoice) => {
-    console.log("promotion choice:", promotionChoice)
-    setPromotionMove( {...promotionMove, promotion: promotionChoice } )
-    console.log("promotion move:", promotionMove)
-    await move(promotionMove)
+  const promote = (promotionChoice) => {
+    const moveToPlay = {
+      piece: promotionMove.piece,
+      from: promotionMove.from,
+      to: promotionMove.to,
+      promotion: promotionChoice
+    }
+    move(moveToPlay)
     setPromotionMove(false)
+    setPieceToMove(null)
   }
 
   return (

@@ -3,7 +3,6 @@ import pieces from "../pieces";
 import pieceSymbols from "../pieceSymbols";
 
 export default function PromotionModal({promotionMove, promote}){
-
     const promotablePieces = [
         pieces.whiteQueen,
         pieces.whiteRook,
@@ -23,7 +22,7 @@ export default function PromotionModal({promotionMove, promote}){
           <div className="promotion-pieces">{piecesToRender.map((piece, index) => 
             <div
               key={index}
-              onClick={(e) => {promote(piece.type)}}>
+              onClick={(e) => {promote(piece)}}>
                   {pieceSymbols[piece.type][piece.color]}
                   </div>)}
                   </div>
