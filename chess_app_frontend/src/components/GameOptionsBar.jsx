@@ -2,15 +2,17 @@ import React, { useState } from "react"
 
 export default function GameOptionsBar({startNewGame, takeback}){
 
-  const [ themesMenu, setThemesMenu ] = useState("closed")
+  const [ showColorThemes, setShowColorThemes ] = useState(false)
 
   const toggleThemeMenu = () => {
-    if (themesMenu === "closed"){      
-      setThemesMenu("open")
-      }
-    if (themesMenu === "open"){
-      setThemesMenu("closed")
-      }
+    setShowColorThemes(!showColorThemes)
+    console.log(showColorThemes)
+  } 
+
+  const changeTheme = (lightSquareChoice, darkSquareChoice, highlightChoice) => {
+    document.documentElement.style.setProperty("--light-square", lightSquareChoice)
+    document.documentElement.style.setProperty("--dark-square", darkSquareChoice)
+    document.documentElement.style.setProperty("--highlight", highlightChoice)
   }
 
   const colorSchemes = [
@@ -25,6 +27,21 @@ export default function GameOptionsBar({startNewGame, takeback}){
     <div id="game-options-bar">
       <button onClick={() => {startNewGame()}}>Start New Game</button>
       <button onClick={() => {takeback()}}>Takeback</button>
+      <button onClick={() => {toggleThemeMenu()}}>Board Theme</button>
+      {showColorThemes && 
+        <div id="theme-options">
+          {colorSchemes.map((scheme, index) =>
+            <div 
+              className="color-choice" 
+              key={index}
+              onClick={() => {
+                changeTheme(scheme.light, scheme.dark, scheme.highlight)
+                toggleThemeMenu()}}>
+              <div style={{backgroundColor: scheme.light}}></div>
+              <div style={{backgroundColor: scheme.dark}}></div>
+            </div>
+          )}
+        </div>}
     </div>
   )
 }

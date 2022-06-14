@@ -100,7 +100,7 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
                 key={square.coordinates} 
                 onClick={ (e) => handleClick(e) }
                 style={{
-                  backgroundColor: square.color === "light" ? "white" : "grey",
+                  backgroundColor: square.color === "light" ? "var(--light-square)" : "var(--dark-square)",
                   cursor: square.piece ? "pointer" : ""}}>
                     { square.isPossibleMove && <span className="possible-move"></span> }
                     { square.piece ? pieceSymbols[square.piece.type][square.piece.color] : " "}

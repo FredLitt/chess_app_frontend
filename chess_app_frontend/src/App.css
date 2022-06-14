@@ -1,31 +1,27 @@
 :root {
   --piece-size: calc(16px + 2.5vw);
   --square-length: calc(1.5 * var(--piece-size));
+  --main-bg-color: rgba(0, 0, 0, 0.85);
+  --light-square: beige;
+  --dark-square: tan;
+  --highlight: peru;
 }
 
 .App {
   height: 100vh;
-  background-color: lightgrey;
-}
-
-.test {
-  height: 50px;
-  width: 100px;
-  border: 1px solid black;
+  background-color: var(--main-bg-color);
 }
 
 #game-options-bar {
-  background-color: lightgrey;
-  display: flex; 
-  justify-content: center;
-  width: 100%;
-  height: var(--piece-size);
+  position: absolute;
+  height: var(--game-options-bar-height);
   top: 0px;
 }
 
 #game-options-bar > button {
-  font-size: calc(0.4 * var(--piece-size));
-  color: slategray;
+  background-color: var(--main-bg-color);
+  font-size: calc(0.5 * var(--piece-size));
+  color: lightgray;
   cursor: pointer;
   height: 100%;
   width: calc(4 * var(--piece-size));
@@ -35,6 +31,7 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
+  margin-top: calc(2 * var(--piece-size));
 }
 
 #board {
@@ -97,21 +94,30 @@
 }
 
 #notation-captured-piece-container {
+  padding: calc(0.5* var(--piece-size));
+  box-sizing: border-box;
+  font-size: calc(0.5 * var(--piece-size));
   display: flex;
-  height: calc(8 * var(--square-length));
   flex-direction: column;
-  width: 15%;
+  min-width: calc(6 * var(--square-length));
+  max-width: calc(6 * var(--square-length));
+  height: calc(7 * var(--square-length));
+  align-self: center;
 }
 
 #notation {
-  color: black;
   list-style: none;
-  height: 50%;
-  width: 100%;
   display: grid;
+  background-color: var(--main-bg-color);
   grid-template-columns: 1fr 1fr;
-  font-size: calc(.4*(var(--piece-size)));
+  color: lightgrey;
+  align-content: start;
+  height: 40%;
   overflow-y: auto;
+}
+
+#notation > li {
+  padding: .5rem .5rem .1rem 1rem;
 }
 
 #notation::-webkit-scrollbar {
@@ -119,11 +125,44 @@
 }
 
 .captured-pieces {
-  font-size: calc(.75 * var(--piece-size));
   display: flex;
-  flex-wrap: wrap;
-  height: 25%;
-  background-color: darkgrey;
-  border: 1px solid black;
+  flex-flow: row wrap;
+  justify-content: start;
+  font-size: var(--piece-size);
+  max-width: 100%;
+  min-height: 30%;
+  background-color: var(--dark-square);
 }
 
+.captured-pieces > div {
+  min-width: 0;
+  max-height: 1.5em;
+  max-width: 12.5%;
+}
+
+#theme-options {
+  padding: 2vh 0;
+  width: 25%;
+  background-color: black;
+  position: relative;
+  left: 75%;
+  z-index: 3;
+}
+
+#theme-options > div {
+  height: calc(1.25 * var(--piece-size));
+  display: flex;
+}
+
+.color-choice {
+  width: 100%;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+
+.color-choice > div {
+  width: 35%;
+  height: 60%;
+  cursor: pointer;
+}

@@ -14,7 +14,7 @@ import './App.css';
 // [x] - Create a new game (just use current game ID) and clear all notation
 // [x] - Fix en passant check issue
 // [x] - Fix isGameOver function
-// [ ] - Enable Promotions
+// [x] - Enable Promotions
 // [x] - Render SAN move list
 // [x] - Render Captured Pieces
 // [ ] - Add in custom themes
@@ -78,8 +78,9 @@ function App() {
 
   return (
     <div className="App">
-      <GameOptionsBar startNewGame={startNewGame} takeback={takebackMove}></GameOptionsBar>
+      
       <div id="game-container">
+        <GameOptionsBar startNewGame={startNewGame} takeback={takebackMove}></GameOptionsBar>
         <Board board={game.board} playerToMove={game.playerToMove} move={move} findPossibleMoves={findPossibleMoves} highlightMovesForPiece={highlightMovesForPiece}/>
         <div id="notation-captured-piece-container">
           <CapturedPieceContainer color="white" pieces={game.capturedPieces}/>
