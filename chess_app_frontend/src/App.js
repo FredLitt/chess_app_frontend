@@ -17,7 +17,8 @@ import './App.css';
 // [x] - Enable Promotions
 // [x] - Render SAN move list
 // [x] - Render Captured Pieces
-// [ ] - Add in custom themes
+// [x] - Add in custom themes
+// [ ] - Game over modal
 // [ ] - Front end validation to speed up interface first??
 
 function App() {
@@ -48,7 +49,6 @@ function App() {
   }, [])
 
   const move = async (moveToPlay) => {
-    console.log("move to play:", moveToPlay)
     await gameService.playMove(moveToPlay)
     getGame()
   }
@@ -78,7 +78,6 @@ function App() {
 
   return (
     <div className="App">
-      
       <div id="game-container">
         <GameOptionsBar startNewGame={startNewGame} takeback={takebackMove}></GameOptionsBar>
         <Board board={game.board} playerToMove={game.playerToMove} move={move} findPossibleMoves={findPossibleMoves} highlightMovesForPiece={highlightMovesForPiece}/>
