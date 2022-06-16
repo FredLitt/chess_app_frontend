@@ -15,7 +15,7 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
       from: pieceToMove.square,
       to: targetSquare
     }
-    if (checkForPromotion(moveToPlay.piece, targetSquare)){
+    if (isMovePromotion(moveToPlay.piece, targetSquare)){
       setPromotionMove({
           piece: pieceToMove.piece,
           from: pieceToMove.square,
@@ -59,7 +59,7 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
     }
   }
 
-  const checkForPromotion = (piece, targetSquare) => {
+  const isMovePromotion = (piece, targetSquare) => {
     if (piece.type !== "pawn"){ return false }
     const targetRow = parseInt(targetSquare[1])
     const pawnColor = piece.color

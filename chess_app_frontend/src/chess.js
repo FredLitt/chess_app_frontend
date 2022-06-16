@@ -9,7 +9,7 @@ class Chess {
     }
     createEmptyBoard(){
         const board = []
-        for (let y = 1; y <= 8; y ++){
+        for (let y = 8; y >= 1; y--){
             const boardRow = []
             board.push(boardRow)
             for (let x = 0; x < 8; x++){
@@ -96,7 +96,7 @@ class Chess {
     }
 
     findKingsSquare(board, kingColor){
-        for (let y = 0; y < 8; y++){
+        for (let y = 7; y >= 0; y--){
             for (let x = 0; x < 8; x++){
                 const coordinates = this.indicesToCoordinates([y, x])
                 const currentSquare = this.getSquare(board, coordinates)
@@ -128,7 +128,7 @@ class Chess {
 
     clone(board){
         const clone = []
-        for (let y = 1; y <= 8; y ++){
+        for (let y = 8; y > 0; y--){
             const boardRow = []
             clone.push(boardRow)
             for (let x = 0; x < 8; x++){
@@ -339,14 +339,14 @@ class Chess {
         const [ fromRow, fromCol ] = this.coordinatesToIndices(knightsSquare)
         const squares = []
         const knightMoves = {
-            "NorthOneEastTwo": [ fromRow - 1, fromCol + 2 ],
-            "NorthTwoEastOne": [ fromRow - 2, fromCol + 1 ],
-            "SouthOneEastTwo": [ fromRow + 1, fromCol + 2 ],
-            "SouthTwoEastOne": [ fromRow + 2, fromCol + 1 ],
-            "NorthOneWestTwo": [ fromRow - 1, fromCol - 2 ],
-            "NorthTwoWestOne": [ fromRow - 2, fromCol - 1 ],
-            "SouthOneWestTwo": [ fromRow + 1, fromCol - 2 ],
-            "SouthTwoWestOne": [ fromRow + 2, fromCol - 1 ]
+            "NorthOneEastTwo": [ fromRow + 1, fromCol + 2 ],
+                "NorthTwoEastOne": [ fromRow + 2, fromCol + 1 ],
+                "SouthOneEastTwo": [ fromRow - 1, fromCol + 2 ],
+                "SouthTwoEastOne": [ fromRow - 2, fromCol + 1 ],
+                "NorthOneWestTwo": [ fromRow + 1, fromCol - 2 ],
+                "NorthTwoWestOne": [ fromRow + 2, fromCol - 1 ],
+                "SouthOneWestTwo": [ fromRow - 1, fromCol - 2 ],
+                "SouthTwoWestOne": [ fromRow - 2, fromCol - 1 ]
           }
         
         for (const move in knightMoves){
@@ -376,7 +376,7 @@ class Chess {
         let pawnMoves
         const [ fromRow, fromCol ] = this.coordinatesToIndices(pawnsSquare)
         const movingPawnColor = this.getPiecesColor(board, pawnsSquare)
-        if (movingPawnColor === "white"){
+        if (movingPawnColor === "black"){
             pawnsStartingRow = 1
             pawnMoves = {
                 "ForwardOne": [ fromRow + 1, fromCol ],
@@ -709,21 +709,21 @@ class Chess {
         if (!this.isSquareOnBoard(square)){
             return null
         }
-        const row = parseInt(square[1])-1
+        const row = 8 - parseInt(square[1])
         const col = this.xAxis.indexOf(square[0])
         return board[row][col]
     }
 
     coordinatesToIndices(coordinates){
         // Takes in algebraic notation string and returns [ row, col ] 
-        const row = parseInt(coordinates[1]-1)
+        const row = 8 - parseInt(coordinates[1])
         const col = this.xAxis.indexOf(coordinates[0])
         return [ row, col ]
     }
 
     indicesToCoordinates(indices){
         const [ row, col ] = indices
-        return `${this.xAxis[col]}${row+1}`
+        return `${this.xAxis[col]}${8 - row}`
     }
 
     getCapturedPieces(board){
