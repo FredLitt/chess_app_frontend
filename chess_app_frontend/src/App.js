@@ -1,9 +1,10 @@
-import React, { useState, useCallback, useEffect } from "react"
+import React, { useState, useEffect } from 'react'
 import Chess from './chess'
 import Board from './components/Board'
 import GameOptionsBar from './components/GameOptionsBar'
 import Notation from './components/Notation'
-import CapturedPieceContainer from "./components/CapturedPieceContainer"
+import CapturedPieceContainer from './components/CapturedPieceContainer'
+import NewGameModal from './components/NewGameModal'
 import gameService from './services/game'
 import './App.css';
 
@@ -25,10 +26,11 @@ function App() {
 
   // UseReducer for complex state?
   const [ game, setGame ] = useState({ board: [], notation: [], capturedPieces: [] })
+  const [ gameOver, setGameOver ] = useState(false)
 
   // EVERYTIME PIECE IS SELECTED, EVERYTHING IS RERENDERED DUE TO HIGHLIGHTING
   // USEMEMO OR USECALLBACK TO IMPROVE PERFORMANCE??
-  // EVerYTHING RE-RENDERS WHEN A PIECE IS PLAYED AS WELL...
+  // EVERYTHING RE-RENDERS WHEN A PIECE IS PLAYED AS WELL...
   const getGame = async () => {
     const chess = new Chess()
     const updatedGame = await gameService.getGame()
@@ -42,6 +44,10 @@ function App() {
       capturedPieces: capturedPieces, 
       playerToMove: playerToMove 
     })
+    const gameResult = chess.isGameOver(updatedBoard)
+    if (gameResult) { 
+      console.log("game over!")
+      setGameOver(gameResult) }
   }
 
   useEffect(() => {
@@ -59,6 +65,7 @@ function App() {
   }
 
   const startNewGame = async () => {
+    if (gameOver){setGameOver(false)}
     await gameService.startNewGame()
     getGame()
   }
@@ -87,6 +94,7 @@ function App() {
           <CapturedPieceContainer color="black" pieces={game.capturedPieces}/>
         </div>
       </div>
+      {gameOver && <NewGameModal gameOver={gameOver} startNewGame={startNewGame} />}
     </div>
   );
 }

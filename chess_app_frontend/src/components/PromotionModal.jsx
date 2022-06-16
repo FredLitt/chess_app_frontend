@@ -18,7 +18,7 @@ export default function PromotionModal({promotionMove, promote}){
       piece.color === promotionMove.piece.color)
 
     return (
-        <>
+        <div id="promotion-modal">
           <div className="promotion-pieces">{piecesToRender.map((piece, index) => 
             <div
               key={index}
@@ -26,4 +26,4 @@ export default function PromotionModal({promotionMove, promote}){
                   {pieceSymbols[piece.type][piece.color]}
                   </div>)}
                   </div>
-                  </>)}
+                  </div>)}
