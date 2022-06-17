@@ -733,7 +733,7 @@ class Chess {
             blackPawn, blackPawn, blackPawn, blackPawn, blackPawn, blackPawn, blackPawn, blackPawn,
             blackKnight, blackKnight, blackBishop, blackBishop, blackRook, blackRook, blackQueen
         ]
-        for (let y = 0; y < 8; y++){
+        for (let y = 7; y >=0; y--){
             for (let x = 0; x < 8; x++){
                 const square = this.indicesToCoordinates([y, x])
                 if (this.getSquare(board, square).piece !== null){
@@ -769,26 +769,18 @@ class Chess {
         if (isCastle){
             move.data.castle === "Kingside" ? san = "O-O" : san = "O-O-O"
             if (isCheckmate){
-                return san += "#"
+                return san + "#"
             } else if (isCheck){
-                return san += "+"
+                return san + "+"
             }
             return san
         }
         
         if (isPawnMove){
-            if (!isCapture){
-                san += `${move.from[0]}${move.to[1]}`
-            } else {
-                san += `${move.from[0]}x${move.to}`
-            }
+            isCapture ? san += `${move.from[0]}x${move.to}` : san += `${move.from[0]}${move.to[1]}`
         }
         if (!isPawnMove){
-            if (!isCapture){
-                san += `${pieceLetter}${move.to}`
-            } else {
-                san += `${pieceLetter}x${move.to}`
-            }
+            isCapture ? san += `${pieceLetter}x${move.to}` : san += `${pieceLetter}${move.to}`
         }
 
         if (isPromotion){
