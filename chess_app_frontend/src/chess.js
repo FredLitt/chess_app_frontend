@@ -570,40 +570,40 @@ class Chess {
     }
 
     castle(board, direction, color){
-        let rookSquares = {}
-        let kingSquares = {}
-        if (color === "white"){
-            kingSquares.start = "e1"
-            if (direction === "Kingside"){
-                kingSquares.end = "g1"
-                rookSquares.start = "h1"
-                rookSquares.end = "f1"
-            }
-            if (direction === "Queenside"){
-                kingSquares.end = "c1"
-                rookSquares.start = "a1"
-                rookSquares.end = "d1"
-            }
-        }
-        if (color === "black"){
-            kingSquares.start = "e8"
-            if (direction === "Kingside"){
-                kingSquares.end = "g8"
-                rookSquares.start = "h8"
-                rookSquares.end = "f8"
-            }
-            if (direction === "Queenside"){
-                kingSquares.end = "c8"
-                rookSquares.start = "a8"
-                rookSquares.end = "d8"
-            }
-        }
-        const king = this.getSquare(board, kingSquares.start).piece
-        const rook = this.getSquare(board, rookSquares.start).piece
-        this.getSquare(board, kingSquares.start).piece = null
-        this.getSquare(board, kingSquares.end).piece = king
-        this.getSquare(board, rookSquares.start).piece = null
-        this.getSquare(board, rookSquares.end).piece = rook
+        let castleSquares
+            if (color === "white"){
+                direction === "Kingside" ? 
+                    castleSquares = { 
+                        kingStart: "e1",
+                        kingEnd: "g1",
+                        rookStart: "h1",
+                        rookEnd: "f1"
+                    } :
+                    castleSquares = {
+                        kingStart: "e1",
+                        kingEnd: "c1",
+                        rookStart: "a1",
+                        rookEnd: "d1"
+                    }
+            } else {
+                direction === "Kingside" ? 
+                    castleSquares = { 
+                        kingStart: "e8",
+                        kingEnd: "g8",
+                        rookStart: "h8",
+                        rookEnd: "f8"
+                    } :
+                    castleSquares = {
+                        kingStart: "e8",
+                        kingEnd: "c8",
+                        rookStart: "a8",
+                        rookEnd: "d8"
+                    }
+                }
+                this.getSquare(board, castleSquares.kingStart).piece = null
+                this.getSquare(board, castleSquares.kingEnd).piece = { type: "king", color: color }
+                this.getSquare(board, castleSquares.rookStart).piece = null
+                this.getSquare(board, castleSquares.rookEnd).piece = { type: "rook", color: color }
     }
 
     isMoveValid(board, move){
@@ -748,9 +748,7 @@ class Chess {
     }
 
     isSamePiece(piece1, piece2){
-        console.log("checking pieces:", piece1, piece2)
-        if (piece1.type === piece2.type && piece1.color === piece2.color){ return true }
-        return false
+        return (piece1.type === piece2.type && piece1.color === piece2.color)
     }
 
     getSan(move){

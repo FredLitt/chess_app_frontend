@@ -3,6 +3,8 @@ import pieceSymbols from "../pieceSymbols";
 
 export default function CapturedPieces({color, pieces}){
 
+  console.log("captured pieces:", pieces)
+
   pieces = pieces.filter(piece => piece.color === color)
 
   const pieceValues = {
