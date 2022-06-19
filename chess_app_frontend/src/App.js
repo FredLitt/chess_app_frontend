@@ -19,7 +19,7 @@ import './App.css';
 // [x] - Render SAN move list
 // [x] - Render Captured Pieces
 // [x] - Add in custom themes
-// [ ] - Game over modal
+// [x] - Game over modal
 // [ ] - Front end validation to speed up interface first??
 
 function App() {
