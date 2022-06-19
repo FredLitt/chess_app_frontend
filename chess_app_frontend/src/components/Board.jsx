@@ -9,7 +9,7 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
   const [ promotionMove, setPromotionMove ] = useState(false)
 
   const movePiece = (targetSquare) => {
-    // highlightMovesForPiece([])
+    highlightMovesForPiece([])
     const moveToPlay = {
       piece: pieceToMove.piece,
       from: pieceToMove.square,
@@ -28,34 +28,27 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
     setPieceToMove(null)
   }
 
-  const selectPiece = (square) => {
-    const piecesColor = square.target.getAttribute("piececolor")
-    const wrongPlayer = piecesColor !== playerToMove
+  const selectPiece = (coordinates, piece) => {
+    const wrongPlayer = piece.color !== playerToMove
     if (wrongPlayer){
       return
     }
-    const coordinates = square.target.getAttribute("coordinates")
     const possibleMoves = findPossibleMoves(coordinates)
     const selectedPiece = {
-      piece: {
-        type: square.target.getAttribute("piecetype"),
-        color: square.target.getAttribute("piececolor")
-      },
+      piece,
       square: coordinates,
       possibleMoves: possibleMoves
     }
     setPieceToMove(selectedPiece)
-    //highlightMovesForPiece(selectedPiece.possibleMoves)
+    highlightMovesForPiece(selectedPiece.possibleMoves)
   }
 
-  const handleClick = (clickedSquare) => {
-    const square = clickedSquare.target.getAttribute("coordinates")
-    const squareHasPiece = clickedSquare.target.hasAttribute("piecetype")
-    if (!pieceToMove && squareHasPiece){
-      selectPiece(clickedSquare)
+  const handleClick = ({ coordinates, piece }) => {
+    if (!pieceToMove && piece){
+      selectPiece(coordinates, piece)
     }
     if (pieceToMove){
-      movePiece(square)
+      movePiece(coordinates)
     }
   }
 
@@ -93,12 +86,9 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
             key={index}>
             {row.map((square) => 
               <td 
-                coordinates={square.coordinates}
                 className="square"
-                piecetype={square.piece ? square.piece.type.toString() : null}
-                piececolor={square.piece ? square.piece.color.toString() : null}
                 key={square.coordinates} 
-                onClick={ (e) => handleClick(e) }
+                onClick={ (e) => handleClick({ coordinates: square.coordinates, piece: square.piece }) }
                 style={{
                   backgroundColor: square.color === "light" ? "var(--light-square)" : "var(--dark-square)",
                   cursor: square.piece ? "pointer" : ""}}>
