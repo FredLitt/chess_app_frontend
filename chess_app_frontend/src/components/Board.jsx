@@ -88,7 +88,7 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
               <td 
                 className="square"
                 key={square.coordinates} 
-                onClick={ (e) => handleClick({ coordinates: square.coordinates, piece: square.piece }) }
+                onClick={ () => handleClick({ coordinates: square.coordinates, piece: square.piece }) }
                 style={{
                   backgroundColor: square.color === "light" ? "var(--light-square)" : "var(--dark-square)",
                   cursor: square.piece ? "pointer" : ""}}>
