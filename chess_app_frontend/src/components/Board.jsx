@@ -23,7 +23,6 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
         })
       return
     }
-    console.log("React playing move:", moveToPlay)
     move(moveToPlay)
     setPieceToMove(null)
   }

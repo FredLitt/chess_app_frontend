@@ -265,7 +265,6 @@ class Chess {
     
                         const moveExposesKing = this.doesMoveExposeKing(board, { from: fromSquare, to: possibleSquare }, movingPieceColor)
                         if (moveExposesKing){
-                            completedDirections.push(direction)
                             continue
                         }
                         
@@ -692,7 +691,6 @@ class Chess {
 
     // Remove validity check when replaying moves
     playMove(board, move){
-        console.log("playing move:", move)
         if (!this.isPlayableMove(board, move)){
             return false
         }
@@ -712,10 +710,9 @@ class Chess {
             pawnToCapturesSquare.piece = null
         }
 
-        if (this.isMoveCastling(board, move)){
-            const direction = this.isMoveCastling(board, move)
-            //const color = this.getPiecesColor(board, move.from)
-            //move.data.push(direction)
+        const isCastling = move.data.some(string => string.includes("Castle"))
+        if (isCastling){
+            const direction = move.data.find(string => string.includes("Castle"))
             this.castle(board, direction, move.piece.color)
         }
 
@@ -729,7 +726,6 @@ class Chess {
         startSquare.piece = null
 
         this.moveHistory.push(move)
-        console.log("move history:", this.moveHistory)
         return board
     }
 

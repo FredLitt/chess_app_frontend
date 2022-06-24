@@ -10,7 +10,6 @@ export default function GameOptionsBar(notation){
 
   const scrollToBottom = () => {
     if (notation.notation.length > 8) {
-      console.log("Scroll!")
       notationContainer.scrollTop = notationContainer.scrollHeight
     }
   }
