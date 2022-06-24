@@ -118,13 +118,13 @@ class Chess {
         let testBoard = this.clone(board)
         const startSquare = this.getSquare(testBoard, move.from).coordinate
         const movingPiece = this.getSquare(testBoard, move.from).piece
-        const targetSquare = this.getSquare(testBoard, move.to).coordinate
-        testBoard = this.placePieces(testBoard, [ { piece: movingPiece, squares: targetSquare}, { piece: null, squares: startSquare }])
-        const kingWouldBeInCheck = this.isKingInCheck(testBoard, kingColor)
-        if (kingWouldBeInCheck){
-            return true
+        const targetSquare = this.getSquare(testBoard, move.to).coordinate   
+        if (this.isMoveEnPassant(testBoard, move)){
+            const pawnToCapturesSquare = this.getEnPassantTarget()
+            this.getSquare(testBoard, pawnToCapturesSquare).piece = null
         }
-        return false
+        testBoard = this.placePieces(testBoard, [ { piece: movingPiece, squares: targetSquare}, { piece: null, squares: startSquare }])
+        return this.isKingInCheck(testBoard, kingColor)
     }
 
     clone(board){
@@ -488,7 +488,7 @@ class Chess {
         const kingIsInCheck = this.isKingInCheck(board, kingColor)
         const kingHasMoved = this.hasKingMoved(board, kingColor)
         const rookHasMoved = this.hasCastlingRookMoved(board, kingColor, castlingDirection)
-        const castlingIsLegal = (!castlingSquaresAreControlled || !kingIsInCheck || !kingHasMoved || !rookHasMoved)
+        const castlingIsLegal = (!castlingSquaresAreControlled && !kingIsInCheck && !kingHasMoved && !rookHasMoved)
         return castlingIsLegal
     }
 
