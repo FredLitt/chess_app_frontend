@@ -7,11 +7,6 @@ export default function GameOptionsBar({startNewGame, takeback}){
   // Menu should close when clicking outside
   const toggleThemeMenu = () => {
     setShowColorThemes(!showColorThemes)
-    // if (setShowColorThemes){
-    //   console.log("themes open")
-    //   const app = document.querySelector("#game-options-bar > button")
-    //   app.addEventListener("click", () => setShowColorThemes(false))
-    // }
   } 
 
   const changeTheme = (lightSquareChoice, darkSquareChoice, highlightChoice) => {

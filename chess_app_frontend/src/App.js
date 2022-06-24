@@ -6,21 +6,7 @@ import Notation from './components/Notation'
 import CapturedPieceContainer from './components/CapturedPieceContainer'
 import NewGameModal from './components/NewGameModal'
 import gameService from './services/game'
-import './App.css';
-
-// TODO
-// [x] - Render a starting position board from a new game in MongoDB
-// [x] - Use interface to play a move, have backend validate and update
-// [x] - Add gameService to take back move (pop last move)
-// [x] - Create a new game (just use current game ID) and clear all notation
-// [x] - Fix en passant check issue
-// [x] - Fix isGameOver function
-// [x] - Enable Promotions
-// [x] - Render SAN move list
-// [x] - Render Captured Pieces
-// [x] - Add in custom themes
-// [x] - Game over modal
-// [ ] - Front end validation to speed up interface first??
+import './App.css'
 
 function App() {
 
@@ -28,9 +14,6 @@ function App() {
   const [ game, setGame ] = useState({ board: [], notation: [], capturedPieces: [] })
   const [ gameOver, setGameOver ] = useState(false)
 
-  // EVERYTIME PIECE IS SELECTED, EVERYTHING IS RERENDERED DUE TO HIGHLIGHTING
-  // USEMEMO OR USECALLBACK TO IMPROVE PERFORMANCE??
-  // EVERYTHING RE-RENDERS WHEN A PIECE IS PLAYED AS WELL...
   const getGame = async () => {
     const chess = new Chess()
     const updatedGame = await gameService.getGame()
@@ -75,12 +58,10 @@ function App() {
     return chess.findSquaresForPiece(game.board, square, "possible moves")
   }
 
-  // POOR PERFORMANCE... USEMEMO???
   const highlightMovesForPiece = (possibleMoves) => {
     const chess = new Chess()
     const highlightedBoard = chess.markPossibleMoves(game.board, possibleMoves)
     setGame( game => ( { ...game, board: highlightedBoard } ))
-    console.log("highlighting moves:", game)
   }
 
   return (
