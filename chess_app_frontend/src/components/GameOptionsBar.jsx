@@ -25,7 +25,7 @@ export default function GameOptionsBar({startNewGame, takeback}){
 
   return (
     <div id="game-options-bar">
-      <button onClick={() => {startNewGame()}}>Start New Game</button>
+      <button onClick={() => {startNewGame()}}>New Game</button>
       <button onClick={() => {takeback()}}>Takeback</button>
       <button onClick={() => {toggleThemeMenu()}}>Board Theme</button>
       {showColorThemes && 
