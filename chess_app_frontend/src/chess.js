@@ -830,8 +830,8 @@ class Chess {
         return san
     }
 
-    getMoveNotation(){
-        return this.moveHistory.map(move => this.getSan(move))
+    getMoveNotation(moveHistory){
+        return moveHistory.map(move => this.getSan(move))
     }
 
     printBoard(board){
