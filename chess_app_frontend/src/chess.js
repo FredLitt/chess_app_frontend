@@ -623,6 +623,7 @@ class Chess {
     }
     
     createBoardFromMoveHistory(moveHistory){
+        console.log("Create board from:", moveHistory)
         let board = this.createStartPosition()
         for (let i = 0; i < moveHistory.length; i++){
             board = this.playMove(board, moveHistory[i])
@@ -691,10 +692,6 @@ class Chess {
 
     // Remove validity check when replaying moves
     playMove(board, move){
-        if (!this.isPlayableMove(board, move)){
-            return false
-        }
-
         const startSquare = this.getSquare(board, move.from)
         const endSquare = this.getSquare(board, move.to)
         let movingPiece = startSquare.piece
@@ -830,8 +827,8 @@ class Chess {
         return san
     }
 
-    getMoveNotation(){
-        return this.moveHistory.map(move => this.getSan(move))
+    getMoveNotation(moveHistory){
+        return moveHistory.map(move => this.getSan(move))
     }
 
     printBoard(board){
