@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import Chess from './chess'
 import Board from './components/Board'
 import GameOptionsBar from './components/GameOptionsBar'
@@ -7,7 +7,7 @@ import CapturedPieceContainer from './components/CapturedPieceContainer'
 import NewGameModal from './components/NewGameModal'
 import gameService from './services/game'
 import './App.css'
-//import { SocketContext, socket } from './context/socket'
+import { socket } from './context/socket'
 
 const chess = new Chess()
 
@@ -21,13 +21,12 @@ function App() {
   const getGame = async () => {
     const updatedGame = await gameService.getGame()
     updateLocalGameState(updatedGame)
-  }
+  } 
 
   // Takes in a game state to update React state
   const updateLocalGameState = (updatedGame) => {
     const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
     const notation = chess.getMoveNotation(updatedGame.moveHistory)
-    console.log("moves:", updatedGame.moveHistory, "notation:" + notation)
     const capturedPieces = chess.getCapturedPieces(updatedBoard)
     const playerToMove = chess.getWhoseTurn(updatedGame.moveHistory)
     setGame({ 
@@ -44,12 +43,15 @@ function App() {
 
   useEffect(() => {
     getGame()
+    socket.on("update", async () => {
+      getGame()
+    })
   }, [])
 
   const move = async (moveToPlay) => {
     const updatedGame = await gameService.playMove(moveToPlay)
     updateLocalGameState(updatedGame)
-    //socket.emit("move")
+    socket.emit("move")
   }
 
   const takebackMove = async () => {

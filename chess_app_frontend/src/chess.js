@@ -623,7 +623,6 @@ class Chess {
     }
     
     createBoardFromMoveHistory(moveHistory){
-        console.log("Create board from:", moveHistory)
         let board = this.createStartPosition()
         for (let i = 0; i < moveHistory.length; i++){
             board = this.playMove(board, moveHistory[i])
@@ -653,44 +652,26 @@ class Chess {
 
     getFullMove(board, move){
         console.log("Getting full move:", move)
-        if (!this.isPlayableMove(board, move)){
-            return false
-        }
+        if (!this.isPlayableMove(board, move)) return false
 
         move.data = []
         const startSquare = this.getSquare(board, move.from)
         const endSquare = this.getSquare(board, move.to)
-        let movingPiece = move.piece
         const isCapture = endSquare.piece !== null 
-        
-        if (isCapture){ 
-            move.data.push("capture")
-        }
-        
-        if (this.isMoveEnPassant(board, move)){
-            move.data.push("enPassant", "capture")
-        }
 
+        if (isCapture) move.data.push("capture")
+        if (this.isMoveEnPassant(board, move)) move.data.push("enPassant", "capture")
         if (this.isMoveCastling(board, move)){
             const direction = this.isMoveCastling(board, move)
             move.data.push(direction)
         }
-
-        endSquare.piece = movingPiece
+        endSquare.piece = move.piece
         startSquare.piece = null
-        
-        if (this.isKingInCheckMate(board, this.getOpposingColor(movingPiece.color))){
-            move.data.push("checkmate")
-        }
-
-        if (this.isKingInCheck(board, this.getOpposingColor(movingPiece.color))){
-            move.data.push("check")
-        }
-        console.log("Full move:", move)
+        if (this.isKingInCheckMate(board, this.getOpposingColor(move.piece.color))) move.data.push("checkmate")
+        if (this.isKingInCheck(board, this.getOpposingColor(move.piece.color))) move.data.push("check")
         return move
     }
 
-    // Remove validity check when replaying moves
     playMove(board, move){
         const startSquare = this.getSquare(board, move.from)
         const endSquare = this.getSquare(board, move.to)
@@ -732,9 +713,7 @@ class Chess {
 
     isSquareOnBoard(square){
         const invalidFormat = (square.length !== 2 || typeof square !== "string")
-        if (invalidFormat){ 
-            return false 
-        }
+        if (invalidFormat) return false 
         const x = square[0]
         const y = parseInt(square[1])
         const squareIsOnBoard = (this.xAxis.includes(x) && y <= 8 && y >= 1)
@@ -746,9 +725,7 @@ class Chess {
     }
 
     getSquare(board, square){
-        if (!this.isSquareOnBoard(square)){
-            return null
-        }
+        if (!this.isSquareOnBoard(square)) return null
         const row = 8 - parseInt(square[1])
         const col = this.xAxis.indexOf(square[0])
         return board[row][col]
