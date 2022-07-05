@@ -51,19 +51,20 @@ function App() {
   const move = async (moveToPlay) => {
     const updatedGame = await gameService.playMove(moveToPlay)
     updateLocalGameState(updatedGame)
-    socket.emit("move")
+    socket.emit("update")
   }
 
   const takebackMove = async () => {
     const updatedGame = await gameService.takebackMove()
-    console.log(updatedGame)
     updateLocalGameState(updatedGame)
+    socket.emit("update")
   }
 
   const startNewGame = async () => {
     if (gameOver){setGameOver(false)}
     const updatedGame = await gameService.startNewGame()
     updateLocalGameState(updatedGame)
+    socket.emit("update")
   }
 
   const findPossibleMoves = (square) => {
