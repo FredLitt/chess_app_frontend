@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 
-export default function GameOptionsBar({startNewGame, takeback}){
+export default function GameOptionsBar({toggleCreateGame, takeback}){
 
   const [ showColorThemes, setShowColorThemes ] = useState(false)
 
@@ -25,8 +25,8 @@ export default function GameOptionsBar({startNewGame, takeback}){
 
   return (
     <div id="game-options-bar">
-      <button onClick={() => {startNewGame()}}>New Game</button>
-      <button onClick={() => {takeback()}}>Takeback</button>
+      <button onClick={toggleCreateGame}>Create Game</button>
+      <button onClick={takeback}>Takeback</button>
       <button onClick={() => {toggleThemeMenu()}}>Board Theme</button>
       {showColorThemes && 
         <div id="theme-options">

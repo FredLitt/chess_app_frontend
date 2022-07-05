@@ -4,6 +4,7 @@ import Board from './components/Board'
 import GameOptionsBar from './components/GameOptionsBar'
 import Notation from './components/Notation'
 import CapturedPieceContainer from './components/CapturedPieceContainer'
+import CreateGameModal from './components/CreateGameModal'
 import NewGameModal from './components/NewGameModal'
 import gameService from './services/game'
 import './App.css'
@@ -16,6 +17,8 @@ function App() {
   // UseReducer for complex state?
   const [ game, setGame ] = useState({ board: [], notation: [], capturedPieces: [] })
   const [ gameOver, setGameOver ] = useState(false)
+  const [ openCreateGame, setOpenCreateGame ] = useState(false)
+  const [ playerColor, setPlayerColor ] = useState(null)
 
   // Gets the most current game from the database and updates React state
   const getGame = async () => {
@@ -33,7 +36,7 @@ function App() {
       board: updatedBoard, 
       notation: notation, 
       capturedPieces: capturedPieces, 
-      playerToMove: playerToMove 
+      playerToMove: playerToMove
     })
     const gameResult = chess.isGameOver(updatedBoard)
     if (gameResult) { 
@@ -60,11 +63,18 @@ function App() {
     socket.emit("update")
   }
 
-  const startNewGame = async () => {
-    if (gameOver){setGameOver(false)}
-    const updatedGame = await gameService.startNewGame()
+  const toggleCreateGame = () => {
+    if (gameOver) setGameOver(false)
+    setOpenCreateGame(true)
+  }
+
+  const createGame = async () => {
+    if (!playerColor) return console.log("select color!")
+    const updatedGame = await gameService.createGame()
     updateLocalGameState(updatedGame)
-    socket.emit("update")
+    setOpenCreateGame(false)
+    console.log("Player color:" + playerColor, "Game id" + updatedGame.id)
+    //socket.emit("update")
   }
 
   const findPossibleMoves = (square) => {
@@ -75,19 +85,20 @@ function App() {
     const highlightedBoard = chess.markPossibleMoves(game.board, possibleMoves)
     setGame( game => ( { ...game, board: highlightedBoard } ))
   }
-
+  
   return (
     <div className="App">
       <div id="game-container">
-        <GameOptionsBar startNewGame={startNewGame} takeback={takebackMove}></GameOptionsBar>
-        <Board board={game.board} playerToMove={game.playerToMove} move={move} findPossibleMoves={findPossibleMoves} highlightMovesForPiece={highlightMovesForPiece}/>
+        <GameOptionsBar toggleCreateGame={toggleCreateGame} takeback={takebackMove}></GameOptionsBar>
+        {openCreateGame && <CreateGameModal selectColor={setPlayerColor} createGame={createGame} />}
+        <Board board={game.board} playerToMove={game.playerToMove} move={move} findPossibleMoves={findPossibleMoves} highlightMovesForPiece={highlightMovesForPiece} />
         <div id="notation-captured-piece-container">
-          <CapturedPieceContainer color="white" pieces={game.capturedPieces}/>
+          <CapturedPieceContainer color="white" pieces={game.capturedPieces} />
           <Notation notation={game.notation}></Notation>
-          <CapturedPieceContainer color="black" pieces={game.capturedPieces}/>
+          <CapturedPieceContainer color="black" pieces={game.capturedPieces} />
         </div>
       </div>
-      {gameOver && <NewGameModal gameOver={gameOver} startNewGame={startNewGame} />}
+      {gameOver && <NewGameModal gameOver={gameOver} toggleCreateGame={toggleCreateGame} />}
     </div>
   );
 }

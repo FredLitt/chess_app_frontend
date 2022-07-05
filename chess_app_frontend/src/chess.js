@@ -62,10 +62,7 @@ class Chess {
     }
 
     getSquareColor(col, row){
-        if ((col + row + 1) % 2 === 0){
-            return "dark"
-        }
-        return "light"
+        return ((col + row + 1) % 2 === 0) ? "dark" : "light"
     }
 
     isSquareOccupied(board, square){
@@ -75,25 +72,16 @@ class Chess {
 
     isKingInCheck(board, kingColor){
         const kingsSquare = this.findKingsSquare(board, kingColor)
-        if (!kingsSquare){ return false }
-
+        if (!kingsSquare) return false
         const unsafeSquares = this.findAttackedSquares(board, this.getOpposingColor(kingColor))
         const kingIsInCheck = unsafeSquares.some(unsafeSquare => unsafeSquare === kingsSquare)
-        if (kingIsInCheck){
-            return true
-        }
-        return false
+        return kingIsInCheck
     }
 
     isKingInCheckMate(board, kingColor){
-        if (!this.isKingInCheck(board, kingColor)){ return false }
-
-        const possibleMoves = this.findAllPossibleMoves(board, kingColor)
-        if (possibleMoves.length === 0){ 
-            console.log("checkmate!")
-            return true 
-        }
-        return false
+        if (!this.isKingInCheck(board, kingColor)) return false 
+        const kingInCheckmate = (this.findAllPossibleMoves(board, kingColor).length === 0)
+        return kingInCheckmate
     }
 
     findKingsSquare(board, kingColor){
@@ -155,8 +143,7 @@ class Chess {
             }
         }
         attackingPiecesSquares.forEach(square => attackedSquares.push(this.findSquaresForPiece(board, square, "controlled squares")))
-        attackedSquares = attackedSquares.flat()
-        return attackedSquares
+        return attackedSquares.flat()
     }
 
     findAllPossibleMoves(board, color){
