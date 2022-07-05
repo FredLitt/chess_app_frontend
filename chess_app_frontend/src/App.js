@@ -19,10 +19,11 @@ function App() {
   const [ gameOver, setGameOver ] = useState(false)
   const [ openCreateGame, setOpenCreateGame ] = useState(false)
   const [ playerColor, setPlayerColor ] = useState(null)
+  const [ gameID, setGameID ] = useState(null)
 
   // Gets the most current game from the database and updates React state
-  const getGame = async () => {
-    const updatedGame = await gameService.getGame()
+  const getGame = async (id) => {
+    const updatedGame = await gameService.getGame(id)
     updateLocalGameState(updatedGame)
   } 
 
@@ -45,20 +46,34 @@ function App() {
   }
 
   useEffect(() => {
-    getGame()
-    socket.on("update", async () => {
-      getGame()
-    })
+    const currentGameID = JSON.parse(localStorage.getItem('CURRENT_GAME_ID'))
+    console.log(currentGameID)
+    if (currentGameID) {
+      console.log("current game id:", currentGameID)
+      setGameID(currentGameID)
+    }
+    console.log(gameID)
   }, [])
 
+  useEffect(() => {
+    localStorage.setItem('CURRENT_GAME_ID', JSON.stringify(gameID))
+    const currentGameID = localStorage.getItem('CURRENT_GAME_ID')
+    console.log(currentGameID)
+    getGame(gameID)
+    socket.on("update", async () => {
+      getGame(gameID)
+    })
+  }, [gameID])
+
   const move = async (moveToPlay) => {
-    const updatedGame = await gameService.playMove(moveToPlay)
+    const updatedGame = await gameService.playMove(gameID, moveToPlay)
     updateLocalGameState(updatedGame)
     socket.emit("update")
   }
 
-  const takebackMove = async () => {
-    const updatedGame = await gameService.takebackMove()
+  // This should now create a popup for the other player, allowing them to give you a takeback...
+  const takebackMove = async (gameID) => {
+    const updatedGame = await gameService.takebackMove(gameID)
     updateLocalGameState(updatedGame)
     socket.emit("update")
   }
@@ -70,11 +85,10 @@ function App() {
 
   const createGame = async () => {
     if (!playerColor) return console.log("select color!")
-    const updatedGame = await gameService.createGame()
-    updateLocalGameState(updatedGame)
     setOpenCreateGame(false)
-    console.log("Player color:" + playerColor, "Game id" + updatedGame.id)
-    //socket.emit("update")
+    const newGame = await gameService.createGame()
+    setGameID(newGame.id)
+    await getGame(newGame.id)
   }
 
   const findPossibleMoves = (square) => {
@@ -88,6 +102,7 @@ function App() {
   
   return (
     <div className="App">
+      <div style={{color: "white"}}>{gameID}</div>
       <div id="game-container">
         <GameOptionsBar toggleCreateGame={toggleCreateGame} takeback={takebackMove}></GameOptionsBar>
         {openCreateGame && <CreateGameModal selectColor={setPlayerColor} createGame={createGame} />}
@@ -97,6 +112,7 @@ function App() {
           <Notation notation={game.notation}></Notation>
           <CapturedPieceContainer color="black" pieces={game.capturedPieces} />
         </div>
+        
       </div>
       {gameOver && <NewGameModal gameOver={gameOver} toggleCreateGame={toggleCreateGame} />}
     </div>

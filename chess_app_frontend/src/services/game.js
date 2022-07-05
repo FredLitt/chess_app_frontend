@@ -1,6 +1,5 @@
 import axios from 'axios'
 const baseUrl = 'http://localhost:3001/api/games'
-//const id = "62c464f30b42f2ea24ae6845"
 
 const createGame = async () => {
   const request = await axios.post(`${baseUrl}`)
