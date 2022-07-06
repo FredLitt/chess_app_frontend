@@ -15,17 +15,12 @@ const chess = new Chess()
 function App() {
   
   // UseReducer for complex state?
-  const [ game, setGame ] = useState({ board: [], notation: [], capturedPieces: [] })
+  const [ game, setGame ] = useState({ board: [], notation: [], capturedPieces: [], playerToMove: null })
+
+  const [ showCreateGame, setShowCreateGame ] = useState(false)
   const [ gameOver, setGameOver ] = useState(false)
-  const [ openCreateGame, setOpenCreateGame ] = useState(false)
-  const [ playerColor, setPlayerColor ] = useState(null)
   const [ gameID, setGameID ] = useState(null)
 
-  // Gets the most current game from the database and updates React state
-  const getGame = async (id) => {
-    const updatedGame = await gameService.getGame(id)
-    updateLocalGameState(updatedGame)
-  } 
 
   // Takes in a game state to update React state
   const updateLocalGameState = (updatedGame) => {
@@ -48,16 +43,23 @@ function App() {
   // Upon loading, if a current game is stored, get game from db
   useEffect(() => {
     const currentGameID = JSON.parse(localStorage.getItem("CURRENT_GAME_ID"))
-    if (currentGameID) {
+    if (currentGameID !== null) {
       setGameID(currentGameID)
     }
   }, [])
 
-  // if the gameID state is changed, 
-  useEffect(() => {
-    getGame(gameID)
+  // if the local gameID state is changed, retrieves new game from database
+  useEffect(() => { 
+    if (!gameID){return}
+    // Gets the most current game from the database and updates React state
+    const getCurrentGame = async () => {
+      const updatedGame = await gameService.getGame(gameID)
+      updateLocalGameState(updatedGame)
+    } 
+    console.log("Game ID updated:" + gameID)
+    getCurrentGame()
     socket.on("update", async () => {
-      getGame(gameID)
+      getCurrentGame()
     })
   }, [gameID])
 
@@ -74,15 +76,10 @@ function App() {
     socket.emit("update")
   }
 
-  const toggleCreateGame = () => {
-    if (gameOver) setGameOver(false)
-    setOpenCreateGame(!openCreateGame)
-  }
-
   // Delete previous game upon creation of new game?
-  const createGame = async () => {
-    if (!playerColor) return console.log("select color!")
-    setOpenCreateGame(false)
+  const createGame = async (colorChoice) => {
+    if (!colorChoice) return console.log("Choose a color!")
+    setShowCreateGame(false)
     const newGame = await gameService.createGame()
     localStorage.removeItem("CURRENT_GAME_ID")
     localStorage.setItem("CURRENT_GAME_ID", JSON.stringify(newGame.id))
@@ -102,9 +99,9 @@ function App() {
     <div className="App">
       <div style={{color: "white"}}>{gameID}</div>
       <div id="game-container">
-        <GameOptionsBar toggleCreateGame={toggleCreateGame} takeback={takebackMove}></GameOptionsBar>
-        {openCreateGame && <CreateGameModal selectColor={setPlayerColor} createGame={createGame} />}
+        <GameOptionsBar toggleCreateGame={() => setShowCreateGame(!showCreateGame)} takeback={takebackMove}></GameOptionsBar>
         <Board board={game.board} playerToMove={game.playerToMove} move={move} findPossibleMoves={findPossibleMoves} highlightMovesForPiece={highlightMovesForPiece} />
+
         <div id="notation-captured-piece-container">
           <CapturedPieceContainer color="white" pieces={game.capturedPieces} />
           <Notation notation={game.notation}></Notation>
@@ -112,7 +109,8 @@ function App() {
         </div>
         
       </div>
-      {gameOver && <NewGameModal gameOver={gameOver} toggleCreateGame={toggleCreateGame} />}
+      {showCreateGame && <CreateGameModal createGame={createGame} />}
+      {gameOver && <NewGameModal gameOver={gameOver} />}
     </div>
   );
 }
