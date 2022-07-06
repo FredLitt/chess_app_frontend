@@ -32,6 +32,16 @@ html {
   width: calc(5 * var(--piece-size));
 }
 
+#join-game-input {
+  position: absolute;
+  width: calc(5 * var(--piece-size));
+  top: 2em;
+  left: 40%;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
 #game-container {
   display: flex;
   flex-direction: column;

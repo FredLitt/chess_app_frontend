@@ -5,6 +5,7 @@ import GameOptionsBar from './components/GameOptionsBar'
 import Notation from './components/Notation'
 import CapturedPieceContainer from './components/CapturedPieceContainer'
 import CreateGameModal from './components/CreateGameModal'
+import JoinGameInput from './components/JoinGameInput'
 import NewGameModal from './components/NewGameModal'
 import gameService from './services/game'
 import './App.css'
@@ -18,6 +19,7 @@ function App() {
   const [ game, setGame ] = useState({ board: [], notation: [], capturedPieces: [], playerToMove: null })
 
   const [ showCreateGame, setShowCreateGame ] = useState(false)
+  const [ showJoinGame, setShowJoinGame ] = useState(false)
   const [ gameOver, setGameOver ] = useState(false)
   const [ gameID, setGameID ] = useState(null)
 
@@ -56,7 +58,6 @@ function App() {
       const updatedGame = await gameService.getGame(gameID)
       updateLocalGameState(updatedGame)
     } 
-    console.log("Game ID updated:" + gameID)
     getCurrentGame()
     socket.on("update", async () => {
       getCurrentGame()
@@ -99,7 +100,7 @@ function App() {
     <div className="App">
       <div style={{color: "white"}}>{gameID}</div>
       <div id="game-container">
-        <GameOptionsBar toggleCreateGame={() => setShowCreateGame(!showCreateGame)} takeback={takebackMove}></GameOptionsBar>
+        <GameOptionsBar toggleCreateGame={() => setShowCreateGame(!showCreateGame)} toggleJoinGame={() => setShowJoinGame(!showJoinGame)} takeback={takebackMove}></GameOptionsBar>
         <Board board={game.board} playerToMove={game.playerToMove} move={move} findPossibleMoves={findPossibleMoves} highlightMovesForPiece={highlightMovesForPiece} />
 
         <div id="notation-captured-piece-container">
@@ -110,6 +111,7 @@ function App() {
         
       </div>
       {showCreateGame && <CreateGameModal createGame={createGame} />}
+      {showJoinGame && <JoinGameInput joinGame={(id) => setGameID(id)} />}
       {gameOver && <NewGameModal gameOver={gameOver} />}
     </div>
   );
