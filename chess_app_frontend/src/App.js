@@ -45,20 +45,16 @@ function App() {
       setGameOver(gameResult) }
   }
 
+  // Upon loading, if a current game is stored, get game from db
   useEffect(() => {
-    const currentGameID = JSON.parse(localStorage.getItem('CURRENT_GAME_ID'))
-    console.log(currentGameID)
+    const currentGameID = JSON.parse(localStorage.getItem("CURRENT_GAME_ID"))
     if (currentGameID) {
-      console.log("current game id:", currentGameID)
       setGameID(currentGameID)
     }
-    console.log(gameID)
   }, [])
 
+  // if the gameID state is changed, 
   useEffect(() => {
-    localStorage.setItem('CURRENT_GAME_ID', JSON.stringify(gameID))
-    const currentGameID = localStorage.getItem('CURRENT_GAME_ID')
-    console.log(currentGameID)
     getGame(gameID)
     socket.on("update", async () => {
       getGame(gameID)
@@ -80,15 +76,17 @@ function App() {
 
   const toggleCreateGame = () => {
     if (gameOver) setGameOver(false)
-    setOpenCreateGame(true)
+    setOpenCreateGame(!openCreateGame)
   }
 
+  // Delete previous game upon creation of new game?
   const createGame = async () => {
     if (!playerColor) return console.log("select color!")
     setOpenCreateGame(false)
     const newGame = await gameService.createGame()
+    localStorage.removeItem("CURRENT_GAME_ID")
+    localStorage.setItem("CURRENT_GAME_ID", JSON.stringify(newGame.id))
     setGameID(newGame.id)
-    await getGame(newGame.id)
   }
 
   const findPossibleMoves = (square) => {
