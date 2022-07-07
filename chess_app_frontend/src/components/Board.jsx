@@ -72,13 +72,11 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
   }
 
  const getBoard = () => {
-  console.log(playerColor)
     if (playerColor === "black"){
       const flippedBoard = []
       for (let i = 7; i >= 0; i--){
         flippedBoard.push(board[i])
       }
-      console.log(flippedBoard)
       return flippedBoard 
     }
     return board
