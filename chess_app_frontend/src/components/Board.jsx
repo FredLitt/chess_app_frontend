@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import pieceSymbols from "../pieceSymbols"
 import PromotionModal from "./PromotionModal";
 
-export default function Board({board, playerToMove, move, findPossibleMoves, highlightMovesForPiece}){
+export default function Board({board, playerToMove, move, findPossibleMoves, highlightMovesForPiece, playerColor}){
 
   const [ pieceToMove, setPieceToMove ] = useState(null)
 
@@ -71,6 +71,19 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
     setPieceToMove(null)
   }
 
+ const getBoard = () => {
+  console.log(playerColor)
+    if (playerColor === "black"){
+      const flippedBoard = []
+      for (let i = 7; i >= 0; i--){
+        flippedBoard.push(board[i])
+      }
+      console.log(flippedBoard)
+      return flippedBoard 
+    }
+    return board
+  }
+
   return (
     <>
       {promotionMove && <PromotionModal promotionMove={promotionMove} promote={promote}/>}
@@ -79,7 +92,7 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
         id="board"
         cellSpacing="0">
         <tbody>
-        {board.map((row, index) =>
+        {getBoard().map((row, index) =>
           <tr 
             className="board-row"
             key={index}>

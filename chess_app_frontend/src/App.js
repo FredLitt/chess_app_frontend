@@ -41,7 +41,9 @@ function App() {
   // Upon loading, if a current game is stored, get game from db
   useEffect(() => {
     const currentGameID = localStorage.getItem("CURRENT_GAME_ID")
+    console.log(currentGameID)
     if (typeof currentGameID !== typeof undefined){
+      
       const currentGameData = {
         id: JSON.parse(localStorage.getItem("CURRENT_GAME_ID")),
         color: JSON.parse(localStorage.getItem("CURRENT_GAME_COLOR"))
@@ -59,16 +61,16 @@ function App() {
       updateLocalGameState(updatedGame)
     } 
     getCurrentGame()
-    // socket.on("update", async () => {
-    //   getCurrentGame()
-    // })
+    socket.on("update", async () => {
+      getCurrentGame()
+    })
   }, [gameData])
 
   const move = async (moveToPlay) => {
     if (gameData.color !== game.playerToMove) return console.log("not your pieces!")
     const updatedGame = await gameService.playMove(gameData.id, moveToPlay)
     updateLocalGameState(updatedGame)
-    //socket.emit("update")
+    socket.emit("update")
   }
 
   // This should now create a popup for the other player, allowing them to give you a takeback...
@@ -125,12 +127,12 @@ function App() {
       {gameData && <div style={{color: "white"}}>{gameData.id}</div>}
       <div id="game-container">
         <GameOptionsBar toggleCreateGame={() => setShowCreateGame(!showCreateGame)} toggleJoinGame={() => setShowJoinGame(!showJoinGame)} takeback={takebackMove}></GameOptionsBar>
-        <Board board={game.board} playerToMove={game.playerToMove} move={move} findPossibleMoves={findPossibleMoves} highlightMovesForPiece={highlightMovesForPiece} />
+        <Board board={game.board} playerToMove={game.playerToMove} move={move} findPossibleMoves={findPossibleMoves} highlightMovesForPiece={highlightMovesForPiece} playerColor={gameData ? gameData.color : null}/>
 
         <div id="notation-captured-piece-container">
-          <CapturedPieceContainer color="white" pieces={game.capturedPieces} />
+          <CapturedPieceContainer color={"white"} pieces={game.capturedPieces} />
           <Notation notation={game.notation}></Notation>
-          <CapturedPieceContainer color="black" pieces={game.capturedPieces} />
+          <CapturedPieceContainer color={"black"} pieces={game.capturedPieces} />
         </div>
         
       </div>
