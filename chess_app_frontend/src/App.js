@@ -16,7 +16,7 @@ const chess = new Chess()
 function App() {
   
   // UseReducer for complex state?
-  const [ game, setGame ] = useState({ board: [], notation: [], capturedPieces: [], playerToMove: null, isOver: false })
+  const [ game, setGame ] = useState({ board: null, notation: [], capturedPieces: [], playerToMove: null, isOver: false })
 
   const [ showCreateGame, setShowCreateGame ] = useState(false)
   const [ showJoinGame, setShowJoinGame ] = useState(false)
@@ -41,15 +41,13 @@ function App() {
   // Upon loading, if a current game is stored, get game from db
   useEffect(() => {
     const currentGameID = localStorage.getItem("CURRENT_GAME_ID")
-    console.log(currentGameID)
     if (typeof currentGameID !== typeof undefined){
-      
       const currentGameData = {
         id: JSON.parse(localStorage.getItem("CURRENT_GAME_ID")),
         color: JSON.parse(localStorage.getItem("CURRENT_GAME_COLOR"))
       }
-      console.log(currentGameData)
       setGameData(currentGameData)
+      socket.emit("connection", currentGameData.id)
     }
   }, [])
 
@@ -99,6 +97,7 @@ function App() {
       id: gameID,
       color: "black"
     }
+    socket.emit("joined game", gameData.id)
     setGameData(gameData)
     updateLocalGameData(gameData)
     setShowJoinGame(!showJoinGame)
@@ -127,12 +126,13 @@ function App() {
       {gameData && <div style={{color: "white"}}>{gameData.id}</div>}
       <div id="game-container">
         <GameOptionsBar toggleCreateGame={() => setShowCreateGame(!showCreateGame)} toggleJoinGame={() => setShowJoinGame(!showJoinGame)} takeback={takebackMove}></GameOptionsBar>
+        {game.board &&
         <Board board={game.board} playerToMove={game.playerToMove} move={move} findPossibleMoves={findPossibleMoves} highlightMovesForPiece={highlightMovesForPiece} playerColor={gameData ? gameData.color : null}/>
-
+        }
         <div id="notation-captured-piece-container">
-          <CapturedPieceContainer color={"white"} pieces={game.capturedPieces} />
+          <CapturedPieceContainer color={gameData && gameData.color === "white" ? "white" : "black"} pieces={game.capturedPieces} />
           <Notation notation={game.notation}></Notation>
-          <CapturedPieceContainer color={"black"} pieces={game.capturedPieces} />
+          <CapturedPieceContainer color={gameData && gameData.color === "white" ? "black" : "white"} pieces={game.capturedPieces} />
         </div>
         
       </div>
