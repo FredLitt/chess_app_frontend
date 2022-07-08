@@ -42,11 +42,9 @@ function App() {
   useEffect(() => {
     const currentGameID = localStorage.getItem("CURRENT_GAME_ID")
     if (typeof currentGameID !== typeof undefined){
-      const currentGameData = {
-        id: JSON.parse(localStorage.getItem("CURRENT_GAME_ID")),
-        color: JSON.parse(localStorage.getItem("CURRENT_GAME_COLOR"))
-      }
+      const currentGameData = getLocalGameData()
       setGameData(currentGameData)
+      console.log(currentGameData)
       socket.emit("connection", currentGameData.id)
     }
   }, [])
@@ -54,21 +52,42 @@ function App() {
   // if the local gameID state is changed, retrieves new game from database
   useEffect(() => { 
     if (gameData === null) return
+    console.log("getting current game..." + gameData.id)
+    updateLocalGameData(gameData)
     const getCurrentGame = async () => {
       const updatedGame = await gameService.getGame(gameData.id)
+      console.log(updatedGame)
       updateLocalGameState(updatedGame)
     } 
     getCurrentGame()
+    socket.emit("joined game", gameData.id)
     socket.on("update", async () => {
       getCurrentGame()
     })
-  }, [gameData])
+  }, [setGameData, gameData])
 
   const move = async (moveToPlay) => {
-    if (gameData.color !== game.playerToMove) return console.log("not your pieces!")
-    const updatedGame = await gameService.playMove(gameData.id, moveToPlay)
+    const currentGameData = getLocalGameData()
+    const notYourMove = (currentGameData.color !== game.playerToMove)
+    if (notYourMove) return console.log("not your move!")
+    const updatedGame = await gameService.playMove(currentGameData.id, moveToPlay)
     updateLocalGameState(updatedGame)
-    socket.emit("update")
+    socket.emit("update", gameData.id)
+  }
+
+  // Refactor to store in a single key value pair?
+  const updateLocalGameData = (gameData) => {
+    const { id, color } = gameData
+    localStorage.setItem("CURRENT_GAME_ID", JSON.stringify(id))
+    localStorage.setItem("CURRENT_GAME_COLOR", JSON.stringify(color))
+    console.log(localStorage.getItem("CURRENT_GAME_ID"))
+  }
+
+  const getLocalGameData = () => {
+    return {
+      id: JSON.parse(localStorage.getItem("CURRENT_GAME_ID")),
+      color: JSON.parse(localStorage.getItem("CURRENT_GAME_COLOR"))
+    }
   }
 
   // This should now create a popup for the other player, allowing them to give you a takeback...
@@ -83,33 +102,28 @@ function App() {
     if (!colorChoice) return console.log("Choose a color!")
     setShowCreateGame(false)
     const newGame = await gameService.createGame()
-    const gameData = {
+    const newGameData = {
       id: newGame.id,
       color: colorChoice
     }
-    setGameData(gameData)
-    updateLocalGameData(gameData)
+    console.log("new game:" + newGameData.id)
+    updateLocalGameData(newGameData)
+    const gameToLeave = gameData.id
+    socket.emit("joined game", newGameData.id, gameToLeave)
+    setGameData(newGameData)
   }
 
   // For now just create game with white and default to black for joining player 
   const joinGame = (gameID) => {
-    const gameData = {
+    const gameToJoin = {
       id: gameID,
       color: "black"
     }
-    socket.emit("joined game", gameData.id)
-    setGameData(gameData)
-    updateLocalGameData(gameData)
+    // Leave previous games? Current UI flashes to prior games after opponent moves...
+    socket.emit("joined game", gameToJoin.id, gameData.id)
+    setGameData(gameToJoin)
+    updateLocalGameData(gameToJoin)
     setShowJoinGame(!showJoinGame)
-  }
-
-  // Refactor to store in a single key value pair?
-  const updateLocalGameData = (gameData) => {
-    const { id, color } = gameData
-    localStorage.removeItem("CURRENT_GAME_ID")
-    localStorage.removeItem("CURRENT_GAME_COLOR")
-    localStorage.setItem("CURRENT_GAME_ID", JSON.stringify(id))
-    localStorage.setItem("CURRENT_GAME_COLOR", JSON.stringify(color))
   }
 
   const findPossibleMoves = (square) => {
