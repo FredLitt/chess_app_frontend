@@ -2,11 +2,11 @@ import React, { useEffect } from "react"
 
 export default function GameOptionsBar(notation){
 
-  useEffect(() => {
-    scrollToBottom()
-  });
-
   const notationContainer = document.querySelector("#notation")
+
+  useEffect(() => {
+    if (notationContainer) scrollToBottom()
+  });
 
   const scrollToBottom = () => {
     if (notation.notation.length > 8) {

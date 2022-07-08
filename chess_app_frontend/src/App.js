@@ -44,35 +44,34 @@ function App() {
     if (typeof currentGameID !== typeof undefined){
       const currentGameData = getLocalGameData()
       setGameData(currentGameData)
-      console.log(currentGameData)
-      socket.emit("connection", currentGameData.id)
+      console.log("Setting game data:", currentGameData)
     }
   }, [])
 
   // if the local gameID state is changed, retrieves new game from database
   useEffect(() => { 
     if (gameData === null) return
-    console.log("getting current game..." + gameData.id)
-    updateLocalGameData(gameData)
     const getCurrentGame = async () => {
       const updatedGame = await gameService.getGame(gameData.id)
-      console.log(updatedGame)
+      console.log("getting current game", updatedGame)
       updateLocalGameState(updatedGame)
     } 
     getCurrentGame()
     socket.emit("joined game", gameData.id)
+    console.log("joined game:", gameData.id)
     socket.on("update", async () => {
+      console.log("update!")
       getCurrentGame()
     })
-  }, [setGameData, gameData])
+  }, [gameData])
 
   const move = async (moveToPlay) => {
-    const currentGameData = getLocalGameData()
-    const notYourMove = (currentGameData.color !== game.playerToMove)
+    const notYourMove = (gameData.color !== game.playerToMove)
     if (notYourMove) return console.log("not your move!")
-    const updatedGame = await gameService.playMove(currentGameData.id, moveToPlay)
+    const updatedGame = await gameService.playMove(gameData.id, moveToPlay)
     updateLocalGameState(updatedGame)
     socket.emit("update", gameData.id)
+    console.log("updating game:", gameData.id)
   }
 
   // Refactor to store in a single key value pair?
@@ -106,9 +105,9 @@ function App() {
       id: newGame.id,
       color: colorChoice
     }
-    console.log("new game:" + newGameData.id)
-    updateLocalGameData(newGameData)
     const gameToLeave = gameData.id
+    console.log("leaving game:", gameToLeave)
+    updateLocalGameData(newGameData)
     socket.emit("joined game", newGameData.id, gameToLeave)
     setGameData(newGameData)
   }
@@ -120,6 +119,7 @@ function App() {
       color: "black"
     }
     // Leave previous games? Current UI flashes to prior games after opponent moves...
+    console.log("joining game:", gameToJoin.id, "leaving game:", gameData.id)
     socket.emit("joined game", gameToJoin.id, gameData.id)
     setGameData(gameToJoin)
     updateLocalGameData(gameToJoin)
@@ -143,11 +143,12 @@ function App() {
         {game.board &&
         <Board board={game.board} playerToMove={game.playerToMove} move={move} findPossibleMoves={findPossibleMoves} highlightMovesForPiece={highlightMovesForPiece} playerColor={gameData ? gameData.color : null}/>
         }
+        {game.board &&
         <div id="notation-captured-piece-container">
           <CapturedPieceContainer color={gameData && gameData.color === "white" ? "white" : "black"} pieces={game.capturedPieces} />
           <Notation notation={game.notation}></Notation>
           <CapturedPieceContainer color={gameData && gameData.color === "white" ? "black" : "white"} pieces={game.capturedPieces} />
-        </div>
+        </div>}
         
       </div>
       {showCreateGame && <CreateGameModal createGame={createGame} />}
