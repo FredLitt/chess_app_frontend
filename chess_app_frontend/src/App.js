@@ -45,6 +45,7 @@ function App() {
       const currentGameData = getLocalGameData()
       setGameData(currentGameData)
       console.log("Setting game data:", currentGameData)
+      socket.emit("joined game", currentGameData.id)
     }
   }, [])
 
@@ -57,10 +58,9 @@ function App() {
       updateLocalGameState(updatedGame)
     } 
     getCurrentGame()
-    socket.emit("joined game", gameData.id)
-    console.log("joined game:", gameData.id)
-    socket.on("update", async () => {
-      console.log("update!")
+    socket.on("game updated", async (room) => {
+      // This runs for multiple rooms?
+      console.log("update", gameData.id)
       getCurrentGame()
     })
   }, [gameData])
@@ -69,6 +69,7 @@ function App() {
     const notYourMove = (gameData.color !== game.playerToMove)
     if (notYourMove) return console.log("not your move!")
     const updatedGame = await gameService.playMove(gameData.id, moveToPlay)
+    console.log("playing move on game:", gameData.id)
     updateLocalGameState(updatedGame)
     socket.emit("update", gameData.id)
     console.log("updating game:", gameData.id)
@@ -107,8 +108,9 @@ function App() {
     }
     const gameToLeave = gameData.id
     console.log("leaving game:", gameToLeave)
+    socket.emit("left game", gameToLeave)
+    socket.emit("joined game", newGameData.id)
     updateLocalGameData(newGameData)
-    socket.emit("joined game", newGameData.id, gameToLeave)
     setGameData(newGameData)
   }
 
@@ -118,11 +120,10 @@ function App() {
       id: gameID,
       color: "black"
     }
-    // Leave previous games? Current UI flashes to prior games after opponent moves...
-    console.log("joining game:", gameToJoin.id, "leaving game:", gameData.id)
-    socket.emit("joined game", gameToJoin.id, gameData.id)
-    setGameData(gameToJoin)
+    socket.emit("left game", gameData.id)
+    socket.emit("joined game", gameToJoin.id)
     updateLocalGameData(gameToJoin)
+    setGameData(gameToJoin)
     setShowJoinGame(!showJoinGame)
   }
 

@@ -2,6 +2,7 @@ import React, { useEffect } from "react"
 
 export default function GameOptionsBar(notation){
 
+  // This is a little weird
   const notationContainer = document.querySelector("#notation")
 
   useEffect(() => {
