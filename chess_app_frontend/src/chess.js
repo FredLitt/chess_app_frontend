@@ -142,7 +142,7 @@ class Chess {
                 }
             }
         }
-        attackingPiecesSquares.forEach(square => attackedSquares.push(this.findSquaresForPiece(board, square, "controlled squares")))
+        attackingPiecesSquares.forEach(square => attackedSquares.push(this.findSquaresForPiece(board, square, "controlledSquares")))
         return attackedSquares.flat()
     }
 
@@ -154,7 +154,7 @@ class Chess {
                 if (this.getPiecesColor(board, squareToCheck) === color){
                     const piece = this.getSquare(board, squareToCheck).piece
                     const piecesSquare = squareToCheck
-                    const possibleSquares = this.findSquaresForPiece(board, piecesSquare, "possible moves")
+                    const possibleSquares = this.findSquaresForPiece(board, piecesSquare, "possibleMoves")
                     const possibleMoves = possibleSquares.map(possibleSquare => 
                         this.buildMove(piece, { from: piecesSquare, to: possibleSquare}))
                     if (possibleMoves.length !== 0){
@@ -233,7 +233,7 @@ class Chess {
                         continue 
                     }
     
-                    if (squaresToFind === "controlled squares") {  
+                    if (squaresToFind === "controlledSquares") {  
                         if (squareHasPiece) {
                             squares.push(possibleSquare)
                             completedDirections.push(direction)
@@ -242,7 +242,7 @@ class Chess {
                         squares.push(possibleSquare)
                     }
     
-                    if (squaresToFind === "possible moves") {
+                    if (squaresToFind === "possibleMoves") {
                         
                         const invalidMove = !squareIsOnBoard || squareHasFriendlyPiece
                         if (invalidMove) {
@@ -293,7 +293,7 @@ class Chess {
             const squareHasFriendlyPiece = this.getPiecesColor(board, kingsSquare) === this.getPiecesColor(board, possibleSquare)
             const squareHasEnemyPiece = squareHasPiece && !squareHasFriendlyPiece
             
-            if (squaresToFind === "possible moves"){
+            if (squaresToFind === "possibleMoves"){
                 
                 if (!squareIsOnBoard || squareHasFriendlyPiece){ continue }
                 
@@ -313,7 +313,7 @@ class Chess {
                 }
                 squares.push(possibleSquare)
             }
-            if (squaresToFind === "controlled squares"){
+            if (squaresToFind === "controlledSquares"){
                 if (!squareIsOnBoard || move.includes("Castle")){ continue }
 
                 squares.push(possibleSquare)
@@ -344,14 +344,14 @@ class Chess {
 
             if (!squareIsOnBoard) { continue }
 
-            if (squaresToFind === "possible moves"){
+            if (squaresToFind === "possibleMoves"){
                 if (squareHasFriendlyPiece){ continue }
                 const moveExposesKing = this.doesMoveExposeKing(board, { from: knightsSquare, to: possibleSquare }, knightsColor)
                 if (moveExposesKing){ continue }
                 squares.push(possibleSquare)
             }
 
-            if (squaresToFind === "controlled squares"){
+            if (squaresToFind === "controlledSquares"){
                 squares.push(possibleSquare)
             }
         }
@@ -389,7 +389,7 @@ class Chess {
             
             if (!squareIsOnBoard){ continue }
 
-            if (squaresToFind === "possible moves"){
+            if (squaresToFind === "possibleMoves"){
                 
                 if (move === "ForwardOne"){
                     const pawnIsBlocked = this.isSquareOccupied(board, possibleSquare)
@@ -416,7 +416,7 @@ class Chess {
                 squares.push(possibleSquare)
             }
 
-            if (squaresToFind === "controlled squares"){
+            if (squaresToFind === "controlledSquares"){
                 if (move === "CaptureEast" || move === "CaptureWest"){ 
                     squares.push(possibleSquare)
                 }       
@@ -633,7 +633,7 @@ class Chess {
     }
 
     isMoveLegal(board, move){
-        const legalMoves = this.findSquaresForPiece(board, move.from, "possible moves")
+        const legalMoves = this.findSquaresForPiece(board, move.from, "possibleMoves")
         return legalMoves.some(legalMove => legalMove === move.to)
     }
 

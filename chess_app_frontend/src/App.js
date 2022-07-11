@@ -40,9 +40,9 @@ function App() {
 
   // Upon loading, if a current game is stored, get game from db
   useEffect(() => {
-    const currentGameID = localStorage.getItem("CURRENT_GAME_ID")
-    if (typeof currentGameID !== typeof undefined){
-      const currentGameData = getLocalGameData()
+    const currentGameData = localStorage.getItem("CURRENT_GAME_DATA")
+    if (typeof currentGameData !== typeof undefined){
+      const currentGameData = JSON.parse(localStorage.getItem("CURRENT_GAME_DATA"))
       setGameData(currentGameData)
       socket.emit("joinedGame", currentGameData.id)
     }
@@ -55,37 +55,19 @@ function App() {
       const updatedGame = await gameService.getGame(gameData.id)
       updateLocalGameState(updatedGame)
     } 
-    console.log("getting current game")
     getCurrentGame()
     socket.on("gameUpdate", async () => {
       getCurrentGame()
     })
-
     return () => {
       socket.off("gameUpdate")
     }
-
   }, [gameData])
 
   const move = async (moveToPlay) => {
     const updatedGame = await gameService.playMove(gameData.id, moveToPlay)
     updateLocalGameState(updatedGame)
     socket.emit("update", gameData.id)
-  }
-
-  // Refactor to store in a single key value pair?
-  const updateLocalGameData = (gameData) => {
-    const { id, color } = gameData
-    localStorage.setItem("CURRENT_GAME_ID", JSON.stringify(id))
-    localStorage.setItem("CURRENT_GAME_COLOR", JSON.stringify(color))
-    console.log(localStorage.getItem("CURRENT_GAME_ID"))
-  }
-
-  const getLocalGameData = () => {
-    return {
-      id: JSON.parse(localStorage.getItem("CURRENT_GAME_ID")),
-      color: JSON.parse(localStorage.getItem("CURRENT_GAME_COLOR"))
-    }
   }
 
   // This should now create a popup for the other player, allowing them to give you a takeback...
@@ -104,28 +86,32 @@ function App() {
       id: newGame.id,
       color: colorChoice
     }
-    const gameToLeave = gameData.id
-    socket.emit("leftGame", gameToLeave)
+    if (gameData){
+      const gameToLeave = gameData.id
+      socket.emit("leftGame", gameToLeave)
+    }
     socket.emit("joinedGame", newGameData.id)
-    updateLocalGameData(newGameData)
+    localStorage.setItem("CURRENT_GAME_DATA", JSON.stringify(newGameData))
     setGameData(newGameData)
   }
 
-  // For now just create game with white and default to black for joining player 
+  // Join game should include opponent's color
   const joinGame = (gameID) => {
     const gameToJoin = {
       id: gameID,
       color: "black"
     }
-    socket.emit("leftGame", gameData.id)
+    if (gameData){
+      socket.emit("leftGame", gameData.id)
+    }
     socket.emit("joinedGame", gameToJoin.id)
-    updateLocalGameData(gameToJoin)
+    localStorage.setItem("CURRENT_GAME_DATA", JSON.stringify(gameToJoin))
     setGameData(gameToJoin)
     setShowJoinGame(!showJoinGame)
   }
 
   const findPossibleMoves = (square) => {
-    return chess.findSquaresForPiece(game.board, square, "possible moves")
+    return chess.findSquaresForPiece(game.board, square, "possibleMoves")
   }
 
   const highlightMovesForPiece = (possibleMoves) => {
