@@ -44,6 +44,7 @@ function App() {
     if (typeof currentGameID !== typeof undefined){
       const currentGameData = getLocalGameData()
       setGameData(currentGameData)
+      console.log("Setting game data:", currentGameData)
       socket.emit("joinedGame", currentGameData.id)
     }
   }, [])
@@ -53,15 +54,18 @@ function App() {
     if (gameData === null) return
     const getCurrentGame = async () => {
       const updatedGame = await gameService.getGame(gameData.id)
+      console.log("getting current game", updatedGame)
       updateLocalGameState(updatedGame)
     } 
     console.log("getting current game")
     getCurrentGame()
     socket.on("gameUpdate", async () => {
+      console.log("update", gameData.id)
       getCurrentGame()
     })
 
     return () => {
+      console.log("socket off")
       socket.off("gameUpdate")
     }
 
@@ -69,8 +73,10 @@ function App() {
 
   const move = async (moveToPlay) => {
     const updatedGame = await gameService.playMove(gameData.id, moveToPlay)
+    console.log("playing move on game:", gameData.id)
     updateLocalGameState(updatedGame)
     socket.emit("update", gameData.id)
+    console.log("updating game:", gameData.id)
   }
 
   // Refactor to store in a single key value pair?
@@ -105,6 +111,7 @@ function App() {
       color: colorChoice
     }
     const gameToLeave = gameData.id
+    console.log("leaving game:", gameToLeave)
     socket.emit("leftGame", gameToLeave)
     socket.emit("joinedGame", newGameData.id)
     updateLocalGameData(newGameData)
