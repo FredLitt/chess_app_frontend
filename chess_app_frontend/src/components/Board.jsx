@@ -28,8 +28,8 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
   }
 
   const selectPiece = (coordinates, piece) => {
-    const wrongPlayer = playerColor !== playerToMove
-    if (wrongPlayer) return
+    const wrongColor = (playerColor !== playerToMove) || (piece.color !== playerColor)
+    if (wrongColor) return
     const possibleMoves = findPossibleMoves(coordinates)
     const selectedPiece = {
       piece,

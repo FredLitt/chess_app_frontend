@@ -450,6 +450,8 @@ class Chess {
         const kingNotOnStartSquare = this.findKingsSquare(board, kingColor) !== kingStartSquare[kingColor]
         const moveHistoryFromSquares = this.moveHistory.map(move => move.from)
         const kingHasMoved = moveHistoryFromSquares.includes(kingStartSquare[kingColor])
+        // console.log("king start", kingStartSquare[kingColor], "from squares", moveHistoryFromSquares)
+        // console.log("not on start square?", kingNotOnStartSquare, "king moved?", kingHasMoved)
         return (kingHasMoved || kingNotOnStartSquare)
     }
 
@@ -476,6 +478,8 @@ class Chess {
         const kingHasMoved = this.hasKingMoved(board, kingColor)
         const rookHasMoved = this.hasCastlingRookMoved(board, kingColor, castlingDirection)
         const castlingIsLegal = (!castlingSquaresAreControlled && !kingIsInCheck && !kingHasMoved && !rookHasMoved)
+        console.log("castling squares controlled?", castlingSquaresAreControlled, "king in check?", kingIsInCheck, "king moved?", kingHasMoved,
+        "rook moved?", rookHasMoved, "castling legal?", castlingIsLegal)
         return castlingIsLegal
     }
 
