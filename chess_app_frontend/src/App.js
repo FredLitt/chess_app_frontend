@@ -4,7 +4,8 @@ import Board from './components/Board'
 import GameOptionsBar from './components/GameOptionsBar'
 import Notation from './components/Notation'
 import CapturedPieceContainer from './components/CapturedPieceContainer'
-import CreateGameModal from './components/CreateGameModal'
+import CreateGamePopUp from './components/CreateGamePopUp'
+import CreatedGameInfo from './components/CreatedGameInfo'
 import JoinGameInput from './components/JoinGameInput'
 import NewGameModal from './components/NewGameModal'
 import gameService from './services/game'
@@ -19,6 +20,7 @@ function App() {
   const [ game, setGame ] = useState({ board: null, notation: [], capturedPieces: [], playerToMove: null, isOver: false })
 
   const [ showCreateGame, setShowCreateGame ] = useState(false)
+  const [ showCreatedGameInfo, setShowCreatedGameInfo ] = useState(false)
   const [ showJoinGame, setShowJoinGame ] = useState(false)
   const [ gameData, setGameData ] = useState(null) 
 
@@ -56,12 +58,10 @@ function App() {
       updateLocalGameState(updatedGame)
     } 
     getCurrentGame()
-    socket.on("gameUpdate", async () => {
-      getCurrentGame()
-    })
-    return () => {
-      socket.off("gameUpdate")
-    }
+    socket.on("gameUpdate", async () => { getCurrentGame() })
+    
+    return () => { socket.off("gameUpdate") }
+
   }, [gameData])
 
   const move = async (moveToPlay) => {
@@ -82,10 +82,7 @@ function App() {
     if (!colorChoice) return console.log("Choose a color!")
     setShowCreateGame(false)
     const newGame = await gameService.createGame()
-    const newGameData = {
-      id: newGame.id,
-      color: colorChoice
-    }
+    const newGameData = { id: newGame.id, color: colorChoice }
     if (gameData){
       const gameToLeave = gameData.id
       socket.emit("leftGame", gameToLeave)
@@ -93,26 +90,22 @@ function App() {
     socket.emit("joinedGame", newGameData.id)
     localStorage.setItem("CURRENT_GAME_DATA", JSON.stringify(newGameData))
     setGameData(newGameData)
+    setShowCreatedGameInfo(newGameData)
   }
 
   // Join game should include opponent's color
-  const joinGame = (gameID) => {
-    const gameToJoin = {
-      id: gameID,
-      color: "black"
-    }
-    if (gameData){
-      socket.emit("leftGame", gameData.id)
-    }
+  const joinGame = (gameID, opponentsColor) => {
+    let color
+    color = (opponentsColor === "white") ? "black" : "white"
+    const gameToJoin = { id: gameID, color: color }
+    if (gameData){ socket.emit("leftGame", gameData.id) }
     socket.emit("joinedGame", gameToJoin.id)
     localStorage.setItem("CURRENT_GAME_DATA", JSON.stringify(gameToJoin))
     setGameData(gameToJoin)
     setShowJoinGame(!showJoinGame)
   }
 
-  const findPossibleMoves = (square) => {
-    return chess.findSquaresForPiece(game.board, square, "possibleMoves")
-  }
+  const findPossibleMoves = (square) => { return chess.findSquaresForPiece(game.board, square, "possibleMoves") }
 
   const highlightMovesForPiece = (possibleMoves) => {
     const highlightedBoard = chess.markPossibleMoves(game.board, possibleMoves)
@@ -121,7 +114,6 @@ function App() {
   
   return (
     <div className="App">
-      {gameData && <div style={{color: "white"}}>{gameData.id}</div>}
       <div id="game-container">
         <GameOptionsBar toggleCreateGame={() => setShowCreateGame(!showCreateGame)} toggleJoinGame={() => setShowJoinGame(!showJoinGame)} takeback={takebackMove}></GameOptionsBar>
         {game.board &&
@@ -135,7 +127,8 @@ function App() {
         </div>}
         
       </div>
-      {showCreateGame && <CreateGameModal createGame={createGame} />}
+      {showCreateGame && <CreateGamePopUp createGame={createGame} />}
+      {showCreatedGameInfo && <CreatedGameInfo gameData={gameData} />}
       {showJoinGame && <JoinGameInput joinGame={joinGame} />}
       {game.isOver && <NewGameModal gameOver={game.isOver} />}
     </div>
