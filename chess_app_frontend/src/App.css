@@ -94,6 +94,13 @@ html {
   border-radius: 8px;
 }
 
+#join-game-popup > input {
+  height: calc(0.5 * var(--piece-size));
+  font-size: calc(0.4 * var(--piece-size));
+  text-align: center;
+  width: 60%;
+}
+
 #game-container {
   display: flex;
   flex-direction: column;
