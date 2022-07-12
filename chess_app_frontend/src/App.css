@@ -36,7 +36,38 @@ html {
   width: calc(5 * var(--piece-size));
 }
 
-#join-game-input, #created-game-info {
+.close-popup-button {
+  border-radius: 50%;
+  position: absolute;
+  top: calc(-0.3 * var(--piece-size));
+  left: calc(100% - (0.5 * var(--piece-size)));
+  height: calc(0.8 * var(--piece-size));
+  width: calc(0.8 * var(--piece-size));
+}
+
+#create-game-popup {
+  font-size: calc(0.45 * var(--piece-size));
+  position: absolute;
+  top: calc(0.5 * var(--board-length));
+  left: calc(50vw - calc(0.3 * var(--board-length)));
+  color: lightgrey;
+  opacity: 90%;
+  background-color: var(--main-bg-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  z-index: 2;
+  width: calc(0.6 * var(--board-length));
+}
+
+#create-game-popup > button, #create-game-popup > div > button {
+  margin-bottom: .8vw;
+  font-size: calc(0.35 * var(--piece-size));
+  cursor: pointer;
+}
+
+#join-game-popup, #created-game-info {
   position: absolute;
   border-radius: 5px;
   height: calc(2 * var(--piece-size));
@@ -60,8 +91,6 @@ html {
 
 #created-game-info > div > button {
   margin-left: 1em;
-  color: var(--highlight);
-  background-color: var(--light-square);
   border-radius: 8px;
 }
 
@@ -223,38 +252,6 @@ html {
   z-index: 3;
 }
 
-.close-popup-button {
-  border-radius: 50%;
-  position: absolute;
-  top: calc(-0.2 * var(--piece-size));
-  left: calc(100% - (0.6 * var(--piece-size)));
-  height: calc(0.8 * var(--piece-size));
-  width: calc(0.8 * var(--piece-size));
-}
-
-#create-game-popup {
-  font-size: calc(0.5 * var(--piece-size));
-  position: absolute;
-  top: calc(0.45 * var(--board-length));
-  left: calc(50vw - calc(0.3 * var(--board-length)));
-  color: lightgrey;
-  opacity: 90%;
-  background-color: var(--main-bg-color);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  z-index: 2;
-  height: calc(0.25 * var(--board-length));
-  width: calc(0.6 * var(--board-length));
-}
-
-#create-game-popup > button, #create-game-popup > div > button {
-  padding: .25em;
-  font-size: calc(0.4 * var(--piece-size));
-  cursor: pointer;
-}
-
 #new-game-modal-content {
   margin-top: 25%;
   font-weight: bold;
@@ -295,11 +292,10 @@ html {
 
   #create-game-popup {
     left: calc(0.2 * var(--board-length) + var(--game-container-side-margin) );
-    height: calc(0.25 * var(--board-length));
     width: calc(0.6 * var(--board-length));
   }
 
-  #join-game-input, #created-game-info {
+  #join-game-popup, #created-game-info {
     left: calc(0.05 * var(--board-length) + var(--game-container-side-margin));
     top: calc(.5 * var(--board-length));
   }

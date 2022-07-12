@@ -6,7 +6,7 @@ import Notation from './components/Notation'
 import CapturedPieceContainer from './components/CapturedPieceContainer'
 import CreateGamePopUp from './components/CreateGamePopUp'
 import CreatedGameInfo from './components/CreatedGameInfo'
-import JoinGameInput from './components/JoinGameInput'
+import JoinGamePopUp from './components/JoinGamePopUp'
 import NewGameModal from './components/NewGameModal'
 import gameService from './services/game'
 import './App.css'
@@ -128,8 +128,8 @@ function App() {
         
       </div>
       {showCreateGame && <CreateGamePopUp createGame={createGame} closePopUp={() => setShowCreateGame(false)}/>}
-      {showCreatedGameInfo && <CreatedGameInfo gameData={gameData} />}
-      {showJoinGame && <JoinGameInput joinGame={joinGame} />}
+      {showCreatedGameInfo && <CreatedGameInfo gameData={gameData} closePopUp={() => setShowCreatedGameInfo(false)}/>}
+      {showJoinGame && <JoinGamePopUp joinGame={joinGame} closePopUp={() => setShowJoinGame(false)}/>}
       {game.isOver && <NewGameModal gameOver={game.isOver} />}
     </div>
   );
