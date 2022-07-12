@@ -280,8 +280,8 @@ class Chess {
             "NorthEast": [ fromRow - 1, fromCol + 1 ],
             "SouthWest": [ fromRow + 1, fromCol - 1 ],
             "SouthEast": [ fromRow + 1, fromCol + 1 ],
-            "Castle Kingside": [fromRow, fromCol + 2],
-            "Castle Queenside": [fromRow, fromCol - 2]
+            "CastleKingside": [fromRow, fromCol + 2],
+            "CastleQueenside": [fromRow, fromCol - 2]
         }
 
         for (const move in kingMoves){
@@ -429,12 +429,12 @@ class Chess {
         let squaresToCheck
         const castlingSquares = {
             "white": {
-                "Castle Kingside": ["f1", "g1"],
-                "Castle Queenside": ["d1", "c1", "b1"],
+                "CastleKingside": ["f1", "g1"],
+                "CastleQueenside": ["d1", "c1", "b1"],
             },
             "black": {
-                "Castle Kingside": ["f8", "g8"],
-                "Castle Queenside":  ["d8", "c8", "b8"],
+                "CastleKingside": ["f8", "g8"],
+                "CastleQueenside":  ["d8", "c8", "b8"],
             }
         }
         squaresToCheck = castlingSquares[kingColor][castlingDirection]
@@ -458,12 +458,12 @@ class Chess {
     hasCastlingRookMoved(board, color, castlingDirection){
         const rookStartSquares = {
             "white": {
-                "Castle Kingside": "h1",
-                "Castle Queenside": "a1"
+                "CastleKingside": "h1",
+                "CastleQueenside": "a1"
             },
             "black": {
-                "Castle Kingside": "h8",
-                "Castle Queenside": "a8"
+                "CastleKingside": "h8",
+                "CastleQueenside": "a8"
             }
         }
         const castlingRookSquare = rookStartSquares[color][castlingDirection]
@@ -555,8 +555,8 @@ class Chess {
         const kingOnStartSquare = move.from === startSquare
         const kingWentKingside = move.to === kingsideEndSquare
         const kingWentQueenside = move.to === queensideEndSquare
-        if (kingOnStartSquare && kingWentKingside){ return "Castle Kingside" }
-        if (kingOnStartSquare && kingWentQueenside){ return "Castle Queenside" }
+        if (kingOnStartSquare && kingWentKingside){ return "CastleKingside" }
+        if (kingOnStartSquare && kingWentQueenside){ return "CastleQueenside" }
         return false
     }
 
@@ -784,7 +784,7 @@ class Chess {
         }
 
         if (isCastle){
-            move.data.includes("Castle Kingside") ? san = "O-O" : san = "O-O-O"
+            move.data.includes("CastleKingside") ? san = "O-O" : san = "O-O-O"
         }
 
         if (isCheckmate){

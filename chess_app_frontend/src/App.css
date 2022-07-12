@@ -131,7 +131,7 @@ html {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: darkgrey;
+  background-color: var(--highlight);
   position: absolute;
   border-radius: 50%;
   z-index: 0;

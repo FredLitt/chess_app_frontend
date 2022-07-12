@@ -93,10 +93,11 @@ function App() {
     setShowCreatedGameInfo(newGameData)
   }
 
-  // Join game should include opponent's color
-  const joinGame = (gameID, opponentsColor) => {
-    let color
-    color = (opponentsColor === "white") ? "black" : "white"
+  // This is pretty hacky
+  const joinGame = (newGameData) => {
+    const opponentsColor = newGameData.charAt(newGameData.length-1) 
+    const gameID = newGameData.slice(0, newGameData.length-1)
+    const color = (opponentsColor === "w") ? "black" : "white"
     const gameToJoin = { id: gameID, color: color }
     if (gameData){ socket.emit("leftGame", gameData.id) }
     socket.emit("joinedGame", gameToJoin.id)

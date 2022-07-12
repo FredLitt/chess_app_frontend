@@ -2,26 +2,31 @@ import React, { useState } from "react";
 
 export default function JoinGamePopUp({joinGame, closePopUp}){
 
-const [ id, setID ] = useState("")
+const [ newGameData, setNewGameData ] = useState("")
 
 const handleKeydown = (e) => {
   if (e.key === "Backspace"){
-    setID("")
-  }
-  if (e.key !== "Enter"){
-    setID(id)
+    setNewGameData("")
   }
   if (e.key === "Enter"){
-    joinGame(id)
-    setID("")
+    joinGame(newGameData)
+    setNewGameData("")
   } 
+  const paste = (e.key === "v" && e.key === "v")
+  if (e.key !== "Enter" && !paste){
+    e.preventDefault()
+  }
 }
 
 return (
   <>
     <div id="join-game-popup">Enter ID of game to join
       <button className="close-popup-button" onClick={closePopUp}>X</button>
-        <input type="text" value={id} onKeyDown={handleKeydown} onPaste={(e) => setID(e.clipboardData.getData("Text"))}/>
+        <input 
+        type="text" 
+        value={newGameData} 
+        onChange={(e) => setNewGameData(e.target.value)} 
+        onKeyDown={handleKeydown} />
     </div>
   </>
 )}
