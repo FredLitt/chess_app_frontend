@@ -38,22 +38,23 @@ html {
 
 #join-game-input, #created-game-info {
   position: absolute;
-  height: 4em;
   border-radius: 5px;
-  padding-top: .5em;
+  height: calc(2 * var(--piece-size));
   width: calc(.9 * var(--board-length));
-  left: calc(.43 * var(--board-length));
-  top: calc(0.49 * var(--board-length));
+  left: calc(50vw - (0.45 * (var(--board-length))));
+  top: calc(0.5 * var(--board-length));
+  font-size: calc(0.4 * var(--piece-size));
   color: lightgrey;
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
   align-items: center;
   z-index: 2;
   background-color: hsla(0, 0%, 0%, 0.705);
 }
 
 #created-game-info > div {
-  padding-top: .2em;
+  padding: .2rem;
   display: flex;
 }
 
@@ -62,7 +63,6 @@ html {
   color: var(--highlight);
   background-color: var(--light-square);
   border-radius: 8px;
-  width: 18%;
 }
 
 #game-container {
@@ -224,7 +224,7 @@ html {
 }
 
 #create-game-popup {
-  font-size: 1.5rem;
+  font-size: calc(0.5 * var(--piece-size));
   position: absolute;
   top: calc(0.45 * var(--board-length));
   left: calc(50vw - calc(0.3 * var(--board-length)));
@@ -242,7 +242,7 @@ html {
 
 #create-game-popup > button, #create-game-popup > div > button {
   padding: .25em;
-  font-size: 1.2rem;
+  font-size: calc(0.4 * var(--piece-size));
   cursor: pointer;
 }
 
@@ -291,9 +291,8 @@ html {
   }
 
   #join-game-input, #created-game-info {
-    left: calc(.4 * var(--board-length));
+    left: calc(0.05 * var(--board-length) + var(--game-container-side-margin));
     top: calc(.5 * var(--board-length));
-    font-size: 1.5em;
   }
 
   #created-game-info > div > button {
