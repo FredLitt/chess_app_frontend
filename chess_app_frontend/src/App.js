@@ -127,7 +127,7 @@ function App() {
         </div>}
         
       </div>
-      {showCreateGame && <CreateGamePopUp createGame={createGame} />}
+      {showCreateGame && <CreateGamePopUp createGame={createGame} closePopUp={() => setShowCreateGame(false)}/>}
       {showCreatedGameInfo && <CreatedGameInfo gameData={gameData} />}
       {showJoinGame && <JoinGameInput joinGame={joinGame} />}
       {game.isOver && <NewGameModal gameOver={game.isOver} />}

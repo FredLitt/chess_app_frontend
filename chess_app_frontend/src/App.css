@@ -223,6 +223,15 @@ html {
   z-index: 3;
 }
 
+.close-popup-button {
+  border-radius: 50%;
+  position: absolute;
+  top: calc(-0.2 * var(--piece-size));
+  left: calc(100% - (0.6 * var(--piece-size)));
+  height: calc(0.8 * var(--piece-size));
+  width: calc(0.8 * var(--piece-size));
+}
+
 #create-game-popup {
   font-size: calc(0.5 * var(--piece-size));
   position: absolute;
