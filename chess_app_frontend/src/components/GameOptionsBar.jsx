@@ -1,18 +1,10 @@
 import React, { useState } from "react"
 import { themes } from "./themes"
 
-export default function GameOptionsBar({toggleCreateGame, toggleJoinGame, resign, takeback}){
+export default function GameOptionsBar({toggleCreateGame, toggleJoinGame, toggleConfirmResignation, takeback}){
 
   const [ showThemes, setshowThemes ] = useState(false)
-  const [ offerToResign, setOfferToResign ] = useState(false)
 
-  const handleResignationClick = () => {
-    if (!offerToResign){
-      setOfferToResign(true)
-      return setTimeout(() => setOfferToResign(false), 3000)
-    } 
-    resign()
-  }
 
   const setTheme = (selectedScheme) => {
     const selectedColors = Object.values(selectedScheme)
@@ -42,7 +34,8 @@ export default function GameOptionsBar({toggleCreateGame, toggleJoinGame, resign
     <div id="game-options-bar">
       <button onClick={toggleCreateGame}>Create Game</button>
       <button onClick={toggleJoinGame}>Join Game</button>
-      <button onClick={handleResignationClick} style={{backgroundColor: offerToResign ? "red" : "var(--main-bg-color)" }}>Resign</button>
+      <button onClick={toggleConfirmResignation}>Resign</button>
+ 
       {/* <button onClick={takeback}>Takeback</button> */}
 
       <button onClick={() => {setshowThemes(!showThemes)}}>Board Theme</button>
@@ -61,5 +54,6 @@ export default function GameOptionsBar({toggleCreateGame, toggleJoinGame, resign
           )}
         </div>}
     </div>
+    
   )
 }

@@ -24,7 +24,6 @@ html {
 
 #game-options-bar {
   position: absolute;
-  height: var(--game-options-bar-height);
   top: 0px;
 }
 
@@ -114,7 +113,7 @@ html {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--light-square);
+  background-color: var(--highlight);
   position: absolute;
   border-radius: 50%;
   z-index: 0;
@@ -130,12 +129,11 @@ html {
 .promotion-pieces {
   display: flex;
   position: fixed;
-  top: 50%;
-  left: calc(0.5 * (100vw - var(--board-length) - var(--notation-container-width)) + 0.5 * var(--board-length));
-  flex-direction: column;
-  background-color: white;
-  transform: translate(-50%, -50%);
-  width: calc(2* var(--piece-size));
+  top: calc(0.48 * var(--board-length));
+  left: calc(50% - 0.45 * var(--board-length));
+  background-color: var(--main-bg-color);
+  opacity: 85%;
+  width: calc(.9 * var(--board-length));
   font-size: calc(2* var(--piece-size));
   z-index: 3;
 }
@@ -145,9 +143,6 @@ html {
   background-color: white;
   border-radius: 50%;
   text-align: center;
-}
-
-#promotion-modal > div:hover {
   cursor: pointer;
 }
 
@@ -202,10 +197,10 @@ html {
 
 #theme-options {
   padding: 2vh 0;
-  width: 34%;
+  width: 25%;
   background-color: black;
   position: relative;
-  left: 66%;
+  left: 75%;
   z-index: 3;
 }
 
@@ -258,5 +253,10 @@ html {
     font-size: .8em;
     height: 2em;
     width: 4em;
+  }
+
+  .promotion-pieces {
+    top: calc(0.48 * var(--board-length));
+    left: calc(var(--game-container-side-margin) + 0.05 * var(--board-length));
   }
 }

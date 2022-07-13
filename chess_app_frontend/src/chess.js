@@ -163,8 +163,7 @@ class Chess {
                 }
             }
         }
-        allPossibleMoves = allPossibleMoves.flat()
-        return allPossibleMoves
+        return allPossibleMoves.flat()
     }
 
     markPossibleMoves(board, possibleMoves){
@@ -186,7 +185,6 @@ class Chess {
     findSquaresForPiece(board, piecesSquare, squaresToFind){
         const movingPiece = this.getSquare(board, piecesSquare).piece.type
         const longRangePiece = movingPiece === "bishop" || movingPiece === "rook" || movingPiece === "queen"
-
         if (movingPiece === "pawn"){ return this.findSquaresForPawn(board, piecesSquare, squaresToFind) }
         if (movingPiece === "knight"){ return this.findSquaresForKnight(board, piecesSquare, squaresToFind) }
         if (movingPiece === "king"){ return this.findSquaresForKing(board, piecesSquare, squaresToFind) }
@@ -478,13 +476,7 @@ class Chess {
         const kingHasMoved = this.hasKingMoved(board, kingColor)
         const rookHasMoved = this.hasCastlingRookMoved(board, kingColor, castlingDirection)
         const castlingIsLegal = (!castlingSquaresAreControlled && !kingIsInCheck && !kingHasMoved && !rookHasMoved)
-        console.log("castling squares controlled?", castlingSquaresAreControlled, "king in check?", kingIsInCheck, "king moved?", kingHasMoved,
-        "rook moved?", rookHasMoved, "castling legal?", castlingIsLegal)
         return castlingIsLegal
-    }
-
-    movesAreTheSame(move1, move2){
-        return (move1.from === move2.from && move1.to === move2.to)
     }
 
     buildMove(piece, move){

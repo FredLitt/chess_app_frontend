@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import pieceSymbols from "../pieceSymbols"
 import PromotionModal from "./PromotionModal";
 
-export default function Board({board, playerToMove, move, findPossibleMoves, highlightMovesForPiece, playerColor}){
+export default function Board({board, playerToMove, isGameOver, move, findPossibleMoves, highlightMovesForPiece, playerColor}){
 
   const [ pieceToMove, setPieceToMove ] = useState(null)
   const [ promotionMove, setPromotionMove ] = useState(false)
@@ -28,7 +28,7 @@ export default function Board({board, playerToMove, move, findPossibleMoves, hig
 
   const selectPiece = (coordinates, piece) => {
     const wrongColor = (playerColor !== playerToMove) || (piece.color !== playerColor)
-    if (wrongColor) return
+    if (wrongColor || isGameOver) return
     const possibleMoves = findPossibleMoves(coordinates)
     const selectedPiece = {
       piece,
