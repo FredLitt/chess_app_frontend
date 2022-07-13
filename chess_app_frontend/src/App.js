@@ -22,6 +22,7 @@ function App() {
   const [ showCreateGame, setShowCreateGame ] = useState(false)
   const [ showCreatedGameInfo, setShowCreatedGameInfo ] = useState(false)
   const [ showJoinGame, setShowJoinGame ] = useState(false)
+  const [ showGameOver, setShowGameOver ] = useState(false)
   const [ gameData, setGameData ] = useState(null) 
 
   // Takes in a game state to update React state
@@ -59,8 +60,11 @@ function App() {
     } 
     getCurrentGame()
     socket.on("gameUpdate", async () => { getCurrentGame() })
-    
-    return () => { socket.off("gameUpdate") }
+    socket.on("opponentResigned", () => { handleResignation() })
+    return () => { 
+      socket.off("gameUpdate")
+      socket.off("opponentResigned") 
+    }
 
   }, [gameData])
 
@@ -106,6 +110,19 @@ function App() {
     setShowJoinGame(!showJoinGame)
   }
 
+  const resign = () => {
+    if (!gameData || game.isOver) return
+    socket.emit("resign", gameData.id)
+    handleResignation(gameData.color)
+  }
+
+  const handleResignation = (resigningColor) => {
+    const result = resigningColor === gameData.color ? "You resigned! Game over!" : "Your opponent resigned! You win!"
+    const score = (resigningColor === "white") ? "1-0" : "0-1"
+    setGame( {...game, isOver: { result, score }} ) 
+    setShowGameOver(true)
+  }
+
   const findPossibleMoves = (square) => { return chess.findSquaresForPiece(game.board, square, "possibleMoves") }
 
   const highlightMovesForPiece = (possibleMoves) => {
@@ -116,7 +133,7 @@ function App() {
   return (
     <div className="App">
       <div id="game-container">
-        <GameOptionsBar toggleCreateGame={() => setShowCreateGame(!showCreateGame)} toggleJoinGame={() => setShowJoinGame(!showJoinGame)} takeback={takebackMove}></GameOptionsBar>
+        <GameOptionsBar toggleCreateGame={() => setShowCreateGame(!showCreateGame)} toggleJoinGame={() => setShowJoinGame(!showJoinGame)} resign={resign} takeback={takebackMove}></GameOptionsBar>
         {game.board &&
         <Board board={game.board} playerToMove={game.playerToMove} move={move} findPossibleMoves={findPossibleMoves} highlightMovesForPiece={highlightMovesForPiece} playerColor={gameData ? gameData.color : null}/>
         }
@@ -131,8 +148,7 @@ function App() {
       {showCreateGame && <CreateGamePopUp createGame={createGame} closePopUp={() => setShowCreateGame(false)}/>}
       {showCreatedGameInfo && <CreatedGameInfo gameData={gameData} closePopUp={() => setShowCreatedGameInfo(false)}/>}
       {showJoinGame && <JoinGamePopUp joinGame={joinGame} closePopUp={() => setShowJoinGame(false)}/>}
-      {game.isOver && <GameOverPopUp gameOver={game.isOver} toggleCreateGame={() => setShowCreateGame(true)}
-      closePopUp={() => setGame({...game, isOver: false})}/>}
+      {showGameOver && <GameOverPopUp gameOver={game.isOver} toggleCreateGame={() => setShowCreateGame(true)} closePopUp={() => setShowGameOver(false)}/>}
     </div>
   );
 }

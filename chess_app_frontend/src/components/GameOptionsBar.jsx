@@ -1,15 +1,17 @@
 import React, { useState } from "react"
+import { themes } from "./themes"
 
-export default function GameOptionsBar({toggleCreateGame, toggleJoinGame, takeback}){
+export default function GameOptionsBar({toggleCreateGame, toggleJoinGame, resign, takeback}){
 
   const [ showThemes, setshowThemes ] = useState(false)
+  const [ offerToResign, setOfferToResign ] = useState(false)
 
-  const themes = {
-    "desert": { light: "beige", dark: "tan", highlight: "peru" },
-    "grey": { light: "lightgrey", dark: "slategrey", highlight: "darkslategrey" },
-    "blue": { light: "skyblue", dark: "steelblue", highlight: "darkblue" },
-    "green": { light: "darkseagreen", dark: "green", highlight: "lightgreen" },
-    "cheshire": { light: "palevioletred", dark: "darkmagenta", highlight: "lightblue" }
+  const handleResignationClick = () => {
+    if (!offerToResign){
+      setOfferToResign(true)
+      return setTimeout(() => setOfferToResign(false), 3000)
+    } 
+    resign()
   }
 
   const setTheme = (selectedScheme) => {
@@ -40,6 +42,7 @@ export default function GameOptionsBar({toggleCreateGame, toggleJoinGame, takeba
     <div id="game-options-bar">
       <button onClick={toggleCreateGame}>Create Game</button>
       <button onClick={toggleJoinGame}>Join Game</button>
+      <button onClick={handleResignationClick} style={{backgroundColor: offerToResign ? "red" : "var(--main-bg-color)" }}>Resign</button>
       {/* <button onClick={takeback}>Takeback</button> */}
 
       <button onClick={() => {setshowThemes(!showThemes)}}>Board Theme</button>
