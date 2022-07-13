@@ -838,7 +838,7 @@ class Chess {
         if (checkmate){
             return {
                 result: this.isKingInCheckMate(board, "white") ? "Black wins" : "White wins",
-                score: this.isKingInCheckMate(board, "white") ? "1-0" : "0-1"
+                score: this.isKingInCheckMate(board, "white") ? "0-1" : "1-0"
             }
         }
         const currentPlayersTurn = this.getWhoseTurn(this.moveHistory)

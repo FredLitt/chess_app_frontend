@@ -20,7 +20,7 @@ const handleKeydown = (e) => {
 
 return (
   <>
-    <div id="join-game-popup">Enter ID of game to join
+    <div className="popup">Enter ID of game to join
       <button className="close-popup-button" onClick={closePopUp}>X</button>
         <input 
         type="text" 

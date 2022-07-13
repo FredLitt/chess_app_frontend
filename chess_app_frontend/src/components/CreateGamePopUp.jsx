@@ -5,7 +5,7 @@ export default function CreateGamePopUp({ createGame, closePopUp }) {
   const [ colorChoice, setColorChoice ] = useState(null)
 
   return (
-      <div id="create-game-popup">
+      <div className="popup">
         <button className="close-popup-button" onClick={closePopUp}>X</button>
         <div>Choose your color</div>  
         <div>   

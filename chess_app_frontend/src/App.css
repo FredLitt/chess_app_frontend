@@ -45,29 +45,13 @@ html {
   width: calc(0.8 * var(--piece-size));
 }
 
-#create-game-popup {
-  font-size: calc(0.45 * var(--piece-size));
-  position: absolute;
-  top: calc(0.5 * var(--board-length));
-  left: calc(50vw - calc(0.3 * var(--board-length)));
-  color: lightgrey;
-  opacity: 90%;
-  background-color: var(--main-bg-color);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  z-index: 2;
-  width: calc(0.6 * var(--board-length));
-}
-
-#create-game-popup > button, #create-game-popup > div > button {
+.popup > button, .popup > div > button {
   margin-bottom: .8vw;
   font-size: calc(0.35 * var(--piece-size));
   cursor: pointer;
 }
 
-#join-game-popup, #created-game-info {
+.popup {
   position: absolute;
   border-radius: 5px;
   height: calc(2 * var(--piece-size));
@@ -84,21 +68,20 @@ html {
   background-color: hsla(0, 0%, 0%, 0.705);
 }
 
-#created-game-info > div {
-  padding: .2rem;
+.popup > div {
+  padding: .1rem;
   display: flex;
 }
 
-#created-game-info > div > button {
-  margin-left: 1em;
-  border-radius: 8px;
-}
-
-#join-game-popup > input {
+.popup > input {
   height: calc(0.5 * var(--piece-size));
   font-size: calc(0.4 * var(--piece-size));
   text-align: center;
   width: 60%;
+}
+
+#copy-button {
+  margin-left: 1em;
 }
 
 #game-container {
@@ -259,37 +242,6 @@ html {
   z-index: 3;
 }
 
-#new-game-modal-content {
-  margin-top: 25%;
-  font-weight: bold;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: calc(3 * var(--piece-size));
-  width:  calc(5 * var(--piece-size));
-  font-size: calc(1/2 * var(--piece-size));
-  color: black;
-  border-radius: 1rem;
-  background-color: white;
-  border-radius: 1rem;
-  border: 2px solid black;
-}
-
-#new-game-modal-content > div {
-  margin-top: 1em;
-}
-
-#new-game-modal-content > button {
-  font-size: .75em;
-  width: calc(4 * var(--piece-size));
-  height: var(--piece-size);
-  border-radius: .5rem;
-  margin-top: 1em;
-  background-color: green;
-  color: white;
-  cursor: pointer;
-}
-
 @media (min-width: 900px) {
   #game-container {
     display: flex;
@@ -297,17 +249,17 @@ html {
     justify-content: center;
   }
 
-  #create-game-popup {
+  /* .popup {
     left: calc(0.2 * var(--board-length) + var(--game-container-side-margin) );
     width: calc(0.6 * var(--board-length));
-  }
+  } */
 
-  #join-game-popup, #created-game-info {
+  .popup {
     left: calc(0.05 * var(--board-length) + var(--game-container-side-margin));
     top: calc(.5 * var(--board-length));
   }
 
-  #created-game-info > div > button {
+  .popup > div > button {
     font-size: .8em;
     height: 2em;
     width: 4em;

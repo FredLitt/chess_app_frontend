@@ -5,7 +5,6 @@ import PromotionModal from "./PromotionModal";
 export default function Board({board, playerToMove, move, findPossibleMoves, highlightMovesForPiece, playerColor}){
 
   const [ pieceToMove, setPieceToMove ] = useState(null)
-
   const [ promotionMove, setPromotionMove ] = useState(false)
 
   const movePiece = (targetSquare) => {

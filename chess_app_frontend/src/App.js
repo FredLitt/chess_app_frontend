@@ -7,7 +7,7 @@ import CapturedPieceContainer from './components/CapturedPieceContainer'
 import CreateGamePopUp from './components/CreateGamePopUp'
 import CreatedGameInfo from './components/CreatedGameInfo'
 import JoinGamePopUp from './components/JoinGamePopUp'
-import NewGameModal from './components/NewGameModal'
+import GameOverPopUp from './components/GameOverPopUp'
 import gameService from './services/game'
 import './App.css'
 import { socket } from './context/socket'
@@ -131,7 +131,8 @@ function App() {
       {showCreateGame && <CreateGamePopUp createGame={createGame} closePopUp={() => setShowCreateGame(false)}/>}
       {showCreatedGameInfo && <CreatedGameInfo gameData={gameData} closePopUp={() => setShowCreatedGameInfo(false)}/>}
       {showJoinGame && <JoinGamePopUp joinGame={joinGame} closePopUp={() => setShowJoinGame(false)}/>}
-      {game.isOver && <NewGameModal gameOver={game.isOver} />}
+      {game.isOver && <GameOverPopUp gameOver={game.isOver} toggleCreateGame={() => setShowCreateGame(true)}
+      closePopUp={() => setGame({...game, isOver: false})}/>}
     </div>
   );
 }
