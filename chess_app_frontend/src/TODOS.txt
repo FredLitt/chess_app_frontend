@@ -1,10 +1,11 @@
 [x] - Resign button
 [x] - Optimistic update
-[ ] - Highlight last moved played
 [x] - Change pieces to SVGs
-[ ] - Takeback button
-[ ] - Add drag and drop
+[ ] - Highlight last moved played
 [ ] - Coordinates on sides of board
+[ ] - Add drag and drop
+[ ] - Takeback button
+[ ] - Consolidate popups?
 [ ] - Add URLs rather than game IDs to join
 [ ] - Refactor game state with useReducer
 [ ] - Allow timed games

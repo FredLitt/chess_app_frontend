@@ -3,10 +3,12 @@ import pieceSymbols from "../pieceSymbols"
 import pieceSVGs from "../pieceSVGs";
 import PromotionModal from "./PromotionModal";
 
-export default function Board({board, playerToMove, isGameOver, move, findPossibleMoves, highlightMovesForPiece, playerColor}){
+export default function Board({board, playerToMove, isGameOver, move, findPossibleMoves, highlightMovesForPiece, playerColor, lastMove}){
 
   const [ pieceToMove, setPieceToMove ] = useState(null)
   const [ promotionMove, setPromotionMove ] = useState(false)
+
+  const lastPlayedMoveSquares = lastMove? [ lastMove.from, lastMove.to] : []
 
   const movePiece = (targetSquare) => {
     highlightMovesForPiece([])
@@ -104,6 +106,7 @@ export default function Board({board, playerToMove, isGameOver, move, findPossib
                 onClick={ () => handleClick({ coordinates: square.coordinates, piece: square.piece }) }
                 style={{
                   backgroundColor: square.color === "light" ? "var(--light-square)" : "var(--dark-square)",
+                  opacity: lastPlayedMoveSquares.includes(square.coordinates) ? "70%" : "100%",
                   cursor: square.piece ? "pointer" : ""}}>
                     { square.isPossibleMove && <span className="possible-move"></span> }
                     { square.piece ? <img 

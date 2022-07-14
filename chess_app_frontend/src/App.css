@@ -34,7 +34,7 @@ html {
   font-size: calc(0.45 * var(--piece-size));
   color: lightgray;
   height: 100%;
-  width: calc(4 * var(--piece-size));
+  width: calc(3.5 * var(--piece-size));
 }
 
 #game-options-bar > button:hover {
@@ -93,21 +93,23 @@ html {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
   margin-top: calc(.7 * var(--square-length));
 }
 
 #board {
-  height: calc(8 * var(--square-length));
-  width: calc(8 * var(--square-length));
+  height: var(--board-length);
+  width: var(--board-length);
 }
 
 .square {
   box-sizing: border-box;
-  height: var(--square-length);
-  max-height: var(--square-length);
-  width: var(--square-length);
-  text-align: center;
   position: relative;
+  height: var(--square-length);
+  width: var(--square-length);
+  max-height: var(--square-length);
+  max-width: var(--square-length);
+  text-align: center;
   z-index: 1;
 }
 
@@ -158,13 +160,14 @@ html {
 }
 
 #notation-captured-piece-container {
+  align-self: start;
   padding: calc(0.5* var(--piece-size));
   box-sizing: border-box;
   font-size: calc(0.5 * var(--piece-size));
   display: flex;
   flex-direction: column;
-  min-width: var(--notation-container-width);
-  max-width: calc(6 * var(--square-length));
+  width: var(--notation-container-width);
+  max-width: var(--notation-container-width);
   height: calc(7 * var(--square-length));
   align-self: center;
 }
@@ -172,16 +175,19 @@ html {
 #notation {
   list-style: none;
   display: grid;
+  grid-template-rows: repeat(8, 1fr);
   background-color: var(--main-bg-color);
   grid-template-columns: 1fr .75fr;
   color: lightgrey;
   height: 50%;
+  max-width: var(--notation-container-width);
   overflow-y: auto;
   margin: 0;
 }
 
 #notation > li {
-  padding: .2rem .5rem .1rem 0rem;
+  padding-top: .75em;
+  min-width: 50%;
 }
 
 #notation::-webkit-scrollbar {
@@ -191,18 +197,17 @@ html {
 .captured-pieces {
   display: flex;
   flex-flow: row wrap;
-  justify-content: start;
   font-size: var(--piece-size);
   max-width: 100%;
-  min-height: 25%;
+  height: 25%;
+  max-height: 25%;
   background: linear-gradient(150deg, var(--dark-square) 50%, var(--light-square));
   padding-left: .5rem;
 }
 
 .captured-pieces > img {
   padding-top: .1em;
-  max-height: var(--piece-size);
-  min-width: var(--piece-size);
+  height: 37%;
 }
 
 #theme-options {
@@ -245,6 +250,12 @@ html {
   border: 2px solid black;
   box-sizing: border-box;
   z-index: 3;
+}
+
+@media (max-width: 550px) {
+  :root {
+    --board-length: calc(9.5 * (var(--square-length)));
+  }
 }
 
 @media (min-width: 900px) {

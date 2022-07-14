@@ -175,7 +175,8 @@ function App() {
           move={move} 
           findPossibleMoves={findPossibleMoves} 
           highlightMovesForPiece={highlightMovesForPiece} 
-          playerColor={gameData ? gameData.color : null}/>}
+          playerColor={gameData ? gameData.color : null}
+          lastMove={game.moveHistory[game.moveHistory.length-1]}/>}
         
         {gameInProgress &&
         <div id="notation-captured-piece-container">
