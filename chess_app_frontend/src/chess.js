@@ -634,7 +634,6 @@ class Chess {
     }
 
     getFullMove(board, move){
-        console.log("Getting full move:", move)
         if (!this.isPlayableMove(board, move)) return false
 
         move.data = []
@@ -656,6 +655,7 @@ class Chess {
     }
 
     playMove(board, move){
+        if (!move) return
         const startSquare = this.getSquare(board, move.from)
         const endSquare = this.getSquare(board, move.to)
         let movingPiece = startSquare.piece
@@ -695,7 +695,7 @@ class Chess {
     }
 
     isSquareOnBoard(square){
-        const invalidFormat = (square.length !== 2 || typeof square !== "string")
+        const invalidFormat = (!square || typeof square !== "string" || square.length !== 2)
         if (invalidFormat) return false 
         const x = square[0]
         const y = parseInt(square[1])
