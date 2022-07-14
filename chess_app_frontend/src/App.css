@@ -28,7 +28,7 @@ html {
 }
 
 #game-options-bar > button {
-  background: linear-gradient(180deg, hsl(0, 1%, 15%) 40%, slategray);;
+  background: linear-gradient(180deg, hsl(0, 1%, 15%) 40%, rgb(82, 91, 101));;
   border-radius: 5px;
   padding: .25em;
   font-size: calc(0.45 * var(--piece-size));
@@ -173,16 +173,15 @@ html {
   list-style: none;
   display: grid;
   background-color: var(--main-bg-color);
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr .75fr;
   color: lightgrey;
-  align-content: start;
   height: 50%;
   overflow-y: auto;
   margin: 0;
 }
 
 #notation > li {
-  padding: .5rem .5rem .1rem 1rem;
+  padding: .2rem .5rem .1rem 0rem;
 }
 
 #notation::-webkit-scrollbar {
@@ -201,6 +200,7 @@ html {
 }
 
 .captured-pieces > img {
+  padding-top: .1em;
   max-height: var(--piece-size);
   min-width: var(--piece-size);
 }
