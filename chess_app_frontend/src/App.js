@@ -85,6 +85,8 @@ function App() {
 
   // Updates react state using chess logic without waiting for server response
   const updateGameOptimistically = (move) => {
+    const isPlayableMove = chess.isPlayableMove(game.board, move)
+    if (!isPlayableMove) return
     const fullMove = chess.getFullMove(game.board, move)
     const updatedGame = { moveHistory: [...game.moveHistory, fullMove ]}
     updateLocalGameState(updatedGame)
@@ -157,8 +159,10 @@ function App() {
           toggleJoinGame={() => setShowJoinGame(!showJoinGame)} 
           toggleConfirmResignation={
             () => {
+              console.log("close")
               if (game.isOver) return
-              setShowConfirmResignation(!showConfirmResignation)}
+              setShowConfirmResignation(!showConfirmResignation)
+            }
           } 
           resign={resign} 
           takeback={takebackMove}/>
