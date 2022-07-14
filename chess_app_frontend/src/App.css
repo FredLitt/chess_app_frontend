@@ -28,11 +28,17 @@ html {
 }
 
 #game-options-bar > button {
-  background-color: var(--main-bg-color);
-  font-size: calc(0.5 * var(--piece-size));
+  background: linear-gradient(180deg, hsl(0, 1%, 15%) 40%, slategray);;
+  border-radius: 5px;
+  padding: .25em;
+  font-size: calc(0.45 * var(--piece-size));
   color: lightgray;
   height: 100%;
   width: calc(4 * var(--piece-size));
+}
+
+#game-options-bar > button:hover {
+  opacity: 70%;
 }
 
 .close-popup-button {
@@ -118,6 +124,7 @@ html {
   right: 0;
   bottom: 0;
   background-color: var(--highlight);
+  opacity: 60%;
   position: absolute;
   border-radius: 50%;
   z-index: 0;
@@ -169,7 +176,7 @@ html {
   grid-template-columns: 1fr 1fr;
   color: lightgrey;
   align-content: start;
-  height: 40%;
+  height: 50%;
   overflow-y: auto;
   margin: 0;
 }
@@ -188,15 +195,14 @@ html {
   justify-content: start;
   font-size: var(--piece-size);
   max-width: 100%;
-  min-height: 30%;
-  background-color: var(--light-square);
+  min-height: 25%;
+  background: linear-gradient(150deg, var(--dark-square) 50%, var(--light-square));
   padding-left: .5rem;
 }
 
-.captured-pieces > div {
-  min-width: 0;
-  max-height: 1.5em;
-  max-width: 12.5%;
+.captured-pieces > img {
+  max-height: var(--piece-size);
+  min-width: var(--piece-size);
 }
 
 #theme-options {

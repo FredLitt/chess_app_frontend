@@ -29,7 +29,6 @@ function App() {
 
   // Takes in a game state to update React state
   const updateLocalGameState = (updatedGame) => {
-    console.log(updatedGame)
     const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
     const notation = chess.getMoveNotation(updatedGame.moveHistory)
     const capturedPieces = chess.getCapturedPieces(updatedBoard)

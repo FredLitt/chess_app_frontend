@@ -22,8 +22,6 @@ export default function CapturedPieces({color, pieces}){
     <div
       className="captured-pieces">
       {sortedPieces.map((piece, index) => 
-      <div>
-        <img src={pieceSVGs[piece.type][piece.color]} alt={pieceSymbols[piece.type][piece.color]} key={index}>
-        </img></div>)}
+        <img src={pieceSVGs[piece.type][piece.color]} alt={pieceSymbols[piece.type][piece.color]} key={index}></img>)}
     </div>)
 }
