@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import pieceSymbols from "../pieceSymbols"
+import pieceSVGs from "../pieceSVGs";
 import PromotionModal from "./PromotionModal";
 
 export default function Board({board, playerToMove, isGameOver, move, findPossibleMoves, highlightMovesForPiece, playerColor}){
@@ -105,7 +106,10 @@ export default function Board({board, playerToMove, isGameOver, move, findPossib
                   backgroundColor: square.color === "light" ? "var(--light-square)" : "var(--dark-square)",
                   cursor: square.piece ? "pointer" : ""}}>
                     { square.isPossibleMove && <span className="possible-move"></span> }
-                    { square.piece ? pieceSymbols[square.piece.type][square.piece.color] : " "}
+                    { square.piece ? <img 
+                      className="piece-icon"
+                      src={pieceSVGs[square.piece.type][square.piece.color]} 
+                      alt={pieceSymbols[square.piece.type][square.piece.color]}></img> : " "}
                   </td>)}
             </tr>)}
         </tbody>

@@ -98,11 +98,15 @@ html {
 .square {
   box-sizing: border-box;
   height: var(--square-length);
+  max-height: var(--square-length);
   width: var(--square-length);
-  font-size: var(--piece-size);
   text-align: center;
   position: relative;
   z-index: 1;
+}
+
+.piece-icon {
+  height: 93%;
 }
 
 .possible-move {
