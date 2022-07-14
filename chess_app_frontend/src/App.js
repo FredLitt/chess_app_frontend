@@ -18,7 +18,7 @@ const chess = new Chess()
 function App() {
   
   // UseReducer for complex state?
-  const [ game, setGame ] = useState({ board: null, notation: [], capturedPieces: [], playerToMove: null, isOver: false })
+  const [ game, setGame ] = useState({ board: null, moveHistory: [], notation: [], capturedPieces: [], playerToMove: null, isOver: false })
 
   const [ showCreateGame, setShowCreateGame ] = useState(false)
   const [ showCreatedGameInfo, setShowCreatedGameInfo ] = useState(false)
@@ -29,6 +29,7 @@ function App() {
 
   // Takes in a game state to update React state
   const updateLocalGameState = (updatedGame) => {
+    console.log(updatedGame)
     const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
     const notation = chess.getMoveNotation(updatedGame.moveHistory)
     const capturedPieces = chess.getCapturedPieces(updatedBoard)
@@ -36,6 +37,7 @@ function App() {
     const isGameOver = chess.isGameOver(updatedBoard)
     setGame({ 
       board: updatedBoard, 
+      moveHistory: updatedGame.moveHistory,
       notation: notation, 
       capturedPieces: capturedPieces, 
       playerToMove: playerToMove,
@@ -46,7 +48,7 @@ function App() {
   // Upon loading, if a current game is stored, get game from db
   useEffect(() => {
     const currentGameData = localStorage.getItem("CURRENT_GAME_DATA")
-    if (typeof currentGameData !== typeof undefined){
+    if (currentGameData) {
       const currentGameData = JSON.parse(localStorage.getItem("CURRENT_GAME_DATA"))
       setGameData(currentGameData)
       socket.emit("joinedGame", currentGameData.id)
@@ -76,9 +78,17 @@ function App() {
   })
 
   const move = async (moveToPlay) => {
+    updateGameOptimistically(moveToPlay)
     const updatedGame = await gameService.playMove(gameData.id, moveToPlay)
     updateLocalGameState(updatedGame)
     socket.emit("update", gameData.id)
+  }
+
+  // Updates react state using chess logic without waiting for server response
+  const updateGameOptimistically = (move) => {
+    const fullMove = chess.getFullMove(game.board, move)
+    const updatedGame = { moveHistory: [...game.moveHistory, fullMove ]}
+    updateLocalGameState(updatedGame)
   }
 
   // This should now create a popup for the other player, allowing them to give you a takeback...

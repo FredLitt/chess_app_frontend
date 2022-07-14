@@ -1,6 +1,6 @@
-[ ] - Resign button
+[x] - Resign button
 [ ] - Highlight last moved played
-[ ] - Change pieces to SVGs
+[x] - Change pieces to SVGs
 [ ] - Takeback button
 [ ] - Add drag and drop
 [ ] - Coordinates on sides of board
