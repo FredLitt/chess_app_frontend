@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getBoard, isMovePromotion } from "./boardutils"
+import { getBoard, isMovePromotion, isBottomRowSquare, isLeftColumnSquare } from "./boardutils"
 import pieceSymbols from "../pieceSymbols";
 import pieceSVGs from "../pieceSVGs";
 import PromotionModal from "./PromotionModal";
@@ -83,10 +83,8 @@ export default function Board({board, playerToMove, isGameOver, move, findPossib
                   opacity: lastPlayedMoveSquares.includes(square.coordinates) ? "70%" : "100%",
                   cursor: square.piece ? "pointer" : ""}}>
                     { square.isPossibleMove && <span className="possible-move"></span> }
-                    { playerColor === "white" && square.coordinates[1] === "1" && <span id="x-coords">{square.coordinates[0]}</span>}
-                    { playerColor === "black" && square.coordinates[1] === "8" && <span id="x-coords">{square.coordinates[0]}</span>}
-                    { playerColor === "white" && square.coordinates[0] === "a" && <span id="y-coords">{square.coordinates[1]}</span>}
-                    { playerColor === "black" && square.coordinates[0] === "h" && <span id="y-coords">{square.coordinates[1]}</span>}
+                    { isBottomRowSquare(playerColor, square) && <span id="x-coords">{square.coordinates[0]}</span>}
+                    { isLeftColumnSquare(playerColor, square) && <span id="y-coords">{square.coordinates[1]}</span>}
                     { square.piece ? <img 
                       className="piece-icon"
                       src={pieceSVGs[square.piece.type][square.piece.color]} 

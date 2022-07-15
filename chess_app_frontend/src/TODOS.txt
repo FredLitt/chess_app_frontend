@@ -2,7 +2,7 @@
 [x] - Optimistic update
 [x] - Change pieces to SVGs
 [x] - Highlight last moved played
-[ ] - Coordinates on sides of board
+[x] - Coordinates on sides of board
 [ ] - Add drag and drop
 [ ] - Takeback button
 [ ] - Consolidate popups?
