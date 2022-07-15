@@ -2,7 +2,7 @@
   --piece-size: calc(16px + 2.5vw);
   --board-length: calc(8 * var(--square-length));
   --square-length: calc(1.5 * var(--piece-size));
-  --notation-container-width: calc(.7 * var(--board-length));
+  --notation-container-width: calc(.6 * var(--board-length));
   --game-container-side-margin: calc(0.5 * (100vw - (var(--board-length) + var(--notation-container-width))));
   --main-bg-color: hsla(0, 100%, 0%, 0.85);
   --light-square: beige;
@@ -102,6 +102,20 @@ html {
   width: var(--board-length);
 }
 
+#x-coords {
+  color: white;
+  position: absolute;
+  top: 100%;
+  left: 45%;
+}
+
+#y-coords {
+  color: white;
+  position: absolute;
+  left: -30%;
+  top: 30%;
+}
+
 .square {
   box-sizing: border-box;
   position: relative;
@@ -161,14 +175,14 @@ html {
 
 #notation-captured-piece-container {
   align-self: start;
-  padding: calc(0.5* var(--piece-size));
+  margin: var(--piece-size);
   box-sizing: border-box;
   font-size: calc(0.5 * var(--piece-size));
   display: flex;
   flex-direction: column;
   width: var(--notation-container-width);
   max-width: var(--notation-container-width);
-  height: calc(7 * var(--square-length));
+  height: calc(6 * var(--square-length));
   align-self: center;
 }
 
@@ -254,7 +268,11 @@ html {
 
 @media (max-width: 550px) {
   :root {
-    --board-length: calc(9.5 * (var(--square-length)));
+    --board-length: calc(9 * (var(--square-length)));
+  }
+
+  #x-coords, #y-coords {
+    font-size: 0.65em;
   }
 }
 

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import pieceSymbols from "../pieceSymbols"
+import { getBoard, isMovePromotion } from "./boardutils"
+import pieceSymbols from "../pieceSymbols";
 import pieceSVGs from "../pieceSVGs";
 import PromotionModal from "./PromotionModal";
 
@@ -43,20 +44,9 @@ export default function Board({board, playerToMove, isGameOver, move, findPossib
   }
 
   const handleClick = ({ coordinates, piece }) => {
-    if (!pieceToMove && piece){
-      selectPiece(coordinates, piece)
-    }
-    if (pieceToMove){
-      movePiece(coordinates)
-    }
-  }
-
-  const isMovePromotion = (piece, targetSquare) => {
-    if (piece.type !== "pawn"){ return false }
-    const targetRow = parseInt(targetSquare[1])
-    const pawnColor = piece.color
-    const moveIsPromotion = (pawnColor === "white" && targetRow === 8) || (pawnColor === "black" && targetRow === 1)
-    return moveIsPromotion
+    const squareHasPiece = piece
+    if (!pieceToMove && squareHasPiece) selectPiece(coordinates, piece)
+    if (pieceToMove) movePiece(coordinates)
   }
 
   const promote = (promotionChoice) => {
@@ -71,31 +61,15 @@ export default function Board({board, playerToMove, isGameOver, move, findPossib
     setPieceToMove(null)
   }
 
-  const getBoard = () => {
-    if (playerColor === "white"){
-      return board
-    } else {
-      const flippedBoard = []
-      for (let y = 7; y >= 0; y--){
-        const row = []
-        for (let x = 7; x >= 0; x--){
-          row.push(board[y][x])
-        }
-        flippedBoard.push(row)
-      }
-      return flippedBoard 
-    }
-  }
-
   return (
     <>
       {promotionMove && <PromotionModal promotionMove={promotionMove} promote={promote}/>}
-
+      
       <table 
         id="board"
         cellSpacing="0">
         <tbody>
-        {getBoard().map((row, index) =>
+        {getBoard(board, playerColor).map((row, index) =>
           <tr 
             className="board-row"
             key={index}>
@@ -109,6 +83,10 @@ export default function Board({board, playerToMove, isGameOver, move, findPossib
                   opacity: lastPlayedMoveSquares.includes(square.coordinates) ? "70%" : "100%",
                   cursor: square.piece ? "pointer" : ""}}>
                     { square.isPossibleMove && <span className="possible-move"></span> }
+                    { playerColor === "white" && square.coordinates[1] === "1" && <span id="x-coords">{square.coordinates[0]}</span>}
+                    { playerColor === "black" && square.coordinates[1] === "8" && <span id="x-coords">{square.coordinates[0]}</span>}
+                    { playerColor === "white" && square.coordinates[0] === "a" && <span id="y-coords">{square.coordinates[1]}</span>}
+                    { playerColor === "black" && square.coordinates[0] === "h" && <span id="y-coords">{square.coordinates[1]}</span>}
                     { square.piece ? <img 
                       className="piece-icon"
                       src={pieceSVGs[square.piece.type][square.piece.color]} 

@@ -1,7 +1,7 @@
 [x] - Resign button
 [x] - Optimistic update
 [x] - Change pieces to SVGs
-[ ] - Highlight last moved played
+[x] - Highlight last moved played
 [ ] - Coordinates on sides of board
 [ ] - Add drag and drop
 [ ] - Takeback button
