@@ -225,9 +225,9 @@ html {
 }
 
 #theme-options {
-  padding: 2vh 0;
+  padding: 1vh 0;
   width: 25%;
-  background-color: black;
+  background-color: rgb(42, 36, 36);
   position: relative;
   left: 75%;
   z-index: 3;
@@ -284,7 +284,7 @@ html {
   }
 
   .popup {
-    left: calc(0.05 * var(--board-length) + var(--game-container-side-margin));
+    left: calc(var(--game-container-side-margin) - (0.04 * var(--board-length)));
     top: calc(.5 * var(--board-length));
   }
 
@@ -295,7 +295,7 @@ html {
   }
 
   .promotion-pieces {
-    top: calc(0.48 * var(--board-length));
-    left: calc(var(--game-container-side-margin) + 0.05 * var(--board-length));
+    top: calc(var(--game-container-side-margin) - (0.04 * var(--board-length)));
+    left: calc(0.88 * var(--game-container-side-margin));
   }
 }

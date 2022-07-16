@@ -8,11 +8,12 @@ const handleKeydown = (e) => {
   if (e.key === "Backspace"){
     setNewGameData("")
   }
-  if (e.key === "Enter"){
+  if (e.key === "Enter" && newGameData !== ""){
     joinGame(newGameData)
     setNewGameData("")
   } 
-  const paste = (e.key === "v" && e.key === "v")
+  const paste = (e.ctrlKey && e.key === "v")
+  console.log(paste)
   if (e.key !== "Enter" && !paste){
     e.preventDefault()
   }

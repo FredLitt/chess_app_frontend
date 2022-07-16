@@ -1,4 +1,5 @@
 import React from "react";
+import ClosePopUpButton from "./ClosePopUpButton";
 
 export default function GameOverPopUp({gameOver, toggleCreateGame, closePopUp}){
 
@@ -9,7 +10,7 @@ export default function GameOverPopUp({gameOver, toggleCreateGame, closePopUp}){
 
 return (
   <div className="popup">
-    <button className="close-popup-button" onClick={closePopUp}>X</button>
+    <ClosePopUpButton closePopUp={closePopUp} />
     <div>{gameOver.result} {gameOver.score}</div>
     <button onClick={handleClick}>Create New Game?</button>
   </div>

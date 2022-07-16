@@ -1,10 +1,9 @@
 import React, { useState } from "react"
 import { themes } from "./themes"
 
-export default function GameOptionsBar({toggleCreateGame, toggleJoinGame, toggleConfirmResignation, takeback}){
+export default function GameOptionsBar({ toggleOption }){
 
   const [ showThemes, setshowThemes ] = useState(false)
-
 
   const setTheme = (selectedScheme) => {
     const selectedColors = Object.values(selectedScheme)
@@ -32,11 +31,9 @@ export default function GameOptionsBar({toggleCreateGame, toggleJoinGame, toggle
 
   return (
     <div id="game-options-bar">
-      <button onClick={toggleCreateGame}>Create Game</button>
-      <button onClick={toggleJoinGame}>Join Game</button>
-      <button onClick={toggleConfirmResignation}>Resign</button>
- 
-      {/* <button onClick={takeback}>Takeback</button> */}
+      <button name="createGame" onClick={(e)=> toggleOption(e.target.name)}>Create Game</button>
+      <button name="joinGame" onClick={(e)=> toggleOption(e.target.name)}>Join Game</button>
+      <button name="confirmResignation" onClick={(e)=> toggleOption(e.target.name)}>Resign</button>
 
       <button onClick={() => {setshowThemes(!showThemes)}}>Board Theme</button>
       {showThemes && 

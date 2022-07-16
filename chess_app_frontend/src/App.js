@@ -4,10 +4,7 @@ import Board from './components/Board'
 import GameOptionsBar from './components/GameOptionsBar'
 import Notation from './components/Notation'
 import CapturedPieceContainer from './components/CapturedPieceContainer'
-import CreateGamePopUp from './components/CreateGamePopUp'
-import CreatedGameInfo from './components/CreatedGameInfo'
-import JoinGamePopUp from './components/JoinGamePopUp'
-import ConfirmResignationPopUp from './components/ConfirmResignationPopUp'
+import ModalManager from './components/ModalManager'
 import GameOverPopUp from './components/GameOverPopUp'
 import gameService from './services/game'
 import './App.css'
@@ -20,10 +17,9 @@ function App() {
   // UseReducer for complex state?
   const [ game, setGame ] = useState({ board: null, moveHistory: [], notation: [], capturedPieces: [], playerToMove: null, isOver: false })
 
-  const [ showCreateGame, setShowCreateGame ] = useState(false)
-  const [ showCreatedGameInfo, setShowCreatedGameInfo ] = useState(false)
-  const [ showJoinGame, setShowJoinGame ] = useState(false)
-  const [ showConfirmResignation, setShowConfirmResignation ] = useState(false)
+  // Idea...
+  const [ openModal, setOpenModal ] = useState(null)
+
   const [ showGameOver, setShowGameOver ] = useState(false)
   const [ gameData, setGameData ] = useState(null) 
 
@@ -92,17 +88,9 @@ function App() {
     updateLocalGameState(updatedGame)
   }
 
-  // This should now create a popup for the other player, allowing them to give you a takeback...
-  const takebackMove = async (gameID) => {
-    const updatedGame = await gameService.takebackMove(gameID)
-    updateLocalGameState(updatedGame)
-    socket.emit("update")
-  }
-
-  // Delete previous game upon creation of new game?
   const createGame = async (colorChoice) => {
     if (!colorChoice) return console.log("Choose a color!")
-    setShowCreateGame(false)
+    setOpenModal(null)
     const newGame = await gameService.createGame()
     const newGameData = { id: newGame.id, color: colorChoice }
     if (gameData){
@@ -112,7 +100,7 @@ function App() {
     socket.emit("joinedGame", newGameData.id)
     localStorage.setItem("CURRENT_GAME_DATA", JSON.stringify(newGameData))
     setGameData(newGameData)
-    setShowCreatedGameInfo(newGameData)
+    setOpenModal("createdGameInfo")
   }
 
   // This is pretty hacky
@@ -125,14 +113,14 @@ function App() {
     socket.emit("joinedGame", gameToJoin.id)
     localStorage.setItem("CURRENT_GAME_DATA", JSON.stringify(gameToJoin))
     setGameData(gameToJoin)
-    setShowJoinGame(!showJoinGame)
+    setOpenModal("joinGame")
   }
 
   const resign = () => {
     if (!gameData || game.isOver) return
     socket.emit("resign", gameData.id)
     handleResignation(gameData.color)
-    setShowConfirmResignation(false)
+    setOpenModal(null)
   }
 
   const handleResignation = (resigningColor) => {
@@ -150,47 +138,46 @@ function App() {
   }
 
   const gameInProgress = (game.board !== null)
+
+  const toggleOption = (option) => {
+    if (openModal === option) return setOpenModal(null)
+    if (openModal) setOpenModal(null)
+    setOpenModal(option)
+  }
+
+  const modalFunctions = { createGame, joinGame, resign }
   
   return (
     <div className="App">
       <div id="game-container">
-        <GameOptionsBar 
-          toggleCreateGame={() => setShowCreateGame(!showCreateGame)} 
-          toggleJoinGame={() => setShowJoinGame(!showJoinGame)} 
-          toggleConfirmResignation={
-            () => {
-              console.log("close")
-              if (game.isOver) return
-              setShowConfirmResignation(!showConfirmResignation)
-            }
-          } 
-          resign={resign} 
-          takeback={takebackMove}/>
+        <GameOptionsBar toggleOption={toggleOption} />
         
         {gameInProgress &&
         <Board 
-          board={game.board} 
-          playerToMove={game.playerToMove} 
-          isGameOver={game.isOver}
+          game={game}
+          // board={game.board} 
+          // playerToMove={game.playerToMove} 
+          // isGameOver={game.isOver}
           move={move} 
           findPossibleMoves={findPossibleMoves} 
           highlightMovesForPiece={highlightMovesForPiece} 
-          playerColor={gameData ? gameData.color : null}
-          lastMove={game.moveHistory[game.moveHistory.length-1]}/>}
+          playerColor={gameData ? gameData.color : null}/>}
         
         {gameInProgress &&
         <div id="notation-captured-piece-container">
-          <CapturedPieceContainer color={gameData && gameData.color === "white" ? "white" : "black"} pieces={game.capturedPieces} />
+          <CapturedPieceContainer color={gameData.color === "white" ? "white" : "black"} pieces={game.capturedPieces} />
           <Notation notation={game.notation}></Notation>
-          <CapturedPieceContainer color={gameData && gameData.color === "white" ? "black" : "white"} pieces={game.capturedPieces} />
+          <CapturedPieceContainer color={gameData.color === "white" ? "black" : "white"} pieces={game.capturedPieces} />
         </div>}
         
       </div>
-      {showCreateGame && <CreateGamePopUp createGame={createGame} closePopUp={() => setShowCreateGame(false)}/>}
-      {showCreatedGameInfo && <CreatedGameInfo gameData={gameData} closePopUp={() => setShowCreatedGameInfo(false)}/>}
-      {showJoinGame && <JoinGamePopUp joinGame={joinGame} closePopUp={() => setShowJoinGame(false)}/>}
-      {showConfirmResignation && <ConfirmResignationPopUp resign={resign} closePopUp={() => setShowConfirmResignation(false)}/>}
-      {showGameOver && <GameOverPopUp gameOver={game.isOver} toggleCreateGame={() => setShowCreateGame(true)} closePopUp={() => setShowGameOver(false)}/>}
+      <ModalManager 
+        openModal={openModal} 
+        modalFunctions={modalFunctions}
+        gameData={gameData} 
+        closePopUp={() => setOpenModal(null)}/>
+
+      {showGameOver && <GameOverPopUp gameOver={game.isOver} toggleCreateGame={() => setOpenModal("createGame")} closePopUp={() => setShowGameOver(false)}/>}
     </div>
   );
 }

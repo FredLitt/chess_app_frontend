@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import ClosePopUpButton from './ClosePopUpButton'
 
 export default function CreateGamePopUp({ createGame, closePopUp }) {
 
@@ -6,7 +7,7 @@ export default function CreateGamePopUp({ createGame, closePopUp }) {
 
   return (
       <div className="popup">
-        <button className="close-popup-button" onClick={closePopUp}>X</button>
+        <ClosePopUpButton closePopUp={closePopUp} />
         <div>Choose your color</div>  
         <div>   
           <button onClick={(e) => setColorChoice(e.target.value)} value="white" style={{backgroundColor: colorChoice === "white" ? "slategray" : "lightgrey"}}>White</button>

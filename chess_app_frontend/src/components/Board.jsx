@@ -4,11 +4,14 @@ import pieceSymbols from "../pieceSymbols";
 import pieceSVGs from "../pieceSVGs";
 import PromotionModal from "./PromotionModal";
 
-export default function Board({board, playerToMove, isGameOver, move, findPossibleMoves, highlightMovesForPiece, playerColor, lastMove}){
+export default function Board({game, move, findPossibleMoves, highlightMovesForPiece, playerColor}){
+
+  const { board, playerToMove, isGameOver } = game
 
   const [ pieceToMove, setPieceToMove ] = useState(null)
   const [ promotionMove, setPromotionMove ] = useState(false)
 
+  const lastMove = game.moveHistory[game.moveHistory.length-1]
   const lastPlayedMoveSquares = lastMove? [ lastMove.from, lastMove.to] : []
 
   const movePiece = (targetSquare) => {
