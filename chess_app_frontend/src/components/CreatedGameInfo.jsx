@@ -10,7 +10,7 @@ export default function CreatedGameInfo({ gameData, closePopUp }) {
       <ClosePopUpButton closePopUp={closePopUp} />
       <div>Send the game ID to a friend for them to join</div>
       <div>
-          <div>{gameData.id}{gameData.color[0]}</div><button id="copy-button" onClick={() =>  navigator.clipboard.writeText(gameID)}>Copy</button>
+          <div>{gameData.id}{gameData.color[0]}</div><button id="copy-button" onClick={() => navigator.clipboard.writeText(gameID)}>Copy</button>
       </div>
       </div>
   )
