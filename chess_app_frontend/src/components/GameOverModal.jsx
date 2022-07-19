@@ -1,11 +1,11 @@
 import React from "react";
-import ClosePopUpButton from "./ClosePopUpButton";
+import CloseModalButton from "./CloseModalButton";
 
-export default function GameOverModal({gameOver, toggleCreateGame, closePopUp}){
+export default function GameOverModal({gameOver, toggleCreateGame, closeModal}){
 
 return (
   <div className="popup game-over">
-    <ClosePopUpButton closePopUp={closePopUp} />
+    <CloseModalButton closeModal={closeModal} />
     <div>{gameOver.result}! {gameOver.score}</div>
   </div>
 )}

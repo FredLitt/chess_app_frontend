@@ -15,18 +15,18 @@ const MODALS = {
     ERROR: "error"
 }
 
-export default function Modals({ openModal, modalFunctions, gameID, gameOver, closePopUp }) {
+export default function Modals({ openModal, modalFunctions, gameID, gameOver, closeModal }) {
 
     const { createGame, joinGame, resign, toggleOption } = modalFunctions
 
   return (
     <>
-        {MODALS.CREATEGAME === openModal && <CreateGameModal createGame={createGame} closePopUp={closePopUp} />}
-        {MODALS.CREATEDGAMEINFO === openModal && <CreatedGameInfo gameID={gameID} closePopUp={closePopUp} />}
-        {MODALS.JOINGAME === openModal && <JoinGameModal joinGame={joinGame} closePopUp={closePopUp} />}
-        {MODALS.CONFIRMRESGNATION === openModal && <ConfirmResignationModal resign={resign} closePopUp={closePopUp} />}
-        {MODALS.GAMEOVER === openModal && <GameOverModal gameOver={gameOver} toggleCreateGame={() => toggleOption("createGame")} closePopUp={closePopUp} />}
-        {MODALS.ERROR === openModal && <ErrorModal closePopUp={closePopUp} />}
+        {MODALS.CREATEGAME === openModal && <CreateGameModal createGame={createGame} closeModal={closeModal} />}
+        {MODALS.CREATEDGAMEINFO === openModal && <CreatedGameInfo gameID={gameID} closeModal={closeModal} />}
+        {MODALS.JOINGAME === openModal && <JoinGameModal joinGame={joinGame} closeModal={closeModal} />}
+        {MODALS.CONFIRMRESGNATION === openModal && <ConfirmResignationModal resign={resign} closeModal={closeModal} />}
+        {MODALS.GAMEOVER === openModal && <GameOverModal gameOver={gameOver} toggleCreateGame={() => toggleOption("createGame")} closeModal={closeModal} />}
+        {MODALS.ERROR === openModal && <ErrorModal closeModal={closeModal} />}
     </>
   )
 }

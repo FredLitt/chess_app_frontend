@@ -1,12 +1,14 @@
 import React, { useState } from "react";
+import CloseModalButton from "./CloseModalButton";
 
-export default function JoinGameModal({joinGame, closePopUp}){
+export default function JoinGameModal({joinGame, closeModal}){
 
 const [ gameID, setGameID ] = useState("")
 
 const handleKeydown = (e) => {
   if (e.key === "Enter" && gameID !== ""){
     joinGame(gameID)
+    closeModal()
     setGameID("")
   } 
 }
@@ -14,7 +16,7 @@ const handleKeydown = (e) => {
 return (
   <>
     <div className="modal">Enter ID of game to join
-      <button className="close-modal-button" onClick={closePopUp}>X</button>
+      <CloseModalButton closeModal={closeModal} />
         <input 
         type="text" 
         value={gameID} 

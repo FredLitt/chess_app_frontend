@@ -1,11 +1,11 @@
 import React from 'react'
-import ClosePopUpButton from './ClosePopUpButton'
+import CloseModalButton from './CloseModalButton'
 
-export default function ConfirmResignationModal({ resign, closePopUp }) {
+export default function ConfirmResignationModal({ resign, closeModal }) {
   return (
     <div className="modal">
       <div>Are you sure you would like to resign?</div>
-      <ClosePopUpButton closePopUp={closePopUp} />
+      <CloseModalButton closeModal={closeModal} />
       <button onClick={resign}>Confirm</button>
       </div>
   )

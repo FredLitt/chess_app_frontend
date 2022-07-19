@@ -1,10 +1,10 @@
 import React from 'react'
-import ClosePopUpButton from './ClosePopUpButton'
+import CloseModalButton from './CloseModalButton'
 
-export default function ErrorModal() {
+export default function ErrorModal({closeModal}) {
   return (
     <>
-    <ClosePopUpButton />
+    <CloseModalButton closeModal={closeModal} />
     <div className="popup">A server error has occured. Please try refreshing the page.</div>
     </>
     

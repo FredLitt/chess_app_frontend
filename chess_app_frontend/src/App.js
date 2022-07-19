@@ -189,7 +189,7 @@ function App() {
         modalFunctions={modalFunctions}
         gameID={gameData.id} 
         gameOver={game.isOver}
-        closePopUp={() => setOpenModal(null)} />
+        closeModal={() => setOpenModal(null)} />
     </div>
   );
 }
