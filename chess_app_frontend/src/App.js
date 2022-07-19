@@ -26,7 +26,8 @@ function App() {
     const notation = chess.getMoveNotation(updatedGame.moveHistory)
     const capturedPieces = chess.getCapturedPieces(updatedBoard)
     const playerToMove = chess.getWhoseTurn(updatedGame.moveHistory)
-    const isGameOver = chess.isGameOver(updatedBoard)
+    const isGameOver = chess.isGameOver(updatedBoard) || updatedGame.gameResult
+    console.log(updatedGame)
     setGame({ 
       board: updatedBoard, 
       moveHistory: updatedGame.moveHistory,
@@ -36,7 +37,6 @@ function App() {
       isOver: isGameOver
     })
     if (isGameOver){ 
-      console.log(isGameOver)
       setOpenModal("gameOver")
     }
   }
@@ -112,10 +112,12 @@ function App() {
   }
 
   const createGame = async (colorChoice) => {
-    if (!colorChoice) return
+    console.log("creating game")
+    if (!colorChoice) return console.log("select color")
     setOpenModal(null)
     const newGame = await gameService.createGame()
     const newGameData = { id: newGame.id, color: colorChoice }
+    console.log(newGameData)
     if (gameData.id){
       const gameToLeave = gameData.id
       socket.emit("leftGame", gameToLeave)
@@ -132,10 +134,13 @@ function App() {
   }
 
   const resign = () => {
-    if (!gameData || game.isOver) return
+    if (!gameData.id || game.isOver) return
+    console.log("resigning")
     socket.emit("resign", gameData.id)
+    const score = gameData.color === "white" ? "0-1" : "1-0" 
+    const result = { result: `${gameData.color} resigned`, score }
+    gameService.setGameResult(gameData.id, result)
     handleResignation(gameData.color)
-    setOpenModal(null)
   }
 
   const handleResignation = (resigningColor) => {
@@ -163,9 +168,8 @@ function App() {
 
   return (
     <div className="App">
-      
-      <div id="game-container">
-        
+
+      <div id="game-container">        
         <GameOptionsBar toggleOption={toggleOption} />
         
         {gameInProgress &&

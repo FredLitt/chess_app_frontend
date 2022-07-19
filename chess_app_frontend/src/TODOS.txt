@@ -7,8 +7,10 @@
 [x] - Add error handling popup
 [ ] - Way to get current gameID
 
-[ ] - Add URLs rather than game IDs to join
-[ ] - Add drag and drop
-[ ] - Takeback button
 [ ] - Refactor game state with useReducer
+[ ] - Add game over status on backend
+
+[ ] - Add URLs rather than game IDs to join
+[ ] - Takeback button
 [ ] - Allow timed games
+[ ] - Add drag and drop

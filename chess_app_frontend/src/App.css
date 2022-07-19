@@ -22,9 +22,26 @@ html {
   height: 90vh;
 }
 
+#hamburger-menu {
+  z-index: 4;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+
 #game-options-bar {
   position: absolute;
   top: 0.25vh;
+}
+
+.options-button {
+  background: none;
+  border: none;
+  padding: .25em;
+  font-size: calc(0.45 * var(--piece-size));
+  color: lightgray;
+  height: 100%;
+  width: calc(3.5 * var(--piece-size));
 }
 
 #game-options-bar > button {

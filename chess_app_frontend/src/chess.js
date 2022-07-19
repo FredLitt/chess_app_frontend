@@ -6,7 +6,6 @@ class Chess {
     constructor(){
         this.xAxis = ["a", "b", "c", "d", "e", "f", "g", "h"]
         this.moveHistory = []
-        this.capturedPieces = []
     }
     createEmptyBoard(){
         const board = []
@@ -597,14 +596,6 @@ class Chess {
         return moveIsPromotion
     }
 
-    capturePiece(piece){
-        if ("formerPawn" in piece){
-            this.capturedPieces.push({ type: "pawn", color: piece.color })
-        } else {
-            this.capturedPieces.push(piece)
-        }
-    }
-    
     createBoardFromMoveHistory(moveHistory){
         let board = this.createStartPosition()
         for (let i = 0; i < moveHistory.length; i++){
@@ -660,14 +651,9 @@ class Chess {
         const endSquare = this.getSquare(board, move.to)
         let movingPiece = startSquare.piece
         
-        if (move.data.includes("capture") && !move.data.includes("enPassant")){ 
-            this.capturePiece(endSquare.piece)
-        }
-        
         if (move.data.includes("enPassant")){
             const coordinatesOfCapturedPawn = this.getEnPassantTarget()
             const pawnToCapturesSquare = this.getSquare(board, coordinatesOfCapturedPawn)
-            this.capturePiece(pawnToCapturesSquare.piece)
             pawnToCapturesSquare.piece = null
         }
 

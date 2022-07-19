@@ -26,6 +26,12 @@ const playMove = async (id, move) => {
   }
 }
 
+const setGameResult = async (id, result) => {
+  const response = await axios.patch(`${baseUrl}/${id}/result`, result)
+  console.log("result", result, "response", response)
+  return response.data
+}
+
 let gameService
 
-export default gameService = { getGame, playMove, createGame }
+export default gameService = { getGame, playMove, createGame, setGameResult }

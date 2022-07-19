@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 
-export default function GameOptionsBar({notation}){
+export default function GameOptionsBar({ notation }){
 
   useEffect(() => {
     const scrollToBottom = () => {

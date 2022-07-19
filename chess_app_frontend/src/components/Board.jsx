@@ -6,8 +6,8 @@ import PromotionModal from "./PromotionModal";
 
 export default function Board({game, move, findPossibleMoves, highlightMovesForPiece, playerColor}){
 
-  const { board, playerToMove, isGameOver } = game
-
+  const { board, playerToMove, isOver } = game
+console.log(isOver)
   const [ pieceToMove, setPieceToMove ] = useState(null)
   const [ promotionMove, setPromotionMove ] = useState(false)
 
@@ -34,7 +34,7 @@ export default function Board({game, move, findPossibleMoves, highlightMovesForP
 
   const selectPiece = (coordinates, piece) => {
     const wrongColor = (playerColor !== playerToMove) || (piece.color !== playerColor)
-    if (wrongColor || isGameOver) return
+    if (wrongColor || isOver) return
     const possibleMoves = findPossibleMoves(coordinates)
     const selectedPiece = {
       piece,

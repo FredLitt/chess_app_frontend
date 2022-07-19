@@ -4,7 +4,7 @@ import CloseModalButton from './CloseModalButton'
 export default function CreatedGameInfo({ gameID, closeModal }) {
 
   return (
-    <div className="modal" unselectable='on'>
+    <div className="modal">
       <CloseModalButton closeModal={closeModal} />
       <div>Send the game ID to a friend for them to join</div>
       <div>

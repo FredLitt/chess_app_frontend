@@ -4,8 +4,8 @@ import CloseModalButton from "./CloseModalButton";
 export default function GameOverModal({gameOver, toggleCreateGame, closeModal}){
 
 return (
-  <div className="popup game-over">
+  <div className="modal">
     <CloseModalButton closeModal={closeModal} />
-    <div>{gameOver.result}! {gameOver.score}</div>
+    <div>{gameOver.result} {gameOver.score}</div>
   </div>
 )}
