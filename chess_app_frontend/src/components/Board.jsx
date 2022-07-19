@@ -22,12 +22,11 @@ export default function Board({game, move, findPossibleMoves, highlightMovesForP
       to: targetSquare
     }
     if (isMovePromotion(moveToPlay.piece, targetSquare)){
-      setPromotionMove({
+      return setPromotionMove({
           piece: pieceToMove.piece,
           from: pieceToMove.square,
           to: targetSquare
         })
-      return
     }
     move(moveToPlay)
     setPieceToMove(null)

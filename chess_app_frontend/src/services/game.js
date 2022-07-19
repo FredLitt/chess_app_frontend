@@ -10,25 +10,22 @@ const createGame = async () => {
 const getGame = async (id) => {
   try {
     const response = await axios.get(`${baseUrl}/${id}/moves`)
-    console.log(response)
     return response.data
   }
   catch {
-    return { error: "serverError" }
+    return { error: "error" }
   }
 }
 
 const playMove = async (id, move) => {
-  const response = await axios.post(`${baseUrl}/${id}/moves`, move)
-  console.log(response)
-  return response.data
-}
-
-const takebackMove = async (id) => {
-  const response = await axios.delete(`${baseUrl}/${id}/moves`)
-  return response.data
+  try {
+    const response = await axios.post(`${baseUrl}/${id}/moves`, move)
+    return response.data
+  } catch {
+    return { error: "error" }
+  }
 }
 
 let gameService
 
-export default gameService = { getGame, playMove, takebackMove, createGame }
+export default gameService = { getGame, playMove, createGame }

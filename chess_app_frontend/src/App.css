@@ -24,12 +24,12 @@ html {
 
 #game-options-bar {
   position: absolute;
-  top: 0px;
+  top: 0.25vh;
 }
 
 #game-options-bar > button {
-  background: linear-gradient(180deg, hsl(0, 1%, 15%) 40%, rgb(82, 91, 101));;
-  border-radius: 5px;
+  background: none;
+  border: none;
   padding: .25em;
   font-size: calc(0.45 * var(--piece-size));
   color: lightgray;
@@ -41,7 +41,15 @@ html {
   opacity: 70%;
 }
 
-.close-popup-button {
+#current-game-id {
+  position: absolute;
+  top: calc(0.85 * var(--piece-size));
+  left: 50%;
+  transform: translate(-50%);
+  color: lightgrey;
+}
+
+.close-modal-button {
   border-radius: 50%;
   position: absolute;
   top: calc(-0.3 * var(--piece-size));
@@ -50,13 +58,13 @@ html {
   width: calc(0.8 * var(--piece-size));
 }
 
-.popup > button, .popup > div > button {
+.modal > button, .modal > div > button {
   margin-bottom: .8vw;
   font-size: calc(0.35 * var(--piece-size));
   cursor: pointer;
 }
 
-.popup {
+.modal {
   position: absolute;
   border-radius: 5px;
   height: calc(2 * var(--piece-size));
@@ -73,16 +81,20 @@ html {
   background-color: hsla(0, 0%, 0%, 0.705);
 }
 
-.popup > div {
+.modal > div {
   padding: .1rem;
   display: flex;
 }
 
-.popup > input {
+.modal > input {
   height: calc(0.5 * var(--piece-size));
   font-size: calc(0.4 * var(--piece-size));
   text-align: center;
   width: 60%;
+}
+
+.game-over {
+  font-size: 1.25em;
 }
 
 #copy-button {
@@ -94,7 +106,7 @@ html {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-top: calc(.7 * var(--square-length));
+  margin-top: calc(0.6 * var(--square-length));
 }
 
 #board {
@@ -251,21 +263,6 @@ html {
   cursor: pointer;
 }
 
-.modal {
-  position: absolute;
-  width: 100%; 
-  height: 100%; 
-  left: 0;
-  top: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-radius: 1rem;
-  border: 2px solid black;
-  box-sizing: border-box;
-  z-index: 3;
-}
-
 @media (max-width: 550px) {
   :root {
     --board-length: calc(9 * (var(--square-length)));
@@ -283,19 +280,19 @@ html {
     justify-content: center;
   }
 
-  .popup {
+  .modal {
     left: calc(var(--game-container-side-margin) - (0.04 * var(--board-length)));
     top: calc(.5 * var(--board-length));
   }
 
-  .popup > div > button {
+  .modal > div > button {
     font-size: .8em;
     height: 2em;
     width: 4em;
   }
 
   .promotion-pieces {
-    top: calc(var(--game-container-side-margin) - (0.04 * var(--board-length)));
+    top: calc(0.46 * var(--board-length));
     left: calc(0.88 * var(--game-container-side-margin));
   }
 }

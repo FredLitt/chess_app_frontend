@@ -84,7 +84,7 @@ function App() {
       }
       socket.emit("assignColor", joiningPlayerData)
     })
-    return () => { socket.off("requestJoin") }
+    return () => { socket.off("requestColor") }
   })
 
   useEffect(() => {
@@ -163,7 +163,9 @@ function App() {
 
   return (
     <div className="App">
+      
       <div id="game-container">
+        
         <GameOptionsBar toggleOption={toggleOption} />
         
         {gameInProgress &&

@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import ClosePopUpButton from './ClosePopUpButton'
 
-export default function CreateGamePopUp({ createGame, closePopUp }) {
+export default function CreateGameModal({ createGame, closePopUp }) {
 
   const [ colorChoice, setColorChoice ] = useState(null)
 
   return (
-      <div className="popup">
+      <div className="modal">
         <ClosePopUpButton closePopUp={closePopUp} />
         <div>Choose your color</div>  
         <div>   
