@@ -4,8 +4,7 @@ import Board from './components/Board'
 import GameOptionsBar from './components/GameOptionsBar'
 import Notation from './components/Notation'
 import CapturedPieceContainer from './components/CapturedPieceContainer'
-import ModalManager from './components/ModalManager'
-import GameOverPopUp from './components/GameOverPopUp'
+import Modals from './components/Modals'
 import gameService from './services/game'
 import './App.css'
 import { socket } from './context/socket'
@@ -17,11 +16,9 @@ function App() {
   // UseReducer for complex state?
   const [ game, setGame ] = useState({ board: null, moveHistory: [], notation: [], capturedPieces: [], playerToMove: null, isOver: false })
 
-  // Idea...
   const [ openModal, setOpenModal ] = useState(null)
 
-  const [ showGameOver, setShowGameOver ] = useState(false)
-  const [ gameData, setGameData ] = useState(null) 
+  const [ gameData, setGameData ] = useState( { id: null, color: null }) 
 
   // Takes in a game state to update React state
   const updateLocalGameState = (updatedGame) => {
@@ -38,27 +35,32 @@ function App() {
       playerToMove: playerToMove,
       isOver: isGameOver
     })
+    if (isGameOver){ 
+      console.log(isGameOver)
+      setOpenModal("gameOver")
+    }
   }
 
   // Upon loading, if a current game is stored, get game from db
   useEffect(() => {
-    const currentGameData = localStorage.getItem("CURRENT_GAME_DATA")
-    if (currentGameData) {
+    const isCurrentGame = localStorage.getItem("CURRENT_GAME_DATA")
+    if (isCurrentGame) {
       const currentGameData = JSON.parse(localStorage.getItem("CURRENT_GAME_DATA"))
       setGameData(currentGameData)
-      socket.emit("joinedGame", currentGameData.id)
+      socket.emit("joinGame", currentGameData.id)
     }
   }, [])
 
   // if the local gameID state is changed, retrieves new game from database
   useEffect(() => { 
-    if (gameData === null) return
+    if (gameData.id === null) return
     const getCurrentGame = async () => {
       const updatedGame = await gameService.getGame(gameData.id)
+      if (updatedGame.error) return setOpenModal("error")
       updateLocalGameState(updatedGame)
     } 
     getCurrentGame()
-    socket.on("gameUpdate", async () => { getCurrentGame() })
+    socket.on("gameUpdate", async () => getCurrentGame())
     return () => { 
       socket.off("gameUpdate")
     }
@@ -70,6 +72,27 @@ function App() {
       handleResignation(resigningColor) 
     })
     return () => { socket.off("opponentResigned") }
+  })
+
+  useEffect(() => {
+    socket.on("requestColor", (joiningPlayerID) => {
+      const opponentsColor = gameData.color === "white" ? "black" : "white"
+      const joiningPlayerData = { 
+        playerID: joiningPlayerID, 
+        gameID: gameData.id, 
+        color: opponentsColor 
+      }
+      socket.emit("assignColor", joiningPlayerData)
+    })
+    return () => { socket.off("requestJoin") }
+  })
+
+  useEffect(() => {
+    socket.on("joinGame", (gameData) => {
+      localStorage.setItem("CURRENT_GAME_DATA", JSON.stringify(gameData))
+      setGameData(gameData)
+    })
+    return () => { socket.off("joinGame") }
   })
 
   const move = async (moveToPlay) => {
@@ -89,31 +112,23 @@ function App() {
   }
 
   const createGame = async (colorChoice) => {
-    if (!colorChoice) return console.log("Choose a color!")
+    if (!colorChoice) return
     setOpenModal(null)
     const newGame = await gameService.createGame()
     const newGameData = { id: newGame.id, color: colorChoice }
-    if (gameData){
+    if (gameData.id){
       const gameToLeave = gameData.id
       socket.emit("leftGame", gameToLeave)
     }
-    socket.emit("joinedGame", newGameData.id)
+    socket.emit("createdGame", newGameData)
     localStorage.setItem("CURRENT_GAME_DATA", JSON.stringify(newGameData))
     setGameData(newGameData)
     setOpenModal("createdGameInfo")
   }
 
-  // This is pretty hacky
-  const joinGame = (newGameData) => {
-    const opponentsColor = newGameData.charAt(newGameData.length-1) 
-    const gameID = newGameData.slice(0, newGameData.length-1)
-    const color = (opponentsColor === "w") ? "black" : "white"
-    const gameToJoin = { id: gameID, color: color }
+  const joinGame = async (gameID) => {
     if (gameData){ socket.emit("leftGame", gameData.id) }
-    socket.emit("joinedGame", gameToJoin.id)
-    localStorage.setItem("CURRENT_GAME_DATA", JSON.stringify(gameToJoin))
-    setGameData(gameToJoin)
-    setOpenModal("joinGame")
+    socket.emit("requestJoinGame", gameID)
   }
 
   const resign = () => {
@@ -127,7 +142,7 @@ function App() {
     const result = resigningColor === gameData.color ? "You resigned! Game over!" : "Your opponent resigned! You win!"
     const score = (resigningColor === "white") ? "0-1" : "1-0"
     setGame( {...game, isOver: { result, score }} ) 
-    setShowGameOver(true)
+    setOpenModal("gameOver")
   }
 
   const findPossibleMoves = (square) => { return chess.findSquaresForPiece(game.board, square, "possibleMoves") }
@@ -141,12 +156,11 @@ function App() {
 
   const toggleOption = (option) => {
     if (openModal === option) return setOpenModal(null)
-    if (openModal) setOpenModal(null)
     setOpenModal(option)
   }
 
-  const modalFunctions = { createGame, joinGame, resign }
-  
+  const modalFunctions = { createGame, joinGame, resign, toggleOption }
+
   return (
     <div className="App">
       <div id="game-container">
@@ -155,9 +169,6 @@ function App() {
         {gameInProgress &&
         <Board 
           game={game}
-          // board={game.board} 
-          // playerToMove={game.playerToMove} 
-          // isGameOver={game.isOver}
           move={move} 
           findPossibleMoves={findPossibleMoves} 
           highlightMovesForPiece={highlightMovesForPiece} 
@@ -171,13 +182,12 @@ function App() {
         </div>}
         
       </div>
-      <ModalManager 
+      <Modals 
         openModal={openModal} 
         modalFunctions={modalFunctions}
-        gameData={gameData} 
-        closePopUp={() => setOpenModal(null)}/>
-
-      {showGameOver && <GameOverPopUp gameOver={game.isOver} toggleCreateGame={() => setOpenModal("createGame")} closePopUp={() => setShowGameOver(false)}/>}
+        gameID={gameData.id} 
+        gameOver={game.isOver}
+        closePopUp={() => setOpenModal(null)} />
     </div>
   );
 }
