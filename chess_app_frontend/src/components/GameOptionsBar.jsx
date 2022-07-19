@@ -1,5 +1,7 @@
 import React, { useState } from "react"
 import { themes } from "./themes"
+import HamburgerMenu from "./HamburgerMenu"
+import OptionsButton from "./OptionsButton"
 
 export default function GameOptionsBar({ toggleOption }){
 
@@ -30,27 +32,28 @@ export default function GameOptionsBar({ toggleOption }){
   setColor()
 
   return (
-    <div id="game-options-bar">
-      <button name="createGame" onClick={(e)=> toggleOption(e.target.name)}>Create Game</button>
-      <button name="joinGame" onClick={(e)=> toggleOption(e.target.name)}>Join Game</button>
-      <button name="confirmResignation" onClick={(e)=> toggleOption(e.target.name)}>Resign</button>
+    <>
+      <div id="game-options-bar">
+        <OptionsButton name="createGame" text="Create Game" toggleOption={toggleOption} />
+        <OptionsButton name="joinGame" text="Join Game" toggleOption={toggleOption} />
+        <OptionsButton name="confirmResignation" text="Resign" toggleOption={toggleOption} />
 
-      <button onClick={() => {setshowThemes(!showThemes)}}>Board Theme</button>
-      {showThemes && 
-        <div id="theme-options">
-          {Object.values(themes).map((scheme, index) =>
-            <div 
-              className="color-choice" 
-              key={index}
-              onClick={() => {
-                setTheme(scheme)
-                setshowThemes(false)}}>
-              <div style={{backgroundColor: scheme.light}}></div>
-              <div style={{backgroundColor: scheme.dark}}></div>
-            </div>
-          )}
-        </div>}
-    </div>
-    
+        <button onClick={() => {setshowThemes(!showThemes)}}>Board Theme</button>
+        {showThemes && 
+          <div id="theme-options">
+            {Object.values(themes).map((scheme, index) =>
+              <div 
+                className="color-choice" 
+                key={index}
+                onClick={() => {
+                  setTheme(scheme)
+                  setshowThemes(false)}}>
+                <div style={{backgroundColor: scheme.light}}></div>
+                <div style={{backgroundColor: scheme.dark}}></div>
+              </div>
+            )}
+          </div>}
+      </div>
+    </>
   )
 }
