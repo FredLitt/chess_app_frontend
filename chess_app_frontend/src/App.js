@@ -12,8 +12,7 @@ import { socket } from './context/socket'
 const chess = new Chess()
 
 function App() {
-  
-  // UseReducer for complex state?
+
   const [ game, setGame ] = useState({ 
     board: null, 
     moveHistory: [], 

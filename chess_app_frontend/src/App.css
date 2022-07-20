@@ -30,7 +30,7 @@ html {
 #game-options-bar > button {
   background: none;
   border: none;
-  padding: 0em .8em;
+  padding: .2em .8em;
   font-size: calc(0.4 * var(--piece-size));
   color: lightgray;
   height: 100%;

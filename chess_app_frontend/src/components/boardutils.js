@@ -9,8 +9,8 @@ const getBoard = (board, playerColor) => {
             row.push(board[y][x])
         }
         flippedBoard.push(row)
-        }
-        return flippedBoard 
+    }
+    return flippedBoard 
     }
 }
 
