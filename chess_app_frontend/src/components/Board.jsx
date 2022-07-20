@@ -4,15 +4,15 @@ import pieceSymbols from "../pieceSymbols";
 import pieceSVGs from "../pieceSVGs";
 import PromotionModal from "./PromotionModal";
 
-export default function Board({game, move, findPossibleMoves, highlightMovesForPiece, playerColor}){
+export default function Board({ game, move, findPossibleMoves, highlightMovesForPiece, playerColor }){
 
-  const { board, playerToMove, isOver } = game
-console.log(isOver)
+  const { board, playerToMove, status } = game
+
   const [ pieceToMove, setPieceToMove ] = useState(null)
   const [ promotionMove, setPromotionMove ] = useState(false)
 
   const lastMove = game.moveHistory[game.moveHistory.length-1]
-  const lastPlayedMoveSquares = lastMove? [ lastMove.from, lastMove.to] : []
+  const lastPlayedMoveSquares = lastMove ? [ lastMove.from, lastMove.to ] : []
 
   const movePiece = (targetSquare) => {
     highlightMovesForPiece([])
@@ -34,7 +34,7 @@ console.log(isOver)
 
   const selectPiece = (coordinates, piece) => {
     const wrongColor = (playerColor !== playerToMove) || (piece.color !== playerColor)
-    if (wrongColor || isOver) return
+    if (wrongColor || status.result !== "undecided") return
     const possibleMoves = findPossibleMoves(coordinates)
     const selectedPiece = {
       piece,

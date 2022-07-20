@@ -14,29 +14,42 @@ const chess = new Chess()
 function App() {
   
   // UseReducer for complex state?
-  const [ game, setGame ] = useState({ board: null, moveHistory: [], notation: [], capturedPieces: [], playerToMove: null, isOver: false })
+  const [ game, setGame ] = useState({ 
+    board: null, 
+    moveHistory: [], 
+    notation: [], 
+    capturedPieces: [], 
+    playerToMove: null, 
+    status: { result: "undecided", score: "undecided" }})
 
   const [ openModal, setOpenModal ] = useState(null)
 
   const [ gameData, setGameData ] = useState( { id: null, color: null }) 
 
   // Takes in a game state to update React state
-  const updateLocalGameState = (updatedGame) => {
+  const updateLocalGameState = async (updatedGame) => {
     const updatedBoard = chess.createBoardFromMoveHistory(updatedGame.moveHistory)
     const notation = chess.getMoveNotation(updatedGame.moveHistory)
     const capturedPieces = chess.getCapturedPieces(updatedBoard)
     const playerToMove = chess.getWhoseTurn(updatedGame.moveHistory)
-    const isGameOver = chess.isGameOver(updatedBoard) || updatedGame.gameResult
-    console.log(updatedGame)
+    const gameIsOver = chess.isGameOver(updatedBoard) || updatedGame.status.result !== "undecided"
+
+    const needToUpdateGameResult = gameIsOver && updatedGame.status.result === "undecided"
+    if (needToUpdateGameResult){
+      const gameResult = chess.isGameOver(updatedBoard)
+      await gameService.setGameResult(gameData.id, gameResult )
+    }
+
     setGame({ 
       board: updatedBoard, 
       moveHistory: updatedGame.moveHistory,
       notation: notation, 
       capturedPieces: capturedPieces, 
       playerToMove: playerToMove,
-      isOver: isGameOver
+      status: updatedGame.status
     })
-    if (isGameOver){ 
+
+    if (updatedGame.status.result !== "undecided"){ 
       setOpenModal("gameOver")
     }
   }
@@ -107,17 +120,15 @@ function App() {
     const isPlayableMove = chess.isPlayableMove(game.board, move)
     if (!isPlayableMove) return
     const fullMove = chess.getFullMove(game.board, move)
-    const updatedGame = { moveHistory: [...game.moveHistory, fullMove ]}
+    const updatedGame = { status: game.status, moveHistory: [...game.moveHistory, fullMove ]}
     updateLocalGameState(updatedGame)
   }
 
   const createGame = async (colorChoice) => {
-    console.log("creating game")
     if (!colorChoice) return console.log("select color")
     setOpenModal(null)
     const newGame = await gameService.createGame()
     const newGameData = { id: newGame.id, color: colorChoice }
-    console.log(newGameData)
     if (gameData.id){
       const gameToLeave = gameData.id
       socket.emit("leftGame", gameToLeave)
@@ -133,20 +144,20 @@ function App() {
     socket.emit("requestJoinGame", gameID)
   }
 
-  const resign = () => {
-    if (!gameData.id || game.isOver) return
+  const resign = async () => {
+    if (!gameData.id || game.status.result !== "undecided") return
     console.log("resigning")
     socket.emit("resign", gameData.id)
     const score = gameData.color === "white" ? "0-1" : "1-0" 
     const result = { result: `${gameData.color} resigned`, score }
-    gameService.setGameResult(gameData.id, result)
+    await gameService.setGameResult(gameData.id, result)
     handleResignation(gameData.color)
   }
 
   const handleResignation = (resigningColor) => {
-    const result = resigningColor === gameData.color ? "You resigned! Game over!" : "Your opponent resigned! You win!"
+    const result = `${resigningColor} resigned`
     const score = (resigningColor === "white") ? "0-1" : "1-0"
-    setGame( {...game, isOver: { result, score }} ) 
+    setGame( {...game, result: { result, score }} ) 
     setOpenModal("gameOver")
   }
 
@@ -192,7 +203,7 @@ function App() {
         openModal={openModal} 
         modalFunctions={modalFunctions}
         gameID={gameData.id} 
-        gameOver={game.isOver}
+        status={game.status}
         closeModal={() => setOpenModal(null)} />
     </div>
   );

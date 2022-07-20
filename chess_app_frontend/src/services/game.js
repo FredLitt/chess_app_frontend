@@ -32,6 +32,6 @@ const setGameResult = async (id, result) => {
   return response.data
 }
 
-let gameService
+const gameService = { getGame, playMove, createGame, setGameResult }
 
-export default gameService = { getGame, playMove, createGame, setGameResult }
+export default gameService
