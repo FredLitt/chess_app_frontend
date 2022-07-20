@@ -5,10 +5,10 @@
 [x] - Coordinates on sides of board
 [x] - Consolidate popups
 [x] - Add error handling popup
+[x] - Add game over status on backend
 [ ] - Way to get current gameID
-
 [ ] - Refactor game state with useReducer
-[ ] - Add game over status on backend
+
 
 [ ] - Add URLs rather than game IDs to join
 [ ] - Takeback button

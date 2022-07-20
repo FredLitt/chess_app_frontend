@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import { themes } from "./themes"
-import HamburgerMenu from "./HamburgerMenu"
 import OptionsButton from "./OptionsButton"
 
 export default function GameOptionsBar({ toggleOption }){
@@ -37,8 +36,9 @@ export default function GameOptionsBar({ toggleOption }){
         <OptionsButton name="createGame" text="Create Game" toggleOption={toggleOption} />
         <OptionsButton name="joinGame" text="Join Game" toggleOption={toggleOption} />
         <OptionsButton name="confirmResignation" text="Resign" toggleOption={toggleOption} />
+        <OptionsButton name="createdGameInfo" text="Show Game ID" toggleOption={toggleOption} />
 
-        <button onClick={() => {setshowThemes(!showThemes)}}>Board Theme</button>
+        <button onClick={() => {setshowThemes(!showThemes)}}>Change Theme</button>
         {showThemes && 
           <div id="theme-options">
             {Object.values(themes).map((scheme, index) =>
