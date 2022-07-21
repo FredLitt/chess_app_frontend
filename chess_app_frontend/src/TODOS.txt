@@ -7,7 +7,7 @@
 [x] - Add error handling popup
 [x] - Add game over status on backend
 [x] - Way to get current gameID
-[ ] - Refactor game state with useReducer
+[ ] - Fix the game looking hideous on Safari
 
 [ ] - Add URLs rather than game IDs to join
 [ ] - Takeback button

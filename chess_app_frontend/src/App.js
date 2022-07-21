@@ -23,7 +23,7 @@ function App() {
 
   const [ openModal, setOpenModal ] = useState(null)
 
-  const [ gameData, setGameData ] = useState( { id: null, color: null }) 
+  const [ gameData, setGameData ] = useState( { id: null, color: null } ) 
 
   // Takes in a game state to update React state
   const updateLocalGameState = async (updatedGame) => {

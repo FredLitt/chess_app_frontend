@@ -31,7 +31,6 @@ export default function GameOptionsBar({ toggleOption }){
   setColor()
 
   return (
-    <>
       <div id="game-options-bar">
         <OptionsButton name="createGame" text="Create Game" toggleOption={toggleOption} />
         <OptionsButton name="joinGame" text="Join Game" toggleOption={toggleOption} />
@@ -54,6 +53,5 @@ export default function GameOptionsBar({ toggleOption }){
             )}
           </div>}
       </div>
-    </>
   )
 }
