@@ -130,6 +130,7 @@ html {
 .square {
   box-sizing: border-box;
   position: relative;
+  min-height: 100%;
   height: var(--square-length);
   width: var(--square-length);
   max-height: var(--square-length);

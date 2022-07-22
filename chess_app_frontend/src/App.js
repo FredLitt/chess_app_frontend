@@ -108,7 +108,7 @@ function App() {
   })
 
   const move = async (moveToPlay) => {
-    updateGameOptimistically(moveToPlay)
+    //updateGameOptimistically(moveToPlay)
     const updatedGame = await gameService.playMove(gameData.id, moveToPlay)
     updateLocalGameState(updatedGame)
     socket.emit("update", gameData.id)
@@ -148,15 +148,15 @@ function App() {
     console.log("resigning")
     socket.emit("resign", gameData.id)
     const score = gameData.color === "white" ? "0-1" : "1-0" 
-    const result = { result: `${gameData.color} resigned`, score }
-    await gameService.setGameResult(gameData.id, result)
+    const status = { result: `${gameData.color} resigned`, score }
+    await gameService.setGameResult(gameData.id, status)
     handleResignation(gameData.color)
   }
 
   const handleResignation = (resigningColor) => {
     const result = `${resigningColor} resigned`
     const score = (resigningColor === "white") ? "0-1" : "1-0"
-    setGame( {...game, result: { result, score }} ) 
+    setGame( {...game, status: { result, score }} ) 
     setOpenModal("gameOver")
   }
 

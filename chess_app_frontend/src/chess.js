@@ -647,6 +647,7 @@ class Chess {
 
     playMove(board, move){
         if (!move) return
+
         const startSquare = this.getSquare(board, move.from)
         const endSquare = this.getSquare(board, move.to)
         let movingPiece = startSquare.piece
@@ -658,6 +659,7 @@ class Chess {
         }
 
         const isCastling = move.data.some(string => string.includes("Castle"))
+
         if (isCastling){
             const direction = move.data.find(string => string.includes("Castle"))
             this.castle(board, direction, move.piece.color)
