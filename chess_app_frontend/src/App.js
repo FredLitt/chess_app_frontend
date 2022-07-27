@@ -8,6 +8,7 @@ import Modals from './components/Modals'
 import gameService from './services/game'
 import './App.css'
 import { socket } from './context/socket'
+import Emptyboard from './components/Emptyboard'
 
 const chess = new Chess()
 
@@ -108,8 +109,13 @@ function App() {
   })
 
   const move = async (moveToPlay) => {
-    //updateGameOptimistically(moveToPlay)
-    const updatedGame = await gameService.playMove(gameData.id, moveToPlay)
+    updateGameOptimistically(moveToPlay)
+    await gameService.playMove(gameData.id, moveToPlay)
+    const updatedGame = await gameService.getGame(gameData.id)
+    //const updatedGame = await gameService.playMove(gameData.id, moveToPlay)
+    if (updatedGame.error){ 
+      console.log(updatedGame)
+      return setOpenModal("error") }
     updateLocalGameState(updatedGame)
     socket.emit("update", gameData.id)
   }
@@ -145,7 +151,6 @@ function App() {
 
   const resign = async () => {
     if (!gameData.id || game.status.result !== "undecided") return
-    console.log("resigning")
     socket.emit("resign", gameData.id)
     const score = gameData.color === "white" ? "0-1" : "1-0" 
     const status = { result: `${gameData.color} resigned`, score }
@@ -182,6 +187,9 @@ function App() {
       <div id="game-container">        
         <GameOptionsBar toggleOption={toggleOption} />
         
+        {!gameInProgress && 
+        <Emptyboard chess={chess} />}
+
         {gameInProgress &&
         <Board 
           game={game}
@@ -190,12 +198,11 @@ function App() {
           highlightMovesForPiece={highlightMovesForPiece} 
           playerColor={gameData ? gameData.color : null}/>}
         
-        {gameInProgress &&
         <div id="notation-captured-piece-container">
           <CapturedPieceContainer color={gameData.color === "white" ? "white" : "black"} pieces={game.capturedPieces} />
           <Notation notation={game.notation}></Notation>
           <CapturedPieceContainer color={gameData.color === "white" ? "black" : "white"} pieces={game.capturedPieces} />
-        </div>}
+        </div>
         
       </div>
       <Modals 
@@ -203,7 +210,8 @@ function App() {
         modalFunctions={modalFunctions}
         gameID={gameData.id} 
         status={game.status}
-        closeModal={() => setOpenModal(null)} />
+        closeModal={() => setOpenModal(null)} 
+        gameInProgress={gameInProgress}/>
     </div>
   );
 }
