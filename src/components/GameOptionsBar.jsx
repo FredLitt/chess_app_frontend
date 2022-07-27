@@ -1,16 +1,10 @@
 import React, { useState } from "react"
+import { themes } from "./themes"
+import OptionsButton from "./OptionsButton"
 
-export default function GameOptionsBar({toggleCreateGame, toggleJoinGame, takeback}){
+export default function GameOptionsBar({ toggleOption }){
 
   const [ showThemes, setshowThemes ] = useState(false)
-
-  const themes = {
-    "desert": { light: "beige", dark: "tan", highlight: "peru" },
-    "grey": { light: "lightgrey", dark: "slategrey", highlight: "darkslategrey" },
-    "blue": { light: "skyblue", dark: "steelblue", highlight: "darkblue" },
-    "green": { light: "darkseagreen", dark: "green", highlight: "forestgreen" },
-    "cheshire": { light: "palevioletred", dark: "darkmagenta", highlight: "lightblue" }
-  }
 
   const setTheme = (selectedScheme) => {
     const selectedColors = Object.values(selectedScheme)
@@ -37,26 +31,27 @@ export default function GameOptionsBar({toggleCreateGame, toggleJoinGame, takeba
   setColor()
 
   return (
-    <div id="game-options-bar">
-      <button onClick={toggleCreateGame}>Create Game</button>
-      <button onClick={toggleJoinGame}>Join Game</button>
-      {/* <button onClick={takeback}>Takeback</button> */}
+      <div id="game-options-bar">
+        <OptionsButton name="createGame" text="Create Game" toggleOption={toggleOption} />
+        <OptionsButton name="joinGame" text="Join Game" toggleOption={toggleOption} />
+        <OptionsButton name="confirmResignation" text="Resign" toggleOption={toggleOption} />
+        <OptionsButton name="createdGameInfo" text="Show Game ID" toggleOption={toggleOption} />
 
-      <button onClick={() => {setshowThemes(!showThemes)}}>Board Theme</button>
-      {showThemes && 
-        <div id="theme-options">
-          {Object.values(themes).map((scheme, index) =>
-            <div 
-              className="color-choice" 
-              key={index}
-              onClick={() => {
-                setTheme(scheme)
-                setshowThemes(false)}}>
-              <div style={{backgroundColor: scheme.light}}></div>
-              <div style={{backgroundColor: scheme.dark}}></div>
-            </div>
-          )}
-        </div>}
-    </div>
+        <button onClick={() => {setshowThemes(!showThemes)}}>Change Theme</button>
+        {showThemes && 
+          <div id="theme-options">
+            {Object.values(themes).map((scheme, index) =>
+              <div 
+                className="color-choice" 
+                key={index}
+                onClick={() => {
+                  setTheme(scheme)
+                  setshowThemes(false)}}>
+                <div style={{backgroundColor: scheme.light}}></div>
+                <div style={{backgroundColor: scheme.dark}}></div>
+              </div>
+            )}
+          </div>}
+      </div>
   )
 }

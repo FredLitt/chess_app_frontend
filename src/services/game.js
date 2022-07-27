@@ -3,26 +3,34 @@ import axios from 'axios'
 const baseUrl = 'http://localhost:3001/api/games'
 
 const createGame = async () => {
-  const request = await axios.post(`${baseUrl}`)
-  console.log(request.data)
-  return request.data
+  const response = await axios.post(`${baseUrl}`)
+  return response.data
 }
 
 const getGame = async (id) => {
-  const request = await axios.get(`${baseUrl}/${id}/moves`)
-  return request.data
+  try {
+    const response = await axios.get(`${baseUrl}/${id}/moves`)
+    return response.data
+  } catch {
+    return { error: "error" }
+  }
 }
 
 const playMove = async (id, move) => {
-  const request = await axios.post(`${baseUrl}/${id}/moves`, move)
-  return request.data
+  try {
+    const response = await axios.post(`${baseUrl}/${id}/moves`, move)
+    return response.data
+  } catch {
+    return { error: "error" }
+  }
 }
 
-const takebackMove = async (id) => {
-  const request = await axios.delete(`${baseUrl}/${id}/moves`)
-  return request.data
+const setGameResult = async (id, result) => {
+  const response = await axios.patch(`${baseUrl}/${id}/result`, result)
+  console.log("result", result, "response", response)
+  return response.data
 }
 
-let gameService
+const gameService = { getGame, playMove, createGame, setGameResult }
 
-export default gameService = { getGame, playMove, takebackMove, createGame }
+export default gameService

@@ -11,8 +11,7 @@ const getGame = async (id) => {
   try {
     const response = await axios.get(`${baseUrl}/${id}/moves`)
     return response.data
-  }
-  catch {
+  } catch {
     return { error: "error" }
   }
 }

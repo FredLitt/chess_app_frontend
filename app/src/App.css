@@ -22,6 +22,12 @@ html {
   height: 90vh;
 }
 
+#no-current-game {
+  font-size: calc(0.4 * var(--piece-size));
+  margin-top: 5vh;
+  color: white;
+}
+
 #game-options-bar {
   position: absolute;
   top: 0.25vh;

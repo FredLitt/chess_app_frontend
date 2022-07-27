@@ -1,4 +1,5 @@
 import React from "react";
+import pieceSVGs from "../pieceSVGs";
 import pieceSymbols from "../pieceSymbols";
 
 export default function CapturedPieces({color, pieces}){
@@ -21,7 +22,6 @@ export default function CapturedPieces({color, pieces}){
     <div
       className="captured-pieces">
       {sortedPieces.map((piece, index) => 
-        <div key={index}>{pieceSymbols[piece.type][piece.color]}
-        </div>)}
+        <img src={pieceSVGs[piece.type][piece.color]} alt={pieceSymbols[piece.type][piece.color]} key={index}></img>)}
     </div>)
 }

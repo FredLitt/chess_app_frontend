@@ -1,17 +1,19 @@
 import React, { useState } from 'react'
+import CloseModalButton from './CloseModalButton'
 
-export default function CreateGameModal({selectColor, createGame}) {
+export default function CreateGameModal({ createGame, closeModal }) {
 
   const [ colorChoice, setColorChoice ] = useState(null)
 
   return (
-    <div className="modal">
-      <div id="create-game-modal-content">
-        <div>Choose your color</div>
-        <button onClick={(e) => setColorChoice(e.target.value)} value="white" style={{backgroundColor: colorChoice === "white" ? "lightgreen" : "white"}}>White</button>
-        <button onClick={(e) => setColorChoice(e.target.value)} value="black" style={{backgroundColor: colorChoice === "black" ? "lightgreen" : "white"}}>Black</button>
-        <button onClick={(e) => createGame(colorChoice)}>Create Game!</button>
-      </div>
-    </div>
+      <div className="modal">
+        <CloseModalButton closeModal={closeModal} />
+        <div>Choose your color</div>  
+        <div>   
+          <button onClick={(e) => setColorChoice(e.target.value)} value="white" style={{backgroundColor: colorChoice === "white" ? "slategray" : "lightgrey"}}>White</button>
+          <button onClick={(e) => setColorChoice(e.target.value)} value="black" style={{backgroundColor: colorChoice === "black" ? "slategray" : "lightgrey"}}>Black</button>
+        </div>
+        <button onClick={() => createGame(colorChoice)} style={{backgroundColor: "lightgrey"}}>Create Game!</button>    
+        </div>
   )
 }

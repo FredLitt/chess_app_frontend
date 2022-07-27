@@ -1,0 +1,15 @@
+[x] - Resign button
+[x] - Optimistic update
+[x] - Change pieces to SVGs
+[x] - Highlight last moved played
+[x] - Coordinates on sides of board
+[x] - Consolidate popups
+[x] - Add error handling popup
+[x] - Add game over status on backend
+[x] - Way to get current gameID
+[ ] - Fix the game looking hideous on Safari
+
+[ ] - Add URLs rather than game IDs to join
+[ ] - Takeback button
+[ ] - Allow timed games
+[ ] - Add drag and drop

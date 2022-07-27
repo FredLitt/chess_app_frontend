@@ -2,11 +2,16 @@
   --piece-size: calc(16px + 2.5vw);
   --board-length: calc(8 * var(--square-length));
   --square-length: calc(1.5 * var(--piece-size));
-  --notation-container-width: calc(.7 * var(--board-length));
-  --main-bg-color: rgba(0, 0, 0, 0.85);
+  --notation-container-width: calc(.6 * var(--board-length));
+  --game-container-side-margin: calc(0.5 * (100vw - (var(--board-length) + var(--notation-container-width))));
+  --main-bg-color: hsla(0, 100%, 0%, 0.85);
   --light-square: beige;
   --dark-square: tan;
   --highlight: peru;
+}
+
+button {
+  cursor: pointer;
 }
 
 html {
@@ -17,51 +22,131 @@ html {
   height: 90vh;
 }
 
+#no-current-game {
+  font-size: calc(0.4 * var(--piece-size));
+  margin-top: 5vh;
+  color: white;
+}
+
 #game-options-bar {
   position: absolute;
-  height: var(--game-options-bar-height);
-  top: 0px;
+  top: 0.25vh;
 }
 
 #game-options-bar > button {
-  background-color: var(--main-bg-color);
-  font-size: calc(0.5 * var(--piece-size));
+  background: none;
+  border: none;
+  padding: .2em .8em;
+  font-size: calc(0.4 * var(--piece-size));
   color: lightgray;
-  cursor: pointer;
   height: 100%;
-  width: calc(5 * var(--piece-size));
 }
 
-#join-game-input {
+#game-options-bar > button:hover {
+  opacity: 70%;
+}
+
+#current-game-id {
   position: absolute;
-  width: calc(5 * var(--piece-size));
-  top: 2em;
-  left: 40%;
-  color: white;
+  top: calc(0.85 * var(--piece-size));
+  left: 50%;
+  transform: translate(-50%);
+  color: lightgrey;
+}
+
+.close-modal-button {
+  border-radius: 50%;
+  position: absolute;
+  top: calc(-0.3 * var(--piece-size));
+  left: calc(100% - (0.5 * var(--piece-size)));
+  height: calc(0.8 * var(--piece-size));
+  width: calc(0.8 * var(--piece-size));
+}
+
+.modal > button, .modal > div > button {
+  margin-bottom: .8vw;
+  font-size: calc(0.35 * var(--piece-size));
+  cursor: pointer;
+}
+
+.modal {
+  position: absolute;
+  border-radius: 5px;
+  height: calc(2 * var(--piece-size));
+  width: calc(.9 * var(--board-length));
+  left: calc(50vw - (0.45 * (var(--board-length))));
+  top: calc(0.5 * var(--board-length));
+  font-size: calc(0.4 * var(--piece-size));
+  color: lightgrey;
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  z-index: 2;
+  background-color: hsla(0, 0%, 0%, 0.705);
+}
+
+.modal > div {
+  padding: .1rem;
+  display: flex;
+}
+
+.modal > input {
+  height: calc(0.5 * var(--piece-size));
+  font-size: calc(0.4 * var(--piece-size));
+  text-align: center;
+  width: 60%;
+}
+
+.game-over {
+  font-size: 1.25em;
+}
+
+#copy-button {
+  margin-left: 1em;
 }
 
 #game-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: var(--square-length);
+  width: 100%;
+  margin-top: calc(0.6 * var(--square-length));
 }
 
 #board {
-  height: calc(8 * var(--square-length));
-  width: calc(8 * var(--square-length));
+  height: var(--board-length);
+  width: var(--board-length);
+}
+
+#x-coords {
+  color: white;
+  position: absolute;
+  top: 100%;
+  left: 45%;
+}
+
+#y-coords {
+  color: white;
+  position: absolute;
+  left: -30%;
+  top: 30%;
 }
 
 .square {
   box-sizing: border-box;
+  position: relative;
+  min-height: 100%;
   height: var(--square-length);
   width: var(--square-length);
-  font-size: var(--piece-size);
+  max-height: var(--square-length);
+  max-width: var(--square-length);
   text-align: center;
-  position: relative;
   z-index: 1;
+}
+
+.piece-icon {
+  height: 93%;
 }
 
 .possible-move {
@@ -72,7 +157,8 @@ html {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: darkgrey;
+  background-color: var(--highlight);
+  opacity: 60%;
   position: absolute;
   border-radius: 50%;
   z-index: 0;
@@ -88,12 +174,11 @@ html {
 .promotion-pieces {
   display: flex;
   position: fixed;
-  top: 50%;
-  left: calc(0.5 * (100vw - var(--board-length) - var(--notation-container-width)) + 0.5 * var(--board-length));
-  flex-direction: column;
-  background-color: white;
-  transform: translate(-50%, -50%);
-  width: calc(2* var(--piece-size));
+  top: calc(0.48 * var(--board-length));
+  left: calc(50% - 0.45 * var(--board-length));
+  background-color: var(--main-bg-color);
+  opacity: 85%;
+  width: calc(.9 * var(--board-length));
   font-size: calc(2* var(--piece-size));
   z-index: 3;
 }
@@ -103,38 +188,38 @@ html {
   background-color: white;
   border-radius: 50%;
   text-align: center;
-}
-
-#promotion-modal > div:hover {
   cursor: pointer;
 }
 
 #notation-captured-piece-container {
-  padding: calc(0.5* var(--piece-size));
+  align-self: start;
+  margin: var(--piece-size);
   box-sizing: border-box;
   font-size: calc(0.5 * var(--piece-size));
   display: flex;
   flex-direction: column;
-  min-width: var(--notation-container-width);
-  max-width: calc(6 * var(--square-length));
-  height: calc(7 * var(--square-length));
+  width: var(--notation-container-width);
+  max-width: var(--notation-container-width);
+  height: calc(6 * var(--square-length));
   align-self: center;
 }
 
 #notation {
   list-style: none;
   display: grid;
+  grid-template-rows: repeat(8, 1fr);
   background-color: var(--main-bg-color);
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr .75fr;
   color: lightgrey;
-  align-content: start;
-  height: 40%;
+  height: 50%;
+  max-width: var(--notation-container-width);
   overflow-y: auto;
   margin: 0;
 }
 
 #notation > li {
-  padding: .5rem .5rem .1rem 1rem;
+  padding-top: .75em;
+  min-width: 50%;
 }
 
 #notation::-webkit-scrollbar {
@@ -144,26 +229,25 @@ html {
 .captured-pieces {
   display: flex;
   flex-flow: row wrap;
-  justify-content: start;
   font-size: var(--piece-size);
   max-width: 100%;
-  min-height: 30%;
-  background-color: var(--dark-square);
+  height: 25%;
+  max-height: 25%;
+  background: linear-gradient(150deg, var(--dark-square) 50%, var(--light-square));
   padding-left: .5rem;
 }
 
-.captured-pieces > div {
-  min-width: 0;
-  max-height: 1.5em;
-  max-width: 12.5%;
+.captured-pieces > img {
+  padding-top: .1em;
+  height: 37%;
 }
 
 #theme-options {
-  padding: 2vh 0;
-  width: 33%;
-  background-color: black;
+  padding: 1vh 0;
+  width: 25%;
+  background-color: rgb(42, 36, 36);
   position: relative;
-  left: 66%;
+  left: 75%;
   z-index: 3;
 }
 
@@ -185,66 +269,40 @@ html {
   cursor: pointer;
 }
 
-.modal {
-  position: absolute;
-  width: 100%; 
-  height: 100%; 
-  left: 0;
-  top: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-radius: 1rem;
-  border: 2px solid black;
-  box-sizing: border-box;
-  z-index: 3;
+@media (max-width: 320px) {
+  #game-options-bar > button {
+    padding: 0em 1.75em;
+  }
+
+  .modal {
+    height: 6em;
+  }
+
+  :root {
+    --piece-size: 16px + 1.8vw;
+  }
+
+  #board {
+    margin-top: var(--square-length);
+  }
+
+  #notation-captured-piece-container {
+    margin: 20px;
+  }
+
+  #x-coords, #y-coords {
+    font-size: 0.65em;
+  }
 }
 
-#create-game-modal-content {
-  margin-top: 25%;
-  font-weight: bold;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: calc(3 * var(--piece-size));
-  width:  calc(5 * var(--piece-size));
-  font-size: calc(1/2 * var(--piece-size));
-  color: black;
-  border-radius: 1rem;
-  background-color: white;
-  border-radius: 1rem;
-  border: 2px solid black;
-}
+@media (max-width: 550px) {
+  :root {
+    --board-length: calc(9 * (var(--square-length)));
+  }
 
-#new-game-modal-content {
-  margin-top: 25%;
-  font-weight: bold;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: calc(3 * var(--piece-size));
-  width:  calc(5 * var(--piece-size));
-  font-size: calc(1/2 * var(--piece-size));
-  color: black;
-  border-radius: 1rem;
-  background-color: white;
-  border-radius: 1rem;
-  border: 2px solid black;
-}
-
-#new-game-modal-content > div {
-  margin-top: 1em;
-}
-
-#new-game-modal-content > button {
-  font-size: .75em;
-  width: calc(4 * var(--piece-size));
-  height: var(--piece-size);
-  border-radius: .5rem;
-  margin-top: 1em;
-  background-color: green;
-  color: white;
-  cursor: pointer;
+  #x-coords, #y-coords {
+    font-size: 0.65em;
+  }
 }
 
 @media (min-width: 900px) {
@@ -252,5 +310,21 @@ html {
     display: flex;
     flex-direction: row;
     justify-content: center;
+  }
+
+  .modal {
+    left: calc(var(--game-container-side-margin) - (0.04 * var(--board-length)));
+    top: calc(.5 * var(--board-length));
+  }
+
+  .modal > div > button {
+    font-size: .8em;
+    height: 2em;
+    width: 4em;
+  }
+
+  .promotion-pieces {
+    top: calc(0.46 * var(--board-length));
+    left: calc(0.88 * var(--game-container-side-margin));
   }
 }

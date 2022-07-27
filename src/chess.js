@@ -6,7 +6,6 @@ class Chess {
     constructor(){
         this.xAxis = ["a", "b", "c", "d", "e", "f", "g", "h"]
         this.moveHistory = []
-        this.capturedPieces = []
     }
     createEmptyBoard(){
         const board = []
@@ -142,7 +141,7 @@ class Chess {
                 }
             }
         }
-        attackingPiecesSquares.forEach(square => attackedSquares.push(this.findSquaresForPiece(board, square, "controlled squares")))
+        attackingPiecesSquares.forEach(square => attackedSquares.push(this.findSquaresForPiece(board, square, "controlledSquares")))
         return attackedSquares.flat()
     }
 
@@ -154,7 +153,7 @@ class Chess {
                 if (this.getPiecesColor(board, squareToCheck) === color){
                     const piece = this.getSquare(board, squareToCheck).piece
                     const piecesSquare = squareToCheck
-                    const possibleSquares = this.findSquaresForPiece(board, piecesSquare, "possible moves")
+                    const possibleSquares = this.findSquaresForPiece(board, piecesSquare, "possibleMoves")
                     const possibleMoves = possibleSquares.map(possibleSquare => 
                         this.buildMove(piece, { from: piecesSquare, to: possibleSquare}))
                     if (possibleMoves.length !== 0){
@@ -163,8 +162,7 @@ class Chess {
                 }
             }
         }
-        allPossibleMoves = allPossibleMoves.flat()
-        return allPossibleMoves
+        return allPossibleMoves.flat()
     }
 
     markPossibleMoves(board, possibleMoves){
@@ -186,7 +184,6 @@ class Chess {
     findSquaresForPiece(board, piecesSquare, squaresToFind){
         const movingPiece = this.getSquare(board, piecesSquare).piece.type
         const longRangePiece = movingPiece === "bishop" || movingPiece === "rook" || movingPiece === "queen"
-
         if (movingPiece === "pawn"){ return this.findSquaresForPawn(board, piecesSquare, squaresToFind) }
         if (movingPiece === "knight"){ return this.findSquaresForKnight(board, piecesSquare, squaresToFind) }
         if (movingPiece === "king"){ return this.findSquaresForKing(board, piecesSquare, squaresToFind) }
@@ -233,7 +230,7 @@ class Chess {
                         continue 
                     }
     
-                    if (squaresToFind === "controlled squares") {  
+                    if (squaresToFind === "controlledSquares") {  
                         if (squareHasPiece) {
                             squares.push(possibleSquare)
                             completedDirections.push(direction)
@@ -242,7 +239,7 @@ class Chess {
                         squares.push(possibleSquare)
                     }
     
-                    if (squaresToFind === "possible moves") {
+                    if (squaresToFind === "possibleMoves") {
                         
                         const invalidMove = !squareIsOnBoard || squareHasFriendlyPiece
                         if (invalidMove) {
@@ -280,8 +277,8 @@ class Chess {
             "NorthEast": [ fromRow - 1, fromCol + 1 ],
             "SouthWest": [ fromRow + 1, fromCol - 1 ],
             "SouthEast": [ fromRow + 1, fromCol + 1 ],
-            "Castle Kingside": [fromRow, fromCol + 2],
-            "Castle Queenside": [fromRow, fromCol - 2]
+            "CastleKingside": [fromRow, fromCol + 2],
+            "CastleQueenside": [fromRow, fromCol - 2]
         }
 
         for (const move in kingMoves){
@@ -293,7 +290,7 @@ class Chess {
             const squareHasFriendlyPiece = this.getPiecesColor(board, kingsSquare) === this.getPiecesColor(board, possibleSquare)
             const squareHasEnemyPiece = squareHasPiece && !squareHasFriendlyPiece
             
-            if (squaresToFind === "possible moves"){
+            if (squaresToFind === "possibleMoves"){
                 
                 if (!squareIsOnBoard || squareHasFriendlyPiece){ continue }
                 
@@ -313,7 +310,7 @@ class Chess {
                 }
                 squares.push(possibleSquare)
             }
-            if (squaresToFind === "controlled squares"){
+            if (squaresToFind === "controlledSquares"){
                 if (!squareIsOnBoard || move.includes("Castle")){ continue }
 
                 squares.push(possibleSquare)
@@ -344,14 +341,14 @@ class Chess {
 
             if (!squareIsOnBoard) { continue }
 
-            if (squaresToFind === "possible moves"){
+            if (squaresToFind === "possibleMoves"){
                 if (squareHasFriendlyPiece){ continue }
                 const moveExposesKing = this.doesMoveExposeKing(board, { from: knightsSquare, to: possibleSquare }, knightsColor)
                 if (moveExposesKing){ continue }
                 squares.push(possibleSquare)
             }
 
-            if (squaresToFind === "controlled squares"){
+            if (squaresToFind === "controlledSquares"){
                 squares.push(possibleSquare)
             }
         }
@@ -389,7 +386,7 @@ class Chess {
             
             if (!squareIsOnBoard){ continue }
 
-            if (squaresToFind === "possible moves"){
+            if (squaresToFind === "possibleMoves"){
                 
                 if (move === "ForwardOne"){
                     const pawnIsBlocked = this.isSquareOccupied(board, possibleSquare)
@@ -416,7 +413,7 @@ class Chess {
                 squares.push(possibleSquare)
             }
 
-            if (squaresToFind === "controlled squares"){
+            if (squaresToFind === "controlledSquares"){
                 if (move === "CaptureEast" || move === "CaptureWest"){ 
                     squares.push(possibleSquare)
                 }       
@@ -429,12 +426,12 @@ class Chess {
         let squaresToCheck
         const castlingSquares = {
             "white": {
-                "Castle Kingside": ["f1", "g1"],
-                "Castle Queenside": ["d1", "c1", "b1"],
+                "CastleKingside": ["f1", "g1"],
+                "CastleQueenside": ["d1", "c1", "b1"],
             },
             "black": {
-                "Castle Kingside": ["f8", "g8"],
-                "Castle Queenside":  ["d8", "c8", "b8"],
+                "CastleKingside": ["f8", "g8"],
+                "CastleQueenside":  ["d8", "c8", "b8"],
             }
         }
         squaresToCheck = castlingSquares[kingColor][castlingDirection]
@@ -450,18 +447,20 @@ class Chess {
         const kingNotOnStartSquare = this.findKingsSquare(board, kingColor) !== kingStartSquare[kingColor]
         const moveHistoryFromSquares = this.moveHistory.map(move => move.from)
         const kingHasMoved = moveHistoryFromSquares.includes(kingStartSquare[kingColor])
+        // console.log("king start", kingStartSquare[kingColor], "from squares", moveHistoryFromSquares)
+        // console.log("not on start square?", kingNotOnStartSquare, "king moved?", kingHasMoved)
         return (kingHasMoved || kingNotOnStartSquare)
     }
 
     hasCastlingRookMoved(board, color, castlingDirection){
         const rookStartSquares = {
             "white": {
-                "Castle Kingside": "h1",
-                "Castle Queenside": "a1"
+                "CastleKingside": "h1",
+                "CastleQueenside": "a1"
             },
             "black": {
-                "Castle Kingside": "h8",
-                "Castle Queenside": "a8"
+                "CastleKingside": "h8",
+                "CastleQueenside": "a8"
             }
         }
         const castlingRookSquare = rookStartSquares[color][castlingDirection]
@@ -477,10 +476,6 @@ class Chess {
         const rookHasMoved = this.hasCastlingRookMoved(board, kingColor, castlingDirection)
         const castlingIsLegal = (!castlingSquaresAreControlled && !kingIsInCheck && !kingHasMoved && !rookHasMoved)
         return castlingIsLegal
-    }
-
-    movesAreTheSame(move1, move2){
-        return (move1.from === move2.from && move1.to === move2.to)
     }
 
     buildMove(piece, move){
@@ -551,8 +546,8 @@ class Chess {
         const kingOnStartSquare = move.from === startSquare
         const kingWentKingside = move.to === kingsideEndSquare
         const kingWentQueenside = move.to === queensideEndSquare
-        if (kingOnStartSquare && kingWentKingside){ return "Castle Kingside" }
-        if (kingOnStartSquare && kingWentQueenside){ return "Castle Queenside" }
+        if (kingOnStartSquare && kingWentKingside){ return "CastleKingside" }
+        if (kingOnStartSquare && kingWentQueenside){ return "CastleQueenside" }
         return false
     }
 
@@ -601,14 +596,6 @@ class Chess {
         return moveIsPromotion
     }
 
-    capturePiece(piece){
-        if ("formerPawn" in piece){
-            this.capturedPieces.push({ type: "pawn", color: piece.color })
-        } else {
-            this.capturedPieces.push(piece)
-        }
-    }
-    
     createBoardFromMoveHistory(moveHistory){
         let board = this.createStartPosition()
         for (let i = 0; i < moveHistory.length; i++){
@@ -633,12 +620,11 @@ class Chess {
     }
 
     isMoveLegal(board, move){
-        const legalMoves = this.findSquaresForPiece(board, move.from, "possible moves")
+        const legalMoves = this.findSquaresForPiece(board, move.from, "possibleMoves")
         return legalMoves.some(legalMove => legalMove === move.to)
     }
 
     getFullMove(board, move){
-        console.log("Getting full move:", move)
         if (!this.isPlayableMove(board, move)) return false
 
         move.data = []
@@ -660,22 +646,20 @@ class Chess {
     }
 
     playMove(board, move){
+        if (!move) return
+
         const startSquare = this.getSquare(board, move.from)
         const endSquare = this.getSquare(board, move.to)
         let movingPiece = startSquare.piece
         
-        if (move.data.includes("capture") && !move.data.includes("enPassant")){ 
-            this.capturePiece(endSquare.piece)
-        }
-        
         if (move.data.includes("enPassant")){
             const coordinatesOfCapturedPawn = this.getEnPassantTarget()
             const pawnToCapturesSquare = this.getSquare(board, coordinatesOfCapturedPawn)
-            this.capturePiece(pawnToCapturesSquare.piece)
             pawnToCapturesSquare.piece = null
         }
 
         const isCastling = move.data.some(string => string.includes("Castle"))
+
         if (isCastling){
             const direction = move.data.find(string => string.includes("Castle"))
             this.castle(board, direction, move.piece.color)
@@ -699,7 +683,7 @@ class Chess {
     }
 
     isSquareOnBoard(square){
-        const invalidFormat = (square.length !== 2 || typeof square !== "string")
+        const invalidFormat = (!square || typeof square !== "string" || square.length !== 2)
         if (invalidFormat) return false 
         const x = square[0]
         const y = parseInt(square[1])
@@ -780,7 +764,7 @@ class Chess {
         }
 
         if (isCastle){
-            move.data.includes("Castle Kingside") ? san = "O-O" : san = "O-O-O"
+            move.data.includes("CastleKingside") ? san = "O-O" : san = "O-O-O"
         }
 
         if (isCheckmate){
@@ -834,7 +818,7 @@ class Chess {
         if (checkmate){
             return {
                 result: this.isKingInCheckMate(board, "white") ? "Black wins" : "White wins",
-                score: this.isKingInCheckMate(board, "white") ? "1-0" : "0-1"
+                score: this.isKingInCheckMate(board, "white") ? "0-1" : "1-0"
             }
         }
         const currentPlayersTurn = this.getWhoseTurn(this.moveHistory)
