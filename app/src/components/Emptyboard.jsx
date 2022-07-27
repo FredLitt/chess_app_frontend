@@ -14,6 +14,7 @@ export default function Emptyboard({chess}) {
         {row.map((square) => 
           <td 
             className="square"
+            key={square.coordinates}
             style={{backgroundColor: square.color === "light" ? "var(--light-square)" : "var(--dark-square)"}}>
               </td>)}
         </tr>)}
